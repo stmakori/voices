@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}About Us - Voices Against Violence{% endblock %}
+
+{% block meta_description %}Learn about Voices Against Violence, our mission to end GBV in Kenya through reporting, education, and resource access.{% endblock %}
+
+{% block meta_keywords %}GBV, Gender Based Violence, Kenya, about, mission, vision{% endblock %}
+
+{% block body_class %}about-page{% endblock %}
+
+{% block content %}
+
+<!-- Page Title -->
+<div class="page-title">
+  <div class="heading">
+    <div class="container">
+      <div class="row d-flex justify-content-center text-center">
+        <div class="col-lg-8">
+          <h1 class="heading-title">About Voices Against Violence</h1>
+          <p class="mb-0">
+            We are committed to ending GBV in Kenya through safe reporting,
+            practical education, and easy access to support resources. Your voice matters,
+            and we are here to help.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <nav class="breadcrumbs">
+    <div class="container">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li class="current">About</li>
+      </ol>
+    </div>
+  </nav>
+</div><!-- End Page Title -->
+
+<!-- About Section -->
+<section id="about" class="about section">
+
+  <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+    <div class="row g-5 align-items-center">
+      <div class="col-lg-6 position-relative">
+        <div class="about-img" data-aos="fade-right">
+          <img src="{{ MEDIA_URL }}blog/GBV 1.jpg" class="img-fluid" alt="Voices Against Violence team">
+        </div>
+        <div class="experience-badge" data-aos="fade-up">
+          <h2>12</h2>
+          <p>Years of<br>Experience</p>
+        </div>
+        <div class="projects-badge" data-aos="fade-left">
+          <h2>345+</h2>
+          <p>Projects</p>
+        </div>
+      </div>
+
+      <div class="col-lg-6" data-aos="fade-left">
+        <h2 class="display-4 fw-bold mb-4">Our Mission: Ending GBV in Kenya</h2>
+        <p class="lead mb-4">Voices Against Violence is a comprehensive online platform dedicated to combating GBV in Kenya. We provide a safe, confidential way to share reports, while educating communities and connecting survivors of all genders with essential support services.</p>
+
+        <div class="features">
+          <div class="feature-item mb-4" data-aos="fade-up">
+            <div class="feature-icon">
+              <i class="bi bi-rocket-takeoff"></i>
+            </div>
+            <div class="feature-content">
+              <h4>Safe and Confidential Reporting</h4>
+              <p>Our secure reporting system allows survivors and witnesses of all genders to share reports safely and anonymously, with confidentiality protected.</p>
+            </div>
+          </div>
+
+          <div class="feature-item mb-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="feature-icon">
+              <i class="bi bi-book"></i>
+            </div>
+            <div class="feature-content">
+              <h4>Comprehensive Education</h4>
+              <p>We provide educational resources about GBV, prevention strategies, legal rights, and support options to empower communities.</p>
+            </div>
+          </div>
+
+          <ul class="check-list" data-aos="fade-up" data-aos-delay="200">
+            <li><i class="bi bi-check-circle"></i> 24/7 reporting available when you need it most</li>
+            <li><i class="bi bi-check-circle"></i> Nationwide resource finder for police posts, safe houses, and support services</li>
+            <li><i class="bi bi-check-circle"></i> Free educational materials and awareness campaigns</li>
+            <li><i class="bi bi-check-circle"></i> Connection to professional support services and counseling</li>
+          </ul>
+
+          <a href="{% url 'report_gbv' %}" class="btn btn-primary btn-lg mt-4 ui-ef718999" data-aos="fade-up" data-aos-delay="300">Share a Report</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</section><!-- /About Section -->
+
+<!-- Team Section -->
+<section id="team" class="team section">
+
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h2>Working Together for Change</h2>
+    <p>We collaborate with government agencies, NGOs, community organizations, and support services across Kenya to provide comprehensive GBV response and prevention.</p>
+  </div><!-- End Section Title -->
+
+  <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+    <div class="row g-4">
+
+      {% for member in team_members %}
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ member.delay }}">
+        <div class="team-member">
+          <div class="member-image">
+            {% if member.image %}
+              <img src="{{ member.image.url }}" class="img-fluid" alt="{{ member.name }}" loading="lazy">
+            {% else %}
+              <img src="{% static 'assets/img/person/person-f-2.webp' %}" class="img-fluid" alt="{{ member.name }}" loading="lazy">
+            {% endif %}
+            <div class="social-overlay">
+              <div class="social-icons">
+                {% if member.linkedin %}<a href="{{ member.linkedin }}"><i class="bi bi-linkedin"></i></a>{% endif %}
+                {% if member.twitter %}<a href="{{ member.twitter }}"><i class="bi bi-twitter-x"></i></a>{% endif %}
+                {% if member.instagram %}<a href="{{ member.instagram }}"><i class="bi bi-instagram"></i></a>{% endif %}
+              </div>
+            </div>
+          </div>
+          <div class="member-info">
+            <h4>{{ member.name }}</h4>
+            <span>{{ member.role }}</span>
+            <p>{{ member.bio|default:"" }}</p>
+          </div>
+        </div><!-- End Team Member -->
+      </div>
+      {% endfor %}
+
+    </div>
+
+  </div>
+
+</section><!-- /Team Section -->
+
+{% endblock %}

@@ -1,0 +1,568 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In / Sign Up – Voices Against Violence</title>
+  <meta name="description" content="Sign in or create an account to access confidential GBV reporting, support resources, and education on Voices Against Violence.">
+  <meta name="keywords" content="login, sign up, GBV support account, Kenya, Voices Against Violence">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="canonical" href="{{ request.build_absolute_uri }}">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Sign In / Sign Up – Voices Against Violence">
+  <meta property="og:description" content="Access confidential GBV reporting, support resources, and community education in Kenya.">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'assets/img/equality.png' %}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Sign In / Sign Up – Voices Against Violence">
+  <meta name="twitter:description" content="Access confidential GBV reporting, support resources, and community education in Kenya.">
+  <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'assets/img/equality.png' %}">
+  
+  <!-- Favicon -->
+  <link href="{% static 'assets/img/equality.png' %}" rel="icon" type="image/png">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Bootstrap Icons & CSS -->
+  <link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  
+  <!-- Custom Login CSS -->
+  <link href="{% static 'assets/css/login.css' %}" rel="stylesheet">
+</head>
+<body>
+  <!-- Bootstrap JS Bundle (required for toasts) -->
+  <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+<!-- Floating Particles -->
+<div class="particles-container" id="particles"></div>
+
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-layout">
+
+      <aside class="auth-side">
+        <div class="auth-side-brand">
+          <img src="{% static 'assets/img/equality.png' %}" alt="Voices Against Violence logo">
+          <h2>Welcome Back</h2>
+          <p>Sign in or create an account to access safe reporting, support resources, and community education.</p>
+        </div>
+
+        <ul class="auth-side-points">
+          <li><i class="bi bi-shield-lock"></i> Confidential by design</li>
+          <li><i class="bi bi-lightning-charge"></i> Fast access to emergency support</li>
+          <li><i class="bi bi-people"></i> Built for reporters, survivors, and contributors</li>
+        </ul>
+
+        <p class="auth-side-note"><i class="bi bi-envelope-check"></i> A 6-digit code will be sent to your email for verification.</p>
+
+        <div class="auth-side-help">
+          <span>Need urgent help?</span>
+          <div class="d-grid gap-2">
+            <a href="tel:999" class="btn btn-light btn-sm"><i class="bi bi-telephone-fill"></i> Call 999</a>
+            <a href="tel:1195" class="btn btn-outline-light btn-sm"><i class="bi bi-telephone"></i> GBV Hotline 1195</a>
+          </div>
+        </div>
+      </aside>
+
+      <div class="auth-main">
+
+      <!-- Brand with Favicon Image -->
+      <div class="auth-brand">
+      <div class="brand-icon">
+        <img class="ui-ca4062d6" src="{% static 'assets/img/equality.png' %}" alt="Voices Against Violence Logo">
+      </div>
+      <div class="brand-text">
+        Voices Against Violence
+        <span>Safe, confidential GBV support for Kenya</span>
+      </div>
+      </div>
+    
+    <!-- Tabs -->
+    <div class="auth-tabs">
+      <button class="auth-tab {% if active_tab != 'signup' %}active{% endif %}" onclick="switchTab('login')">
+        <i class="bi bi-box-arrow-in-right"></i> Sign In
+      </button>
+      <button class="auth-tab {% if active_tab == 'signup' %}active{% endif %}" onclick="switchTab('signup')">
+        <i class="bi bi-person-plus"></i> Create Account
+      </button>
+    </div>
+    
+    <!-- Auth Body -->
+    <div class="auth-body">
+      
+      {% if messages %}
+      <div class="alert-stack mb-3" aria-live="polite" aria-atomic="true">
+        {% for message in messages %}
+        <div class="alert alert-{% if 'error' in message.tags or 'danger' in message.tags %}danger{% elif 'warning' in message.tags %}warning{% elif 'success' in message.tags %}success{% else %}info{% endif %} mb-2" role="alert">
+          <i class="bi {% if 'error' in message.tags or 'danger' in message.tags %}bi-exclamation-circle-fill{% elif 'warning' in message.tags %}bi-exclamation-triangle-fill{% elif 'success' in message.tags %}bi-check-circle-fill{% else %}bi-info-circle-fill{% endif %} me-2"></i>
+          {{ message }}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Flash Messages (Bootstrap Toasts) -->
+      {% if messages %}
+      <div class="toast-container position-fixed top-0 end-0 p-3" id="login-toast-container" style="z-index: 1090;" aria-live="polite" aria-atomic="true">
+        {% for message in messages %}
+        {% with tags=message.tags %}
+        <div class="toast align-items-center border-0 vav-toast vav-toast--{% if 'error' in tags or 'danger' in tags %}danger{% elif 'warning' in tags %}warning{% elif 'success' in tags %}success{% else %}info{% endif %}" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
+          <div class="toast-body d-flex align-items-center gap-2">
+            <i class="bi {% if 'error' in tags or 'danger' in tags %}bi-exclamation-circle-fill{% elif 'warning' in tags %}bi-exclamation-triangle-fill{% elif 'success' in tags %}bi-check-circle-fill{% else %}bi-info-circle-fill{% endif %} flex-shrink-0" style="font-size:1.1rem;"></i>
+            <span class="me-auto">{{ message }}</span>
+            <button type="button" class="btn-close ms-2" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>
+        {% endwith %}
+        {% endfor %}
+      </div>
+      {% endif %}
+      
+      <!-- SIGN IN FORM -->
+      <form method="post" action="{% url 'login' %}" class="auth-form {% if active_tab != 'signup' %}active{% endif %}" id="login-form" novalidate>
+        {% csrf_token %}
+        <div class="alert alert-danger d-none" id="login-form-alert" role="alert">
+          Please review the highlighted fields and try again.
+        </div>
+        
+        <div class="form-group">
+          <label>Username</label>
+          <div class="input-group-custom">
+            <i class="bi bi-person input-icon"></i>
+            <input type="text" name="username" placeholder="your_username" autocomplete="username" required>
+          </div>
+          <div class="invalid-feedback js-validation-feedback">Please enter your username.</div>
+        </div>
+        
+        <div class="form-group">
+          <label>Password</label>
+          <div class="input-group-custom">
+            <i class="bi bi-lock input-icon"></i>
+            <input type="password" name="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" required>
+            <button type="button" class="password-toggle" onclick="togglePassword('loginPassword', this)">
+              <i class="bi bi-eye"></i>
+            </button>
+          </div>
+          <div class="invalid-feedback js-validation-feedback">Please enter your password.</div>
+          <div class="field-note" id="login-caps-lock" aria-live="polite"></div>
+        </div>
+        
+        <div class="extras-row">
+          <label class="remember-checkbox">
+            <input type="checkbox" name="remember" checked>
+            <span>Keep me signed in</span>
+          </label>
+          <a href="{% url 'forgot_password' %}" class="forgot-link">Forgot password?</a>
+        </div>
+        
+        <button type="submit" class="btn-auth">
+          <i class="bi bi-box-arrow-in-right"></i> Sign In Securely
+        </button>
+        
+        <div class="switch-prompt">
+          Don't have an account?
+          <a href="#" onclick="switchTab('signup'); return false">Create one free</a>
+        </div>
+      </form>
+      
+      <!-- SIGN UP FORM -->
+      <form method="post" action="{% url 'signup' %}" class="auth-form {% if active_tab == 'signup' %}active{% endif %}" id="signup-form" novalidate>
+        {% csrf_token %}
+        <div class="alert alert-danger d-none" id="signup-form-alert" role="alert">
+          Please review the highlighted fields and try again.
+        </div>
+        
+        <!-- User Type Selection -->
+        <div class="form-group">
+          <label>I am joining as a</label>
+          <div class="user-type-grid">
+            <div class="type-card">
+              <input type="radio" name="user_type" id="type-victim" value="victim" 
+                {% if not form_data or form_data.user_type == 'victim' %}checked{% endif %}>
+              <label for="type-victim">
+                <i class="bi bi-heart-pulse-fill"></i>
+                <span class="type-title">Reporter</span>
+                <span class="type-desc">Seeking support, resources, or a safe way to report</span>
+              </label>
+            </div>
+            
+            <div class="type-card">
+              <input type="radio" name="user_type" id="type-contributor" value="contributor"
+                {% if form_data.user_type == 'contributor' %}checked{% endif %}>
+              <label for="type-contributor">
+                <i class="bi bi-people-fill"></i>
+                <span class="type-title">Contributor</span>
+                <span class="type-desc">Sharing knowledge, resources, or volunteering to help</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        
+        <!-- First Name & Last Name -->
+        <div class="row-2">
+          <div class="form-group">
+            <label>First Name</label>
+            <div class="input-group-custom">
+              <i class="bi bi-person-vcard input-icon"></i>
+              <input type="text" name="first_name" placeholder="Jane"
+                     value="{{ form_data.first_name|default:'' }}" autocomplete="given-name" required>
+            </div>
+            <div class="invalid-feedback js-validation-feedback">Please enter your first name.</div>
+          </div>
+
+          <div class="form-group">
+            <label>Last Name</label>
+            <div class="input-group-custom">
+              <i class="bi bi-person-vcard-fill input-icon"></i>
+              <input type="text" name="last_name" placeholder="Doe"
+                     value="{{ form_data.last_name|default:'' }}" autocomplete="family-name" required>
+            </div>
+            <div class="invalid-feedback js-validation-feedback">Please enter your last name.</div>
+          </div>
+        </div>
+
+        <!-- Username & Email -->
+        <div class="row-2">
+          <div class="form-group">
+            <label>Username</label>
+            <div class="input-group-custom">
+              <i class="bi bi-person input-icon"></i>
+              <input type="text" name="username" placeholder="choose_username" 
+                     value="{{ form_data.username|default:'' }}" autocomplete="username" required>
+            </div>
+            <div class="invalid-feedback js-validation-feedback">Please choose a username.</div>
+          </div>
+          
+          <div class="form-group">
+            <label>Email Address</label>
+            <div class="input-group-custom">
+              <i class="bi bi-envelope input-icon"></i>
+              <input type="email" name="email" placeholder="you@example.com" 
+                     value="{{ form_data.email|default:'' }}" autocomplete="email" required>
+            </div>
+            <div class="invalid-feedback js-validation-feedback">Please enter a valid email.</div>
+          </div>
+        </div>
+        
+        <!-- Phone & Gender -->
+        <div class="row-2">
+          <div class="form-group">
+            <label>Phone Number <span class="ui-422c9c12">(E.164)</span></label>
+            <div class="input-group-custom">
+              <i class="bi bi-phone input-icon"></i>
+              <input type="tel" name="phone_number" placeholder="+254712345678" 
+                     value="{{ form_data.phone_number|default:'' }}" autocomplete="tel" required>
+            </div>
+            <small class="field-note">Use international format, e.g. +2547...</small>
+            <div class="invalid-feedback js-validation-feedback">Please enter a valid phone number starting with +.</div>
+          </div>
+          
+          <div class="form-group">
+            <label>Gender</label>
+            <div class="input-group-custom">
+              <i class="bi bi-person-fill input-icon"></i>
+              <select name="gender">
+                <option value="not specified">Prefer not to say</option>
+                <option value="female">Female</option>
+                <option value="male">Male</option>
+                <option value="non-binary">Non-binary</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Password Fields -->
+        <div class="row-2">
+          <div class="form-group">
+            <label>Password</label>
+            <div class="input-group-custom">
+              <i class="bi bi-lock input-icon"></i>
+              <input type="password" name="password1" id="signupPassword1" 
+                     placeholder="Min 8 chars" autocomplete="new-password" minlength="8"
+                     oninput="updatePasswordStrength(this.value)" required>
+              <button type="button" class="password-toggle" onclick="togglePassword('signupPassword1', this)">
+                <i class="bi bi-eye"></i>
+              </button>
+            </div>
+            <div class="strength-meter">
+              <div class="strength-meter-fill" id="password-strength-fill"></div>
+            </div>
+            <div class="field-note" id="signup-caps-lock" aria-live="polite"></div>
+            <div class="invalid-feedback js-validation-feedback">Please enter a password of at least 8 characters.</div>
+          </div>
+          
+          <div class="form-group">
+            <label>Confirm Password</label>
+            <div class="input-group-custom">
+              <i class="bi bi-lock-fill input-icon"></i>
+              <input type="password" name="password2" id="signupPassword2" 
+                     placeholder="Repeat password" autocomplete="new-password" required>
+              <button type="button" class="password-toggle" onclick="togglePassword('signupPassword2', this)">
+                <i class="bi bi-eye"></i>
+              </button>
+            </div>
+            <div class="invalid-feedback js-validation-feedback">Passwords must match.</div>
+          </div>
+        </div>
+        
+        <button type="submit" class="btn-auth">
+          <i class="bi bi-person-check"></i> Create My Account
+        </button>
+        
+        <p class="ui-dde2a7ab">
+          By signing up you agree to our
+          <a href="{% url 'privacy_policy' %}" class="forgot-link">Privacy Policy</a>.
+        </p>
+        
+        <div class="switch-prompt">
+          Already have an account?
+          <a href="#" onclick="switchTab('login'); return false">Sign in</a>
+        </div>
+      </form>
+    </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Tab Switching
+  function switchTab(tab) {
+    document.querySelectorAll('.auth-tab').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    
+    if (tab === 'login') {
+      document.querySelectorAll('.auth-tab')[0].classList.add('active');
+    } else {
+      document.querySelectorAll('.auth-tab')[1].classList.add('active');
+    }
+    
+    document.querySelectorAll('.auth-form').forEach(form => {
+      form.classList.remove('active');
+    });
+    
+    document.getElementById(tab + '-form').classList.add('active');
+  }
+  
+  // Password Visibility Toggle
+  function togglePassword(inputId, button) {
+    const input = document.getElementById(inputId);
+    const icon = button.querySelector('i');
+    
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.className = 'bi bi-eye-slash';
+    } else {
+      input.type = 'password';
+      icon.className = 'bi bi-eye';
+    }
+  }
+  
+  // Password Strength Meter
+  function updatePasswordStrength(password) {
+    const strengthFill = document.getElementById('password-strength-fill');
+    let score = 0;
+    
+    if (password.length >= 8) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+    
+    const percentages = ['0%', '30%', '55%', '78%', '100%'];
+    const colors = ['', '#8a4fff', '#b794ff', '#6b3fcc', '#9b87ff'];
+    
+    strengthFill.style.width = percentages[score];
+    strengthFill.style.backgroundColor = colors[score];
+  }
+  
+  // Floating Particles
+  function createParticles() {
+    const container = document.getElementById('particles');
+    if (!container) return;
+    
+    for (let i = 0; i < 48; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.cssText = `
+        left: ${Math.random()*100}%;
+        width: ${Math.random()*1.8+3}px;
+        height: ${Math.random()*1.8+3}px;
+        animation-duration: ${Math.random()*4+10}s;
+        animation-delay: ${Math.random()*6}s;
+      `;
+      container.appendChild(p);
+    }
+  }
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    createParticles();
+
+    // Remove loading state if page loaded with errors
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
+    const loginAlert = document.getElementById('login-form-alert');
+    const signupAlert = document.getElementById('signup-form-alert');
+    
+    if (loginForm && loginAlert && !loginAlert.classList.contains('d-none')) {
+      const loginBtn = loginForm.querySelector('.btn-auth');
+      if (loginBtn) loginBtn.classList.remove('loading');
+    }
+    
+    if (signupForm && signupAlert && !signupAlert.classList.contains('d-none')) {
+      const signupBtn = signupForm.querySelector('.btn-auth');
+      if (signupBtn) signupBtn.classList.remove('loading');
+    }
+    
+    // Also check for flash messages (backend errors)
+    const alertsContainer = document.querySelector('.alerts-container');
+    if (alertsContainer) {
+      const loginBtn = loginForm ? loginForm.querySelector('.btn-auth') : null;
+      const signupBtn = signupForm ? signupForm.querySelector('.btn-auth') : null;
+      if (loginBtn) loginBtn.classList.remove('loading');
+      if (signupBtn) signupBtn.classList.remove('loading');
+    }
+
+    const capInputs = [
+      { input: document.getElementById('loginPassword'), label: document.getElementById('login-caps-lock') },
+      { input: document.getElementById('signupPassword1'), label: document.getElementById('signup-caps-lock') },
+      { input: document.getElementById('signupPassword2'), label: document.getElementById('signup-caps-lock') }
+    ];
+
+    capInputs.forEach(item => {
+      if (!item.input || !item.label) return;
+      item.input.addEventListener('keyup', function(e) {
+        item.label.textContent = e.getModifierState('CapsLock') ? 'Caps Lock is ON' : '';
+      });
+    });
+
+    function setInvalid(field, message) {
+      field.classList.add('is-invalid');
+      const wrapper = field.closest('.form-group');
+      const feedback = wrapper ? wrapper.querySelector('.js-validation-feedback') : null;
+      if (feedback) {
+        feedback.textContent = message;
+        feedback.classList.add('d-block');
+      }
+    }
+
+    function clearInvalid(field) {
+      field.classList.remove('is-invalid');
+      const wrapper = field.closest('.form-group');
+      const feedback = wrapper ? wrapper.querySelector('.js-validation-feedback') : null;
+      if (feedback) feedback.classList.remove('d-block');
+    }
+
+    function attachValidation(formId, alertId, extraChecks) {
+      const form = document.getElementById(formId);
+      const alertEl = document.getElementById(alertId);
+      if (!form) return;
+
+      form.addEventListener('submit', function (e) {
+        let firstInvalid = null;
+        const fields = form.querySelectorAll('input, select, textarea');
+
+        fields.forEach(field => {
+          clearInvalid(field);
+
+          if (field.hasAttribute('required') && !field.value.trim()) {
+            setInvalid(field, 'Please complete this field.');
+            if (!firstInvalid) firstInvalid = field;
+            return;
+          }
+
+          if (field.checkValidity && !field.checkValidity()) {
+            setInvalid(field, field.validationMessage || 'Please enter a valid value.');
+            if (!firstInvalid) firstInvalid = field;
+            return;
+          }
+        });
+
+        if (extraChecks) {
+          const extraInvalid = extraChecks(form, setInvalid);
+          if (extraInvalid && !firstInvalid) firstInvalid = extraInvalid;
+        }
+
+        if (firstInvalid) {
+          e.preventDefault();
+          if (alertEl) alertEl.classList.remove('d-none');
+          firstInvalid.focus({ preventScroll: false });
+          return;
+        }
+
+        const button = form.querySelector('.btn-auth');
+        if (button) button.classList.add('loading');
+      });
+
+      form.querySelectorAll('input, select, textarea').forEach(field => {
+        field.addEventListener('input', function () {
+          clearInvalid(field);
+          if (alertEl) alertEl.classList.add('d-none');
+        });
+        field.addEventListener('change', function () {
+          clearInvalid(field);
+          if (alertEl) alertEl.classList.add('d-none');
+        });
+      });
+    }
+
+    attachValidation('login-form', 'login-form-alert');
+
+    attachValidation('signup-form', 'signup-form-alert', function (form, setInvalidFn) {
+      const firstName = form.querySelector('input[name="first_name"]');
+      const lastName = form.querySelector('input[name="last_name"]');
+      const phone = form.querySelector('input[name="phone_number"]');
+      const password1 = form.querySelector('input[name="password1"]');
+      const password2 = form.querySelector('input[name="password2"]');
+      const namePattern = /^[a-zA-Z\s\-']+$/;
+      const phonePattern = /^[\d\s\+]+$/;
+
+      if (firstName && firstName.value.trim() && !namePattern.test(firstName.value.trim())) {
+        setInvalidFn(firstName, 'First name should only contain letters, spaces, hyphens, and apostrophes.');
+        return firstName;
+      }
+
+      if (lastName && lastName.value.trim() && !namePattern.test(lastName.value.trim())) {
+        setInvalidFn(lastName, 'Last name should only contain letters, spaces, hyphens, and apostrophes.');
+        return lastName;
+      }
+
+      if (phone && phone.value.trim() && !phone.value.trim().startsWith('+')) {
+        setInvalidFn(phone, 'Please enter a phone number starting with +.');
+        return phone;
+      }
+
+      if (phone && phone.value.trim() && !phonePattern.test(phone.value.trim())) {
+        setInvalidFn(phone, 'Phone number should only contain numbers, spaces, and + symbol.');
+        return phone;
+      }
+
+      if (password1 && password2 && password1.value && password2.value && password1.value !== password2.value) {
+        setInvalidFn(password2, 'Passwords must match.');
+        return password2;
+      }
+
+      if (password1 && password1.value && password1.value.length < 8) {
+        setInvalidFn(password1, 'Please enter a password of at least 8 characters.');
+        return password1;
+      }
+
+      return null;
+    });
+
+    // Auto-show Bootstrap toasts for flash messages
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('.vav-toast').forEach(function (el) {
+        bootstrap.Toast.getOrCreateInstance(el).show();
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

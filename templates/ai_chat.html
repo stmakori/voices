@@ -1,0 +1,682 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AI Support Chat — Voices Against Violence{% endblock %}
+
+{% block extra_css %}
+<style>
+  .ai-chat-page { padding: 0; }
+
+  /* ── Layout shell ───────────────────────────────── */
+  .ai-shell {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    grid-template-rows: 1fr;
+    height: calc(100vh - 120px);
+    min-height: 520px;
+    max-width: 1200px;
+    margin: 24px auto;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(90,45,122,0.12);
+    border: 1px solid #e5e0ef;
+  }
+
+  /* ── Sidebar ────────────────────────────────────── */
+  .ai-sidebar {
+    background: linear-gradient(180deg, #5A2D7A 0%, #3d1f56 100%);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .ai-sidebar-header {
+    padding: 18px 16px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+  }
+
+  .ai-sidebar-title {
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .7px;
+    margin: 0 0 10px;
+  }
+
+  .ai-new-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.22);
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .ai-new-btn:hover { background: rgba(255,255,255,0.2); }
+
+  .ai-thread-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 8px 12px;
+  }
+
+  .ai-thread-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background .18s;
+    color: rgba(255,255,255,0.8);
+    font-size: 0.83rem;
+    margin-bottom: 2px;
+    border: 1px solid transparent;
+  }
+  .ai-thread-item:hover { background: rgba(255,255,255,0.1); }
+  .ai-thread-item.active {
+    background: rgba(255,255,255,0.16);
+    border-color: rgba(255,255,255,0.25);
+    color: #fff;
+  }
+
+  .ai-thread-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ai-thread-date {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.5);
+    white-space: nowrap;
+  }
+
+  .ai-thread-delete {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.4);
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    transition: color .15s, background .15s;
+  }
+  .ai-thread-delete:hover { color: #ff6b6b; background: rgba(255,255,255,0.08); }
+
+  .ai-thread-empty {
+    color: rgba(255,255,255,0.4);
+    font-size: 0.8rem;
+    text-align: center;
+    padding: 20px 8px;
+    line-height: 1.5;
+  }
+
+  /* ── Main chat area ─────────────────────────────── */
+  .ai-main {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    overflow: hidden;
+  }
+
+  .ai-chat-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid #e5e0ef;
+    background: #faf7ff;
+  }
+
+  .ai-chat-header h2 {
+    margin: 0;
+    font-size: 1.05rem;
+    color: #5A2D7A;
+    font-weight: 700;
+  }
+
+  .ai-chat-header p {
+    margin: 4px 0 0;
+    font-size: 0.82rem;
+    color: #6b7280;
+  }
+
+  .ai-chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .ai-msg {
+    max-width: 80%;
+    padding: 10px 14px;
+    border-radius: 16px;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .ai-msg--user {
+    align-self: flex-end;
+    background: linear-gradient(135deg, #5A2D7A, #8B4C9F);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+
+  .ai-msg--assistant {
+    align-self: flex-start;
+    background: #f3e8ff;
+    color: #21263a;
+    border-bottom-left-radius: 4px;
+    border: 1px solid #e5d8f6;
+  }
+
+  .ai-chat-system {
+    align-self: center;
+    font-size: 0.8rem;
+    color: #9ca3af;
+    background: #f9fafb;
+    border-radius: 999px;
+    padding: 4px 12px;
+    border: 1px solid #e5e7eb;
+    text-align: center;
+  }
+
+  .ai-typing {
+    align-self: flex-start;
+  }
+  .ai-typing__bubble {
+    display: inline-flex;
+    gap: 4px;
+    background: #f3e8ff;
+    border: 1px solid #e5d8f6;
+    border-radius: 16px;
+    border-bottom-left-radius: 4px;
+    padding: 10px 14px;
+  }
+  .ai-typing__dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #8B4C9F;
+    animation: ai-bounce 1.2s infinite ease-in-out;
+  }
+  .ai-typing__dot:nth-child(2) { animation-delay: .15s; }
+  .ai-typing__dot:nth-child(3) { animation-delay: .3s; }
+  @keyframes ai-bounce {
+    0%,80%,100% { transform: translateY(0); opacity:.5; }
+    40% { transform: translateY(-6px); opacity:1; }
+  }
+
+  .ai-chat-compose {
+    padding: 14px 20px;
+    border-top: 1px solid #e5e0ef;
+    background: #faf7ff;
+  }
+
+  #ai-chat-input {
+    resize: none;
+    min-height: 60px;
+    max-height: 140px;
+    border-color: #d9d3e8;
+    border-radius: 10px;
+    font-size: 0.92rem;
+  }
+  #ai-chat-input:focus { border-color: #8B4C9F; box-shadow: 0 0 0 3px rgba(139,76,159,0.1); }
+
+  .ai-chat-status {
+    font-size: 0.78rem;
+    color: #9ca3af;
+    min-height: 1.1em;
+    margin-top: 4px;
+  }
+
+  /* ── Mobile ─────────────────────────────────────── */
+  @media (max-width: 768px) {
+    .ai-shell {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr;
+      margin: 0;
+      border-radius: 0;
+      height: calc(100vh - 80px);
+    }
+    .ai-sidebar {
+      flex-direction: row;
+      overflow-x: auto;
+      height: auto;
+      min-height: 56px;
+    }
+    .ai-sidebar-header { border-bottom: none; border-right: 1px solid rgba(255,255,255,0.12); padding: 10px 12px; }
+    .ai-sidebar-title { display: none; }
+    .ai-thread-list { display: flex; flex-direction: row; gap: 6px; padding: 8px; }
+    .ai-thread-item { min-width: 140px; max-width: 180px; flex-direction: column; align-items: flex-start; gap: 2px; }
+    .ai-thread-date { font-size: 0.68rem; }
+    .ai-thread-empty { padding: 10px; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Delete confirmation modal -->
+<div id="ai-delete-modal" role="dialog" aria-modal="true" aria-labelledby="ai-delete-title"
+     style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(17,12,30,0.55);backdrop-filter:blur(2px);align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:18px;padding:32px 28px 24px;max-width:360px;width:calc(100% - 32px);text-align:center;box-shadow:0 16px 48px rgba(90,45,122,0.22);">
+    <div style="width:48px;height:48px;border-radius:50%;background:#fef2f2;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+      <i class="bi bi-trash3" style="font-size:1.3rem;color:#dc2626;"></i>
+    </div>
+    <h3 id="ai-delete-title" style="font-size:1rem;font-weight:700;color:#1f2937;margin:0 0 8px;">Delete this chat?</h3>
+    <p style="font-size:0.875rem;color:#6b7280;margin:0 0 24px;line-height:1.55;">The messages will be permanently removed and cannot be recovered.</p>
+    <div style="display:flex;gap:10px;justify-content:center;">
+      <button id="ai-delete-cancel" style="padding:0.5rem 1.4rem;border:1.5px solid #d1d5db;border-radius:10px;background:#fff;color:#374151;font-weight:600;cursor:pointer;font-size:0.875rem;transition:background .15s;">Cancel</button>
+      <button id="ai-delete-confirm" style="padding:0.5rem 1.4rem;border:none;border-radius:10px;background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;font-weight:600;cursor:pointer;font-size:0.875rem;box-shadow:0 2px 8px rgba(220,38,38,0.3);transition:opacity .15s;">Delete</button>
+    </div>
+  </div>
+</div>
+<!-- In-app error / success toast -->
+<div id="ai-toast" role="alert" aria-live="assertive"
+     style="display:none;position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:9999;padding:12px 22px;border-radius:12px;font-size:0.875rem;font-weight:500;box-shadow:0 6px 24px rgba(0,0,0,0.18);max-width:380px;width:calc(100% - 32px);text-align:center;pointer-events:none;"></div>
+
+<section class="ai-chat-page">
+  <div class="ai-shell">
+
+    <!-- Sidebar: chat history -->
+    <aside class="ai-sidebar">
+      <div class="ai-sidebar-header">
+        <p class="ai-sidebar-title">Chat History</p>
+        <button id="ai-new-btn" class="ai-new-btn" type="button">
+          <i class="bi bi-plus-lg"></i> New Chat
+        </button>
+      </div>
+      <div class="ai-thread-list" id="ai-thread-list">
+        <p class="ai-thread-empty" id="ai-thread-empty">No previous chats yet.<br>Start a conversation.</p>
+      </div>
+    </aside>
+
+    <!-- Main chat -->
+    <div class="ai-main">
+      <div class="ai-chat-header">
+        <h2><i class="bi bi-robot me-2" style="color:#8B4C9F;"></i>Amani — VAV Support</h2>
+        <p>Your conversation is private. If you are in immediate danger, call <strong>999</strong> or <strong>1195</strong>.</p>
+      </div>
+
+      <div id="ai-chat-messages" class="ai-chat-messages" aria-live="polite"></div>
+
+      <div class="ai-chat-compose">
+        <form id="ai-chat-form" novalidate>
+          {% csrf_token %}
+          <div id="ai-chat-form-alert" class="text-danger small d-none mb-1">Please enter a message before sending.</div>
+          <textarea
+            id="ai-chat-input"
+            class="form-control mb-2"
+            placeholder="Type your message… (Enter to send, Shift+Enter for new line)"
+            maxlength="2000"
+            rows="2"
+            required
+          ></textarea>
+          <div class="d-flex align-items-center justify-content-between gap-2">
+            <small class="text-muted">Do not share sensitive identifying details unless necessary.</small>
+            <button id="ai-chat-send" type="submit" class="btn btn-primary btn-sm px-4">Send</button>
+          </div>
+          <div id="ai-chat-status" class="ai-chat-status" role="status"></div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+  const ASSISTANT_ID      = "{{ assistant_id }}";
+  const STORAGE_KEY       = "vav_gbv_ai_thread_id";
+  const DELETE_URL_TMPL   = "{% url 'ai_chat_delete_thread' thread_id=0 %}"; // /ai-chat/thread/0/delete/
+  const CSRF              = document.querySelector("input[name='csrfmiddlewaretoken']")?.value || "";
+
+  // ── Modal / toast helpers ─────────────────────────────────────────────────
+  const _deleteModal   = document.getElementById("ai-delete-modal");
+  const _delConfirmBtn = document.getElementById("ai-delete-confirm");
+  const _delCancelBtn  = document.getElementById("ai-delete-cancel");
+  const _toast         = document.getElementById("ai-toast");
+  let   _toastTimer;
+
+  function showDeleteConfirm(onConfirm) {
+    _deleteModal.style.display = "flex";
+    _delConfirmBtn.onclick = function () { _deleteModal.style.display = "none"; onConfirm(); };
+    _delCancelBtn.onclick  = function () { _deleteModal.style.display = "none"; };
+    _deleteModal.onclick   = function (e) { if (e.target === _deleteModal) _deleteModal.style.display = "none"; };
+  }
+
+  function showToast(msg, isError) {
+    _toast.textContent = msg;
+    _toast.style.background    = isError ? "#1f2937" : "#166534";
+    _toast.style.color         = "#fff";
+    _toast.style.display       = "block";
+    clearTimeout(_toastTimer);
+    _toastTimer = setTimeout(function () { _toast.style.display = "none"; }, 4000);
+  }
+
+  const messagesEl  = document.getElementById("ai-chat-messages");
+  const formEl      = document.getElementById("ai-chat-form");
+  const inputEl     = document.getElementById("ai-chat-input");
+  const sendEl      = document.getElementById("ai-chat-send");
+  const statusEl    = document.getElementById("ai-chat-status");
+  const newBtn      = document.getElementById("ai-new-btn");
+  const threadListEl = document.getElementById("ai-thread-list");
+  const emptyEl     = document.getElementById("ai-thread-empty");
+
+  // Thread list from server (rendered at page load)
+  let serverThreads = {{ threads_json|safe }};
+  let threadId = localStorage.getItem(STORAGE_KEY) || "";
+
+  // ── Helpers ──────────────────────────────────────────────────────────────
+
+  function setStatus(text) { statusEl.textContent = text || ""; }
+  function disableComposer(v) { sendEl.disabled = v; inputEl.disabled = v; if (!v) inputEl.focus(); }
+
+  function appendMessage(content, type) {
+    const div = document.createElement("div");
+    div.className = "ai-msg " + (type === "human" ? "ai-msg--user" : "ai-msg--assistant");
+    div.textContent = content;
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function appendSystemMessage(content) {
+    const div = document.createElement("div");
+    div.className = "ai-chat-system";
+    div.textContent = content;
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function appendTypingIndicator() {
+    const wrapper = document.createElement("div");
+    wrapper.className = "ai-typing";
+    wrapper.setAttribute("aria-label", "Assistant is typing");
+    const bubble = document.createElement("div");
+    bubble.className = "ai-typing__bubble";
+    for (let i = 0; i < 3; i++) {
+      const dot = document.createElement("span");
+      dot.className = "ai-typing__dot";
+      bubble.appendChild(dot);
+    }
+    wrapper.appendChild(bubble);
+    messagesEl.appendChild(wrapper);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    return wrapper;
+  }
+
+  function clearMessages() { messagesEl.innerHTML = ""; }
+
+  function fmtDate(iso) {
+    const d = new Date(iso);
+    return d.toLocaleDateString("en-KE", { month: "short", day: "numeric" });
+  }
+
+  // ── Thread sidebar ────────────────────────────────────────────────────────
+
+  function renderThreadList() {
+    threadListEl.innerHTML = "";
+    if (!serverThreads.length) {
+      threadListEl.appendChild(emptyEl);
+      return;
+    }
+    serverThreads.forEach(function (t) {
+      const item = document.createElement("div");
+      item.className = "ai-thread-item" + (String(t.id) === String(threadId) ? " active" : "");
+      item.dataset.threadId = t.id;
+
+      const nameSpan = document.createElement("span");
+      nameSpan.className = "ai-thread-name";
+      nameSpan.textContent = t.name;
+
+      const dateSpan = document.createElement("span");
+      dateSpan.className = "ai-thread-date";
+      dateSpan.textContent = fmtDate(t.created_at);
+
+      const delBtn = document.createElement("button");
+      delBtn.className = "ai-thread-delete";
+      delBtn.title = "Delete this chat";
+      delBtn.innerHTML = '<i class="bi bi-trash3"></i>';
+      delBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        deleteThread(t.id);
+      });
+
+      item.appendChild(nameSpan);
+      item.appendChild(dateSpan);
+      item.appendChild(delBtn);
+
+      item.addEventListener("click", function () {
+        loadThread(t.id);
+      });
+
+      threadListEl.appendChild(item);
+    });
+  }
+
+  function markActiveThread(id) {
+    threadListEl.querySelectorAll(".ai-thread-item").forEach(function (el) {
+      el.classList.toggle("active", String(el.dataset.threadId) === String(id));
+    });
+  }
+
+  // ── API calls ─────────────────────────────────────────────────────────────
+
+  async function createThread() {
+    const r = await fetch("/ai-assistant/threads/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-CSRFToken": CSRF },
+      body: JSON.stringify({ name: "Support Chat", assistant_id: ASSISTANT_ID }),
+      credentials: "same-origin",
+    });
+    if (!r.ok) throw new Error("Unable to start chat thread.");
+    const data = await r.json();
+    threadId = String(data.id);
+    localStorage.setItem(STORAGE_KEY, threadId);
+
+    // Add to local list
+    serverThreads.unshift({ id: data.id, name: data.name || "Support Chat", created_at: data.created_at || new Date().toISOString() });
+    renderThreadList();
+    markActiveThread(threadId);
+    return threadId;
+  }
+
+  async function ensureThread() {
+    if (threadId) return threadId;
+    return createThread();
+  }
+
+  async function listMessages() {
+    if (!threadId) return [];
+    const r = await fetch(`/ai-assistant/threads/${threadId}/messages/`, { credentials: "same-origin" });
+    if (r.status === 404 || r.status === 403) {
+      localStorage.removeItem(STORAGE_KEY);
+      threadId = "";
+      return [];
+    }
+    if (!r.ok) throw new Error("Unable to load messages.");
+    return r.json();
+  }
+
+  async function sendMessage(content) {
+    await ensureThread();
+    const r = await fetch(`/ai-assistant/threads/${threadId}/messages/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-CSRFToken": CSRF },
+      body: JSON.stringify({ assistant_id: ASSISTANT_ID, content }),
+      credentials: "same-origin",
+    });
+    if (r.status === 404 || r.status === 403) {
+      localStorage.removeItem(STORAGE_KEY);
+      threadId = "";
+      await ensureThread();
+      return sendMessage(content);
+    }
+    if (r.status === 401 || r.status === 302) throw new Error("Please sign in again to continue.");
+    if (!r.ok) {
+      const txt = await r.text();
+      let msg = "Could not send message right now.";
+      try { msg = JSON.parse(txt).message || JSON.parse(txt).detail || msg; } catch {}
+      throw new Error(msg);
+    }
+    return true;
+  }
+
+  async function waitForReply(prevCount, maxTries = 12) {
+    for (let i = 0; i < maxTries; i++) {
+      await new Promise(res => setTimeout(res, 700));
+      const msgs = await listMessages();
+      if (msgs.length > prevCount) return msgs;
+    }
+    return listMessages();
+  }
+
+  async function loadThread(id) {
+    threadId = String(id);
+    localStorage.setItem(STORAGE_KEY, threadId);
+    markActiveThread(threadId);
+    clearMessages();
+    setStatus("Loading…");
+    try {
+      const msgs = await listMessages();
+      clearMessages();
+      if (!msgs.length) {
+        appendMessage("Hi there 👋 I can help with safety planning and trusted support resources in Kenya. How can I help you today?", "ai");
+      } else {
+        msgs.forEach(m => { if (m.type === "human" || m.type === "ai") appendMessage(m.content, m.type); });
+      }
+      setStatus("");
+    } catch (err) {
+      setStatus(err.message || "Unable to load chat.");
+    }
+  }
+
+  function deleteThread(id) {
+    showDeleteConfirm(async function () {
+      try {
+        const url = DELETE_URL_TMPL.replace("/0/", "/" + id + "/");
+        const r = await fetch(url, {
+          method: "POST",
+          headers: { "X-CSRFToken": CSRF },
+          credentials: "same-origin",
+        });
+        if (!r.ok) throw new Error("Delete failed.");
+        serverThreads = serverThreads.filter(t => String(t.id) !== String(id));
+        if (String(threadId) === String(id)) {
+          threadId = "";
+          localStorage.removeItem(STORAGE_KEY);
+          clearMessages();
+          appendMessage("Chat deleted. Start a new conversation whenever you're ready.", "ai");
+          setStatus("");
+        }
+        renderThreadList();
+        showToast("Chat deleted.", false);
+      } catch (err) {
+        showToast("Could not delete that chat right now. Please try again.", true);
+      }
+    });
+  }
+
+  async function boot() {
+    renderThreadList();
+    setStatus("Connecting…");
+    try {
+      await ensureThread();
+      const msgs = await listMessages();
+      clearMessages();
+      if (!msgs.length) {
+        appendMessage("Hi there 👋 I can help with safety planning and trusted support resources in Kenya. How can I help you today?", "ai");
+      } else {
+        msgs.forEach(m => { if (m.type === "human" || m.type === "ai") appendMessage(m.content, m.type); });
+      }
+      markActiveThread(threadId);
+      setStatus("");
+    } catch (err) {
+      setStatus(err.message || "Unable to connect.");
+    }
+  }
+
+  // ── Event listeners ───────────────────────────────────────────────────────
+
+  formEl.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const content = inputEl.value.trim();
+    const alertEl = document.getElementById("ai-chat-form-alert");
+    if (!content) {
+      inputEl.classList.add("is-invalid");
+      if (alertEl) alertEl.classList.remove("d-none");
+      inputEl.focus();
+      return;
+    }
+    inputEl.classList.remove("is-invalid");
+    if (alertEl) alertEl.classList.add("d-none");
+
+    inputEl.value = "";
+    appendMessage(content, "human");
+    const typingEl = appendTypingIndicator();
+    setStatus("");
+    disableComposer(true);
+
+    try {
+      const before = await listMessages();
+      await sendMessage(content);
+      const updated = await waitForReply(before.length);
+      if (typingEl?.parentNode) typingEl.parentNode.removeChild(typingEl);
+      clearMessages();
+      updated.forEach(m => { if (m.type === "human" || m.type === "ai") appendMessage(m.content, m.type); });
+      if (!updated.some(m => m.type === "ai")) {
+        appendSystemMessage("Response is delayed — try sending again in a moment.");
+      }
+      setStatus("");
+    } catch (err) {
+      if (typingEl?.parentNode) typingEl.parentNode.removeChild(typingEl);
+      const msg = err?.message || "Message failed. Please try again.";
+      appendSystemMessage(msg);
+      setStatus(msg);
+    } finally {
+      disableComposer(false);
+    }
+  });
+
+  inputEl.addEventListener("input", function () {
+    inputEl.classList.remove("is-invalid");
+    const alertEl = document.getElementById("ai-chat-form-alert");
+    if (alertEl) alertEl.classList.add("d-none");
+  });
+
+  inputEl.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); formEl.requestSubmit(); }
+  });
+
+  newBtn.addEventListener("click", async function () {
+    threadId = "";
+    localStorage.removeItem(STORAGE_KEY);
+    clearMessages();
+    setStatus("Starting a new chat…");
+    try {
+      await createThread();
+      await loadThread(threadId);
+      setStatus("");
+    } catch (err) {
+      setStatus(err.message || "Unable to start a new chat.");
+    }
+  });
+
+  boot();
+})();
+</script>
+{% endblock %}

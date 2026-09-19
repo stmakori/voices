@@ -1,0 +1,340 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Find Resources - Voices Against Violence{% endblock %}
+
+{% block meta_description %}Find nearby police posts, churches, safe houses, and support services across Kenya. Get immediate help and support.{% endblock %}
+
+{% block meta_keywords %}GBV resources, police posts, safe houses, churches, support services, Kenya{% endblock %}
+
+{% block body_class %}category-page{% endblock %}
+
+{% block extra_css %}
+<style>
+  .resource-card {
+    position: relative;
+    border: 1px solid rgba(124, 58, 237, 0.14);
+    border-radius: 18px;
+    background: #fff;
+    overflow: hidden;
+    transition: transform 0.32s ease, box-shadow 0.32s ease, border-color 0.32s ease;
+    box-shadow: 0 10px 26px rgba(17, 24, 39, 0.08);
+  }
+
+  .resource-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #7c3aed 0%, #8b5cf6 45%, #a78bfa 100%);
+    opacity: 0;
+    transition: opacity 0.32s ease;
+  }
+
+  .resource-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(124, 58, 237, 0.28);
+    box-shadow: 0 18px 38px rgba(124, 58, 237, 0.2);
+  }
+
+  .resource-card:hover::before {
+    opacity: 1;
+  }
+
+  .resource-card .card-body {
+    padding: 1.4rem !important;
+  }
+
+  .resource-card .d-flex.align-items-start {
+    margin-bottom: 0 !important;
+  }
+
+  .resource-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f3ebff 0%, #ede9fe 100%);
+    color: #6d28d9;
+    box-shadow: inset 0 0 0 1px rgba(124, 58, 237, 0.08);
+    flex-shrink: 0;
+  }
+
+  .resource-icon i {
+    font-size: 1.2rem;
+  }
+
+  .resource-card h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #332252;
+    line-height: 1.35;
+  }
+
+  .resource-meta {
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: #4b5563 !important;
+  }
+
+  .resource-meta strong {
+    color: #374151;
+    font-weight: 600;
+  }
+
+  .resource-card .flex-grow-1 {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+
+  .resource-actions {
+    margin-top: auto;
+    border-radius: 999px;
+    padding: 0.5rem 0.95rem;
+    font-weight: 600;
+    transition: transform 0.24s ease, box-shadow 0.24s ease;
+  }
+
+  .resource-card:hover .resource-actions {
+    transform: translateX(2px);
+    box-shadow: 0 8px 16px rgba(124, 58, 237, 0.2);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Page Title -->
+<div class="page-title">
+  <div class="heading">
+    <div class="container">
+      <div class="row d-flex justify-content-center text-center">
+        <div class="col-lg-8">
+          <h1 class="heading-title">Find Support Resources</h1>
+          <p class="mb-0">Locate nearby police posts, churches, safe houses, and support services across Kenya. Get the help you need when you need it. All resources are available to people of all genders.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <nav class="breadcrumbs">
+    <div class="container">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li class="current">Find Resources</li>
+      </ol>
+    </div>
+  </nav>
+</div><!-- End Page Title -->
+
+<!-- Search and Filter Section -->
+<section class="section ui-f5dd1f12">
+  <div class="container" data-aos="fade-up">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card p-4 ui-b3b312b1">
+          <form method="get" action="{% url 'resources' %}">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label">Search Location</label>
+                <input type="text" class="form-control" id="locationSearch" name="location" placeholder="Enter county, town, or area" value="{{ request.GET.location|default:'' }}">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Resource Type</label>
+                <select class="form-select" id="resourceType" name="resource_type">
+                  <option value="">All Resources</option>
+                  <option value="police" {% if request.GET.resource_type == 'police' %}selected{% endif %}>Police Posts</option>
+                  <option value="safehouse" {% if request.GET.resource_type == 'safehouse' %}selected{% endif %}>Safe Houses</option>
+                  <option value="church" {% if request.GET.resource_type == 'church' %}selected{% endif %}>Churches</option>
+                  <option value="hospital" {% if request.GET.resource_type == 'hospital' %}selected{% endif %}>Hospitals</option>
+                  <option value="counseling" {% if request.GET.resource_type == 'counseling' %}selected{% endif %}>Counseling Centers</option>
+                  <option value="legal" {% if request.GET.resource_type == 'legal' %}selected{% endif %}>Legal Aid</option>
+                  <option value="other" {% if request.GET.resource_type == 'other' %}selected{% endif %}>Other</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">&nbsp;</label>
+                <button type="submit" class="btn w-100 ui-a129a66d">
+                  <i class="bi bi-search"></i> Find Resources
+                </button>
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-12">
+                <a href="{% url 'resources_map' %}" class="btn btn-outline-primary w-100">
+                  <i class="bi bi-map"></i> View All Resources on Interactive Map ({{ all_resources_count }})
+                </a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Resources Section -->
+<section id="resources" class="section">
+  <div class="container" data-aos="fade-up">
+
+    <!-- Filter tabs — clicking grays out non-matching cards -->
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-4" id="resourceFilterBar" role="group" aria-label="Filter by resource type">
+      <button class="resource-filter-btn active" data-filter="all">
+        <i class="bi bi-grid-3x3-gap"></i> All
+      </button>
+      <button class="resource-filter-btn" data-filter="police">
+        <i class="bi bi-shield-check"></i> Police Posts
+      </button>
+      <button class="resource-filter-btn" data-filter="safehouse">
+        <i class="bi bi-house-heart"></i> Safe Houses
+      </button>
+      <button class="resource-filter-btn" data-filter="church">
+        <i class="bi bi-building"></i> Churches
+      </button>
+      <button class="resource-filter-btn" data-filter="hospital">
+        <i class="bi bi-hospital"></i> Hospitals
+      </button>
+      <button class="resource-filter-btn" data-filter="counseling">
+        <i class="bi bi-person-heart"></i> Counseling
+      </button>
+      <button class="resource-filter-btn" data-filter="legal">
+        <i class="bi bi-briefcase"></i> Legal Aid
+      </button>
+      <button class="resource-filter-btn" data-filter="other">
+        <i class="bi bi-three-dots"></i> Other
+      </button>
+    </div>
+
+    <style>
+      .resource-filter-btn {
+        display: inline-flex; align-items: center; gap: .35rem;
+        padding: .4rem 1rem; border-radius: 999px; border: 1.5px solid rgba(90,45,122,.22);
+        background: #fff; color: #5a2d7a; font-size: .82rem; font-weight: 600;
+        cursor: pointer; transition: all .2s; white-space: nowrap;
+      }
+      .resource-filter-btn:hover { background: #f3e8ff; border-color: #7c3aed; }
+      .resource-filter-btn.active {
+        background: linear-gradient(135deg,#5a2d7a,#7c3aed); color: #fff; border-color: transparent;
+        box-shadow: 0 3px 10px rgba(90,45,122,.25);
+      }
+      .resource-col { transition: opacity .25s, filter .25s; }
+      .resource-col.dimmed { opacity: .28; filter: grayscale(60%); pointer-events: none; }
+    </style>
+
+    <!-- Single unified grid — all resources, type filtering is client-side -->
+    <div class="row gy-4" id="resourceGrid">
+      {% for resource in resources %}
+      <div class="col-lg-6 resource-col" data-resource-type="{{ resource.resource_type }}">
+        <div class="card h-100 ui-a0b693d4 resource-card">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-start mb-3">
+              <div class="me-3 resource-icon
+                {% if resource.resource_type == 'police' %}ui-29c3b50e
+                {% elif resource.resource_type == 'safehouse' %}ui-da0099bd
+                {% elif resource.resource_type == 'church' %}ui-1b25c85e
+                {% else %}ui-29c3b50e{% endif %}">
+                {% if resource.resource_type == 'police' %}<i class="bi bi-shield-check"></i>
+                {% elif resource.resource_type == 'safehouse' %}<i class="bi bi-house-heart"></i>
+                {% elif resource.resource_type == 'church' %}<i class="bi bi-building"></i>
+                {% elif resource.resource_type == 'hospital' %}<i class="bi bi-hospital"></i>
+                {% elif resource.resource_type == 'counseling' %}<i class="bi bi-person-heart"></i>
+                {% elif resource.resource_type == 'legal' %}<i class="bi bi-briefcase"></i>
+                {% else %}<i class="bi bi-geo-alt-fill"></i>{% endif %}
+              </div>
+              <div class="flex-grow-1">
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <h4 class="mb-0">{{ resource.name }}</h4>
+                  {% if resource.is_verified %}<span class="badge" style="background:#e8f5e9;color:#1b5e20;font-size:.68rem;padding:.25rem .55rem;border-radius:6px;">✓ Verified</span>{% endif %}
+                </div>
+                <p class="text-muted mb-1 resource-meta" style="font-size:.83rem;">
+                  <i class="bi bi-tag"></i> {{ resource.get_resource_type_display }}
+                </p>
+                <p class="text-muted mb-2 resource-meta"><i class="bi bi-geo-alt"></i> {{ resource.location }}</p>
+                {% if resource.phone %}
+                <p class="mb-2 resource-meta"><strong>Phone:</strong> <a href="tel:{{ resource.phone }}">{{ resource.phone }}</a></p>
+                {% endif %}
+                {% if resource.address %}
+                <p class="mb-2 resource-meta" style="font-size:.83rem;color:#555;"><i class="bi bi-pin-map"></i> {{ resource.address }}</p>
+                {% endif %}
+                {% if resource.description %}
+                <p class="text-muted small mb-3">{{ resource.description|truncatechars:120 }}</p>
+                {% endif %}
+                <a href="{% url 'resource_navigate' resource.id %}" class="btn btn-sm ui-a129a66d resource-actions">
+                  <i class="bi bi-map"></i> Get Directions
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12">
+        <div class="alert alert-info">No resources found. Try a different location or broaden your search.</div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <p id="resourceCount" class="text-muted small mt-3"></p>
+  </div>
+</section>
+
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const filterBtns = document.querySelectorAll('.resource-filter-btn');
+  const cards      = document.querySelectorAll('#resourceGrid .resource-col');
+  const countEl   = document.getElementById('resourceCount');
+
+  function applyFilter(type) {
+    let visible = 0;
+    cards.forEach(function (col) {
+      const cardType = col.dataset.resourceType;
+      const matches  = (type === 'all' || cardType === type);
+      col.classList.toggle('dimmed', !matches);
+      if (matches) visible++;
+    });
+    if (countEl) {
+      countEl.textContent = type === 'all'
+        ? 'Showing all ' + cards.length + ' resources'
+        : 'Showing ' + visible + ' of ' + cards.length + ' resources';
+    }
+  }
+
+  filterBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      filterBtns.forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      applyFilter(btn.dataset.filter);
+    });
+  });
+
+  // Pre-select filter from URL param or from the search form's resource_type value
+  const urlType = new URLSearchParams(window.location.search).get('resource_type') || '{{ active_type }}';
+  if (urlType) {
+    const match = document.querySelector('.resource-filter-btn[data-filter="' + urlType + '"]');
+    if (match) {
+      match.click();
+    }
+  } else {
+    applyFilter('all');
+  }
+
+  // Wire the resource_type dropdown in the search form to auto-set the filter after submit
+  const typeSelect = document.getElementById('resourceType');
+  if (typeSelect) {
+    typeSelect.addEventListener('change', function () {
+      this.closest('form').submit();
+    });
+  }
+});
+</script>
+{% endblock %}

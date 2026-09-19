@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+
+{% block title %}Contribute - Voices Against Violence{% endblock %}
+{% block meta_description %}Choose how you want to contribute to Voices Against Violence.{% endblock %}
+{% block meta_keywords %}contribute, article, blog, story, resource, idea{% endblock %}
+{% block body_class %}about-page{% endblock %}
+
+{% block extra_css %}
+<style>
+  .contribute-choice-card,
+  .volunteer-track-card {
+    position: relative;
+    background-color: var(--surface-color);
+    border-radius: 20px;
+    border: 2px solid color-mix(in srgb, var(--default-color), transparent 90%);
+    box-shadow: 0 0 22px color-mix(in srgb, var(--default-color), transparent 92%);
+    transition: 0.35s ease;
+    overflow: hidden;
+  }
+
+  .contribute-choice-card::before,
+  .volunteer-track-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent-color) 0%, color-mix(in srgb, var(--accent-color), transparent 55%) 100%);
+  }
+
+  .contribute-choice-card:hover,
+  .volunteer-track-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--accent-color);
+    box-shadow: 0 20px 40px color-mix(in srgb, var(--accent-color), transparent 82%);
+  }
+
+  .contribute-choice-card .card-body,
+  .volunteer-track-card .card-body {
+    padding: 1.5rem;
+  }
+
+  .contribute-choice-card h3,
+  .volunteer-track-card h5 {
+    color: var(--heading-color);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+
+  .contribute-choice-card p,
+  .volunteer-track-card p {
+    color: color-mix(in srgb, var(--default-color), transparent 25%);
+    line-height: 1.65;
+  }
+
+  .contribute-choice-card .btn {
+    border-radius: 12px;
+    font-weight: 600;
+  }
+
+  .volunteer-cta {
+    border-radius: 12px;
+    font-weight: 600;
+    padding-inline: 1.75rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-title">
+  <div class="heading">
+    <div class="container">
+      <div class="row justify-content-center text-center">
+        <div class="col-lg-8">
+          <h1 class="heading-title">Contribute to Our Mission</h1>
+          <p class="mb-0">Choose how you would like to contribute. Each form opens on its own page for a focused experience.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <nav class="breadcrumbs">
+    <div class="container">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li class="current">Contribute</li>
+      </ol>
+    </div>
+  </nav>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 contribute-choice-card">
+          <div class="card-body d-flex flex-column">
+            <h3 class="h5">Write an Article</h3>
+            <p class="text-muted">Share educational content and guidance on prevention, support, and legal awareness.</p>
+            <a class="btn btn-primary mt-auto" href="{% url 'contribute_article' %}">Open Article Form</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 contribute-choice-card">
+          <div class="card-body d-flex flex-column">
+            <h3 class="h5">Submit a Blog</h3>
+            <p class="text-muted">Publish insights, updates, and awareness content in a blog format.</p>
+            <a class="btn btn-primary mt-auto" href="{% url 'contribute_blog' %}">Open Blog Form</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 contribute-choice-card">
+          <div class="card-body d-flex flex-column">
+            <h3 class="h5">Share a Story</h3>
+            <p class="text-muted">Share your lived experience to inspire and support others.</p>
+            <a class="btn btn-primary mt-auto" href="{% url 'contribute_story' %}">Open Story Form</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-6">
+        <div class="card h-100 contribute-choice-card">
+          <div class="card-body d-flex flex-column">
+            <h3 class="h5">Add a Resource</h3>
+            <p class="text-muted">Help expand our support directory by adding trusted services.</p>
+            <a class="btn btn-primary mt-auto" href="{% url 'contribute_resource' %}">Open Resource Form</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-6">
+        <div class="card h-100 contribute-choice-card">
+          <div class="card-body d-flex flex-column">
+            <h3 class="h5">Share an Idea</h3>
+            <p class="text-muted">Suggest features and improvements to strengthen the platform.</p>
+            <a class="btn btn-primary mt-auto" href="{% url 'contribute_idea' %}">Open Idea Form</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="card h-100 contribute-choice-card">
+          <div class="card-body d-flex flex-column">
+            <h3 class="h5">Support Our Work</h3>
+            <p class="text-muted">Support our mission through partnerships, donations, or spreading awareness in your community.</p>
+            <a class="btn btn-outline-primary mt-auto" href="{% url 'contact' %}">Get in Touch</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="volunteer" class="section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="mb-3">Volunteer With Us</h2>
+      <p class="lead">Join our network of volunteers working to end GBV in Kenya. Your time and skills can make a real difference.</p>
+    </div>
+    <div class="row gy-4">
+      <div class="col-lg-3 col-md-6">
+        <div class="card h-100 volunteer-track-card text-center">
+          <div class="card-body">
+            <h5>Awareness Campaigns</h5>
+            <p class="mb-0">Help organize and participate in community awareness events.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="card h-100 volunteer-track-card text-center">
+          <div class="card-body">
+            <h5>Hotline Support</h5>
+            <p class="mb-0">Provide support through our GBV hotline with training provided.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="card h-100 volunteer-track-card text-center">
+          <div class="card-body">
+            <h5>Content Creation</h5>
+            <p class="mb-0">Help create educational materials and social media content.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="card h-100 volunteer-track-card text-center">
+          <div class="card-body">
+            <h5>Community Outreach</h5>
+            <p class="mb-0">Engage communities to spread GBV awareness and education.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="text-center mt-5">
+      <a href="{% url 'contact' %}" class="btn btn-primary btn-lg volunteer-cta">Apply to Volunteer</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

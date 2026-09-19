@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Terms of Service - Voices Against Violence{% endblock %}
+{% block meta_description %}Review the terms that govern use of the Voices Against Violence platform and services.{% endblock %}
+{% block meta_keywords %}terms of service, user agreement, acceptable use, GBV platform{% endblock %}
+{% block body_class %}legal-page{% endblock %}
+
+{% block extra_css %}
+<style>
+  .legal-shell {
+    max-width: 980px;
+    margin: 0 auto;
+  }
+
+  .legal-card {
+    background: #fff;
+    border: 1px solid color-mix(in srgb, var(--default-color), transparent 88%);
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    padding: clamp(18px, 2.8vw, 36px);
+  }
+
+  .legal-card h2 {
+    font-size: clamp(1.15rem, 2.3vw, 1.5rem);
+    margin-top: 1.4rem;
+    margin-bottom: 0.65rem;
+    color: var(--heading-color);
+  }
+
+  .legal-card h2:first-child {
+    margin-top: 0;
+  }
+
+  .legal-card p,
+  .legal-card li {
+    color: color-mix(in srgb, var(--default-color), transparent 12%);
+    line-height: 1.75;
+  }
+
+  .legal-meta {
+    color: color-mix(in srgb, var(--default-color), transparent 40%);
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+  }
+
+  .legal-card ul {
+    padding-left: 1.15rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-title">
+  <div class="heading">
+    <div class="container">
+      <div class="row d-flex justify-content-center text-center">
+        <div class="col-lg-9">
+          <h1 class="heading-title">Terms of Service</h1>
+          <p class="mb-0">These terms outline acceptable use of the platform and shared responsibilities for all users.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <nav class="breadcrumbs">
+    <div class="container">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li class="current">Terms of Service</li>
+      </ol>
+    </div>
+  </nav>
+</div>
+
+<section class="section py-5">
+  <div class="container legal-shell" data-aos="fade-up">
+    <article class="legal-card">
+      <p class="legal-meta"><strong>Last updated:</strong> April 10, 2026</p>
+
+      <h2>1. Acceptance of Terms</h2>
+      <p>By accessing or using this platform, you agree to comply with these Terms of Service and all applicable laws.</p>
+
+      <h2>2. Purpose of the Platform</h2>
+      <p>This service provides GBV reporting, educational information, and support resource navigation. It does not replace emergency services.</p>
+
+      <h2>3. User Responsibilities</h2>
+      <ul>
+        <li>Provide accurate information where required.</li>
+        <li>Use the platform lawfully and respectfully.</li>
+        <li>Do not misuse, disrupt, or attempt unauthorized access to services.</li>
+      </ul>
+
+      <h2>4. Prohibited Conduct</h2>
+      <ul>
+        <li>Submitting false, abusive, or malicious content.</li>
+        <li>Impersonation, harassment, or harmful behavior toward others.</li>
+        <li>Uploading malware or performing actions that compromise security.</li>
+      </ul>
+
+      <h2>5. Availability and Changes</h2>
+      <p>We may update, suspend, or modify features as needed for maintenance, security, and service improvements.</p>
+
+      <h2>6. Limitation of Liability</h2>
+      <p>We aim to provide accurate information, but services are provided on an "as available" basis without guaranteed uninterrupted access.</p>
+
+      <h2>7. Privacy</h2>
+      <p>Your use of the platform is also governed by our <a href="{% url 'privacy_policy' %}">Privacy Policy</a>.</p>
+
+      <h2>8. Contact</h2>
+      <p>If you have questions about these terms, please contact us via the <a href="{% url 'contact' %}">Contact page</a>.</p>
+    </article>
+  </div>
+</section>
+{% endblock %}

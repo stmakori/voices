@@ -1,0 +1,136 @@
+{% extends "admin/change_form.html" %}
+{% load static %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'assets/leaflet/dist/leaflet.css' %}">
+<style>
+  #resource-map-picker {
+    height: 340px;
+    border-radius: 10px;
+    border: 1px solid #d9d3e8;
+    overflow: hidden;
+    margin-top: 0.5rem;
+  }
+  .map-picker-label {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+  }
+  .map-picker-hint {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin-top: 0.35rem;
+  }
+  #resource-geocode-btn {
+    margin-top: 0.5rem;
+    padding: 0.38rem 0.9rem;
+    font-size: 0.82rem;
+    border-radius: 8px;
+    border: 1px solid #c9aee0;
+    background: #f0ebff;
+    color: #5A2D7A;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  #resource-geocode-btn:hover { background: #e4d8f8; }
+</style>
+{% endblock %}
+
+{% block after_field_sets %}
+{{ block.super }}
+<div class="col-12 mt-3">
+  <div class="module" style="border-radius:12px;overflow:hidden;border:1px solid #e5e0ef;box-shadow:0 2px 8px rgba(90,45,122,0.07);">
+    <h2 style="background:linear-gradient(135deg,#5A2D7A,#8B4C9F);color:#fff;padding:0.75rem 1rem;margin:0;font-size:0.9rem;font-weight:700;letter-spacing:0.03em;">
+      Pin Location on Map
+    </h2>
+    <div style="padding:1rem;">
+      <div class="map-picker-label">Click the map to set coordinates, or drag the marker.</div>
+      <div id="resource-map-picker"></div>
+      <p class="map-picker-hint">Default area: {{ RESOURCE_DEFAULT_COUNTY }}. Coordinates update the Latitude &amp; Longitude fields automatically.</p>
+      <button type="button" id="resource-geocode-btn">Find by name / address</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extrajs %}
+{{ block.super }}
+<script src="{% static 'assets/leaflet/dist/leaflet.js' %}"></script>
+<script>
+(function () {
+  document.addEventListener('DOMContentLoaded', function () {
+    var latInput = document.getElementById('id_latitude');
+    var lonInput = document.getElementById('id_longitude');
+    var mapEl    = document.getElementById('resource-map-picker');
+    if (!latInput || !lonInput || !mapEl || typeof L === 'undefined') return;
+
+    var defaultCenter = [-0.3031, 36.08]; // Nakuru
+    var initialLat = parseFloat(latInput.value);
+    var initialLon = parseFloat(lonInput.value);
+    var hasInitial = Number.isFinite(initialLat) && Number.isFinite(initialLon);
+
+    var map = L.map('resource-map-picker').setView(
+      hasInitial ? [initialLat, initialLon] : defaultCenter,
+      hasInitial ? 14 : 10
+    );
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    var marker = null;
+
+    function setPoint(lat, lon) {
+      latInput.value = lat.toFixed(6);
+      lonInput.value = lon.toFixed(6);
+      if (marker) {
+        marker.setLatLng([lat, lon]);
+      } else {
+        marker = L.marker([lat, lon], { draggable: true }).addTo(map);
+        marker.on('dragend', function () {
+          var p = marker.getLatLng();
+          setPoint(p.lat, p.lng);
+        });
+      }
+    }
+
+    if (hasInitial) setPoint(initialLat, initialLon);
+
+    map.on('click', function (e) {
+      setPoint(e.latlng.lat, e.latlng.lng);
+    });
+
+    // Geocode by name + address + location fields
+    var geocodeBtn = document.getElementById('resource-geocode-btn');
+    if (geocodeBtn) {
+      geocodeBtn.addEventListener('click', async function () {
+        var name     = (document.getElementById('id_name')     || {}).value || '';
+        var address  = (document.getElementById('id_address')  || {}).value || '';
+        var location = (document.getElementById('id_location') || {}).value || '';
+        var query = [name, address, location].filter(Boolean).join(', ');
+        if (!query) return;
+        if (!query.toLowerCase().includes('kenya')) query += ', Kenya';
+        try {
+          var res  = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(query));
+          var data = await res.json();
+          if (data && data.length) {
+            var lat = parseFloat(data[0].lat);
+            var lon = parseFloat(data[0].lon);
+            setPoint(lat, lon);
+            map.setView([lat, lon], 15);
+          } else {
+            alert('Location not found. Try adding more detail.');
+          }
+        } catch (err) {
+          console.error('Geocode error', err);
+        }
+      });
+    }
+  });
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile - Voices Against Violence{% endblock %}
+{% block meta_description %}Manage your Voices Against Violence profile, contact details, and account settings.{% endblock %}
+{% block meta_keywords %}profile settings, account management, Voices Against Violence{% endblock %}
+{% block meta_robots %}noindex,nofollow{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <h2 class="h4 mb-3">My Profile</h2>
+          <p class="text-muted mb-4">Update your account details and contact info.</p>
+
+          <form method="post" id="profile-form" novalidate>
+            {% csrf_token %}
+            <div class="alert alert-danger d-none" id="profile-form-alert" role="alert">
+              Please review the highlighted fields and try again.
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Username</label>
+              <input type="text" class="form-control" value="{{ request.user.username }}" disabled>
+            </div>
+
+            <div class="mb-3">
+              <label for="id_email" class="form-label">Email</label>
+              {{ profile_form.email }}
+              {% for error in profile_form.email.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+              {% if not profile_form.email.errors %}
+              <div class="invalid-feedback js-validation-feedback">Please enter a valid email address.</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_phone_number" class="form-label">Phone Number</label>
+              {{ profile_form.phone_number }}
+              {% for error in profile_form.phone_number.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+              {% if not profile_form.phone_number.errors %}
+              <div class="invalid-feedback js-validation-feedback">Please enter a valid phone number.</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-4">
+              <label for="id_user_type" class="form-label">Role</label>
+              {{ profile_form.user_type }}
+              {% for error in profile_form.user_type.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+              {% if not profile_form.user_type.errors %}
+              <div class="invalid-feedback js-validation-feedback">Please choose a role.</div>
+              {% endif %}
+            </div>
+
+            <button type="submit" name="update_profile" class="btn btn-primary">Save Profile</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <h2 class="h4 mb-3">Change Password</h2>
+          <p class="text-muted mb-4">Update your password for both your local account and Cognito.</p>
+
+          <form method="post" id="password-form" novalidate>
+            {% csrf_token %}
+            <div class="alert alert-danger d-none" id="password-form-alert" role="alert">
+              Please review the highlighted fields and try again.
+            </div>
+
+            <div class="mb-3">
+              <label for="id_current_password" class="form-label">Current Password</label>
+              {{ password_form.current_password }}
+              {% for error in password_form.current_password.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+              {% if not password_form.current_password.errors %}
+              <div class="invalid-feedback js-validation-feedback">Please enter your current password.</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_new_password" class="form-label">New Password</label>
+              {{ password_form.new_password }}
+              {% for error in password_form.new_password.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+              {% if not password_form.new_password.errors %}
+              <div class="invalid-feedback js-validation-feedback">Please enter a new password.</div>
+              {% endif %}
+              <div id="pwd-strength-wrap" class="mt-1" style="display:none;">
+                <div class="progress" style="height:4px;border-radius:2px;">
+                  <div id="pwd-bar" class="progress-bar" role="progressbar" style="width:0%;transition:width 0.3s;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <small id="pwd-strength-label" class="text-muted mt-1 d-block"></small>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label for="id_confirm_password" class="form-label">Confirm New Password</label>
+              {{ password_form.confirm_password }}
+              {% for error in password_form.confirm_password.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+              {% if not password_form.confirm_password.errors %}
+              <div class="invalid-feedback js-validation-feedback">Passwords must match.</div>
+              {% endif %}
+            </div>
+
+            <button type="submit" name="change_password" class="btn btn-outline-primary">Change Password</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mt-4">
+    <div class="card-body p-4">
+      <h2 class="h4 mb-3">My Reports Progress</h2>
+      <p class="text-muted mb-4">Track the status of your submitted reports.</p>
+
+      {% if report_progress %}
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th>Report ID</th>
+                <th>Type</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th style="min-width: 220px;">Progress</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in report_progress %}
+              <tr>
+                <td>#{{ item.report.id }}</td>
+                <td>{{ item.report.get_report_type_display }}</td>
+                <td>{{ item.report.created_at|date:'M j, Y' }}</td>
+                <td>{{ item.report.get_status_display }}</td>
+                <td>
+                  <div class="progress" role="progressbar" aria-label="Report progress" aria-valuenow="{{ item.progress }}" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar" style="width: {{ item.progress }}%;">{{ item.progress }}%</div>
+                  </div>
+                </td>
+                <td>
+                  <a href="{% url 'report_timeline' item.report.id %}" class="btn btn-sm btn-outline-secondary">View Timeline</a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="alert alert-info mb-0">You have no tracked reports yet. Submit a report while signed in to see progress here.</div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+  var input = document.getElementById('id_new_password');
+  var wrap  = document.getElementById('pwd-strength-wrap');
+  var bar   = document.getElementById('pwd-bar');
+  var lbl   = document.getElementById('pwd-strength-label');
+  if (!input || !wrap) return;
+
+  var levels = [
+    { pct: 25,  cls: 'bg-danger',  txt: 'Weak'   },
+    { pct: 50,  cls: 'bg-warning', txt: 'Fair'   },
+    { pct: 75,  cls: 'bg-info',    txt: 'Good'   },
+    { pct: 100, cls: 'bg-success', txt: 'Strong' },
+  ];
+
+  input.addEventListener('input', function () {
+    var v = this.value;
+    if (!v) { wrap.style.display = 'none'; return; }
+    wrap.style.display = 'block';
+    var score = 0;
+    if (v.length >= 8)           score++;
+    if (/[A-Z]/.test(v))         score++;
+    if (/[0-9]/.test(v))         score++;
+    if (/[^A-Za-z0-9]/.test(v))  score++;
+    var lvl = levels[Math.max(score - 1, 0)];
+    bar.style.width = lvl.pct + '%';
+    bar.className   = 'progress-bar ' + lvl.cls;
+    bar.setAttribute('aria-valuenow', lvl.pct);
+    lbl.textContent = lvl.txt;
+    lbl.className   = 'small d-block mt-1 ' + (score >= 3 ? 'text-success' : 'text-muted');
+  });
+})();
+
+(function () {
+  function setInvalid(field, message) {
+    field.classList.add('is-invalid');
+    var wrapper = field.closest('.mb-3, .mb-4');
+    var feedback = wrapper ? wrapper.querySelector('.js-validation-feedback') : null;
+    if (feedback) {
+      feedback.textContent = message;
+      feedback.classList.add('d-block');
+    }
+  }
+
+  function clearInvalid(field) {
+    field.classList.remove('is-invalid');
+    var wrapper = field.closest('.mb-3, .mb-4');
+    var feedback = wrapper ? wrapper.querySelector('.js-validation-feedback') : null;
+    if (feedback) feedback.classList.remove('d-block');
+  }
+
+  function wireForm(formId, alertId, extraCheck) {
+    var form = document.getElementById(formId);
+    var alertEl = document.getElementById(alertId);
+    if (!form) return;
+
+    form.addEventListener('submit', function (e) {
+      var fields = form.querySelectorAll('input, select, textarea');
+      var firstInvalid = null;
+
+      fields.forEach(function (field) {
+        clearInvalid(field);
+        if (field.hasAttribute('required') && !field.value.trim()) {
+          setInvalid(field, 'Please complete this field.');
+          if (!firstInvalid) firstInvalid = field;
+          return;
+        }
+
+        if (field.checkValidity && !field.checkValidity()) {
+          setInvalid(field, field.validationMessage || 'Please enter a valid value.');
+          if (!firstInvalid) firstInvalid = field;
+        }
+      });
+
+      if (extraCheck) {
+        var extraInvalid = extraCheck();
+        if (extraInvalid && !firstInvalid) firstInvalid = extraInvalid;
+      }
+
+      if (firstInvalid) {
+        e.preventDefault();
+        if (alertEl) alertEl.classList.remove('d-none');
+        firstInvalid.focus({ preventScroll: false });
+      }
+    });
+
+    form.querySelectorAll('input, select, textarea').forEach(function (field) {
+      field.addEventListener('input', function () {
+        clearInvalid(field);
+        if (alertEl) alertEl.classList.add('d-none');
+      });
+      field.addEventListener('change', function () {
+        clearInvalid(field);
+        if (alertEl) alertEl.classList.add('d-none');
+      });
+    });
+  }
+
+  wireForm('profile-form', 'profile-form-alert');
+
+  wireForm('password-form', 'password-form-alert', function () {
+    var newPw = document.getElementById('id_new_password');
+    var confirmPw = document.getElementById('id_confirm_password');
+    if (newPw && confirmPw && newPw.value && confirmPw.value && newPw.value !== confirmPw.value) {
+      setInvalid(confirmPw, 'Passwords must match.');
+      return confirmPw;
+    }
+    return null;
+  });
+})();
+</script>
+{% endblock %}

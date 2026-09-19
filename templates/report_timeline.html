@@ -1,0 +1,361 @@
+{% extends "base.html" %}
+
+{% block title %}Report Timeline - Voices Against Violence{% endblock %}
+{% block meta_description %}Track status updates for your submitted report on Voices Against Violence.{% endblock %}
+{% block meta_keywords %}report timeline, GBV case status, report updates{% endblock %}
+{% block meta_robots %}noindex,nofollow{% endblock %}
+
+{% block extra_css %}
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&display=swap');
+
+  .timeline-page {
+    background: linear-gradient(180deg, #fafaf8 0%, #ffffff 100%);
+    min-height: 100vh;
+    padding: 3rem 0;
+  }
+
+  .report-header {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 2px;
+    padding: 2rem;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2.5rem;
+  }
+
+  .report-header h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.5px;
+  }
+
+  .report-meta {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 1rem;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .report-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .report-type-badge {
+    display: inline-block;
+    padding: 0.5rem 0.875rem;
+    background: #fef3c7;
+    color: #92400e;
+    border-radius: 2px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+  }
+
+  .timeline-container {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 2px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.05);
+  }
+
+  .timeline-header {
+    padding: 2rem;
+    border-bottom: 1px solid #e5e7eb;
+    background: #fafaf8;
+  }
+
+  .timeline-header h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin: 0;
+    letter-spacing: -0.3px;
+  }
+
+  .timeline-list {
+    padding: 2rem;
+    position: relative;
+  }
+
+  .timeline-list::before {
+    content: '';
+    position: absolute;
+    left: 2.5rem;
+    top: 2rem;
+    bottom: 2rem;
+    width: 2px;
+    background: linear-gradient(180deg, #e5e7eb 0%, #d1d5db 50%, #e5e7eb 100%);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 2.5rem;
+    padding-left: 5.5rem;
+  }
+
+  .timeline-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .timeline-dot {
+    position: absolute;
+    left: 1.3rem;
+    top: 0.25rem;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    z-index: 2;
+    transition: all 0.3s ease;
+  }
+
+  .timeline-dot.status-received {
+    background: #d1fae5;
+    color: #065f46;
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 0 2px #a7f3d0;
+  }
+
+  .timeline-dot.status-assigned {
+    background: #fef3c7;
+    color: #92400e;
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 0 2px #fde68a;
+  }
+
+  .timeline-dot.status-in_progress {
+    background: #dbeafe;
+    color: #0c4a6e;
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 0 2px #bfdbfe;
+  }
+
+  .timeline-dot.status-closed {
+    background: #f3e8ff;
+    color: #6b21a8;
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 0 2px #e9d5ff;
+  }
+
+  .timeline-content {
+    background: #fafaf8;
+    padding: 1.5rem;
+    border-radius: 2px;
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+  }
+
+  .timeline-item:hover .timeline-content {
+    background: #ffffff;
+    border-color: rgba(107, 33, 168, 0.2);
+    box-shadow: 0 4px 12px rgba(107, 33, 168, 0.08);
+  }
+
+  .timeline-status {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.2px;
+  }
+
+  .timeline-note {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 1rem;
+    color: #374151;
+    line-height: 1.7;
+    margin-bottom: 0.75rem;
+  }
+
+  .timeline-note:last-child {
+    margin-bottom: 0;
+  }
+
+  .timeline-time {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 0.875rem;
+    color: #9ca3af;
+    font-style: italic;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+  }
+
+  .empty-state-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.3;
+  }
+
+  .empty-state-text {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 1.1rem;
+    color: #6b7280;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 768px) {
+    .report-header {
+      padding: 1.5rem;
+    }
+
+    .report-header h1 {
+      font-size: 1.5rem;
+    }
+
+    .report-meta {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .timeline-header {
+      padding: 1.5rem;
+    }
+
+    .timeline-list {
+      padding: 1.5rem;
+      padding-left: 1rem;
+    }
+
+    .timeline-list::before {
+      left: 1.2rem;
+      top: 1.5rem;
+      bottom: 1.5rem;
+    }
+
+    .timeline-item {
+      padding-left: 3.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .timeline-dot {
+      left: 0.2rem;
+      width: 2rem;
+      height: 2rem;
+      font-size: 0.75rem;
+    }
+
+    .timeline-content {
+      padding: 1.25rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="timeline-page">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <!-- Report Header -->
+        <div class="report-header">
+          <h1>Report #{{ report.id }}</h1>
+          <div class="report-meta">
+            <div class="report-meta-item">
+              <span class="report-type-badge">{{ report.get_report_type_display }}</span>
+            </div>
+            <div class="report-meta-item">
+              <span>Submitted</span>
+              <strong>{{ report.created_at|date:'M j, Y' }}</strong>
+              <span class="text-muted">at {{ report.created_at|date:'g:i A' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feedback from support team -->
+        {% if feedbacks %}
+        <div class="timeline-container mb-4">
+          <div class="timeline-header">
+            <h2>Support Team Feedback</h2>
+            <p class="mb-0 text-muted mt-2">Feedback notes from the team handling your case.</p>
+          </div>
+          <div class="timeline-list">
+            {% for fb in feedbacks %}
+            <div class="timeline-item">
+              <div class="timeline-dot status-received">
+                <i class="bi bi-chat-left-text" style="font-size:.75rem;"></i>
+              </div>
+              <div class="timeline-content">
+                <div class="timeline-status">Case Feedback</div>
+                {% if fb.comment %}
+                <div class="timeline-note">{{ fb.comment }}</div>
+                {% else %}
+                <div class="timeline-note text-muted fst-italic">No written note provided.</div>
+                {% endif %}
+                <div class="timeline-time">{{ fb.created_at|date:'b j, Y • g:i A' }}</div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Timeline Container -->
+        <div class="timeline-container">
+          <div class="timeline-header">
+            <h2>Status Updates</h2>
+            <p class="mb-0 text-muted mt-2">
+              In this status for {{ status_insight.elapsed_days }} day(s) ({{ status_insight.elapsed_hours }} hour(s)).
+              Next step: {{ status_insight.next_step }}. {{ status_insight.eta_text }}
+            </p>
+          </div>
+
+          {% if updates %}
+            <div class="timeline-list">
+              {% for update in updates %}
+                <div class="timeline-item">
+                  <div class="timeline-dot status-{{ update.status }}">
+                    {% if update.status == 'received' %}
+                      ✓
+                    {% elif update.status == 'assigned' %}
+                      ⟳
+                    {% elif update.status == 'in_progress' %}
+                      🔍
+                    {% elif update.status == 'closed' %}
+                      ✓
+                    {% else %}
+                      •
+                    {% endif %}
+                  </div>
+                  <div class="timeline-content">
+                    <div class="timeline-status">{{ update.get_status_display }}</div>
+                    {% if update.note %}
+                      <div class="timeline-note">{{ update.note }}</div>
+                    {% endif %}
+                    <div class="timeline-time">{{ update.created_at|date:'b j, Y • g:i A' }}</div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="empty-state">
+              <div class="empty-state-icon">📋</div>
+              <p class="empty-state-text">No timeline entries yet. Status updates will appear here as soon as they are available.</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

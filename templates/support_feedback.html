@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Support Feedback - Voices Against Violence{% endblock %}
+{% block meta_description %}Share feedback about the support experience you received through Voices Against Violence.{% endblock %}
+{% block meta_keywords %}support feedback, case support review, GBV support feedback{% endblock %}
+{% block meta_robots %}noindex,nofollow{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <h1 class="h4 mb-2">Share Feedback</h1>
+          <p class="text-muted mb-4">Help us improve the support experience for report #{{ report.id }}.</p>
+
+          <form method="post" id="support-feedback-form" novalidate>
+            {% csrf_token %}
+            <div class="alert alert-danger d-none" id="support-feedback-alert" role="alert">
+              Please review the highlighted fields and try again.
+            </div>
+            <div class="mb-3">
+              <label for="id_score" class="form-label">How would you rate the support? (1-5)</label>
+              <input
+                type="number"
+                min="1"
+                max="5"
+                name="score"
+                id="id_score"
+                class="form-control"
+                value="{{ form.score.value|default:'' }}"
+                required
+              >
+              {% for error in form.score.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+              {% if not form.score.errors %}
+              <div class="invalid-feedback js-validation-feedback">Please choose a score from 1 to 5.</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-4">
+              <label for="id_comment" class="form-label">Optional comments</label>
+              <textarea
+                name="comment"
+                id="id_comment"
+                rows="5"
+                class="form-control"
+                placeholder="What worked well and what could be improved?"
+              >{{ form.comment.value|default:'' }}</textarea>
+              {% for error in form.comment.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+            </div>
+
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-primary">Send Feedback</button>
+              <a href="{% url 'report_timeline' report.id %}" class="btn btn-outline-secondary">Back to Timeline</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('support-feedback-form');
+    if (!form) return;
+
+    const scoreField = document.getElementById('id_score');
+
+    function setInvalid(field, message) {
+      field.classList.add('is-invalid');
+      const wrapper = field.closest('.mb-3');
+      const feedback = wrapper ? wrapper.querySelector('.js-validation-feedback') : null;
+      if (feedback) {
+        feedback.textContent = message;
+        feedback.classList.add('d-block');
+      }
+    }
+
+    function clearInvalid(field) {
+      field.classList.remove('is-invalid');
+      const wrapper = field.closest('.mb-3');
+      const feedback = wrapper ? wrapper.querySelector('.js-validation-feedback') : null;
+      if (feedback) feedback.classList.remove('d-block');
+    }
+
+    form.addEventListener('submit', function (e) {
+      if (!scoreField) return;
+      clearInvalid(scoreField);
+      const alertEl = document.getElementById('support-feedback-alert');
+
+      const value = parseInt(scoreField.value, 10);
+      if (!scoreField.value || Number.isNaN(value) || value < 1 || value > 5) {
+        e.preventDefault();
+        setInvalid(scoreField, 'Please choose a score from 1 to 5.');
+        if (alertEl) alertEl.classList.remove('d-none');
+        scoreField.focus({ preventScroll: false });
+      }
+    });
+
+    if (scoreField) {
+      scoreField.addEventListener('input', function () {
+        clearInvalid(scoreField);
+        const alertEl = document.getElementById('support-feedback-alert');
+        if (alertEl) alertEl.classList.add('d-none');
+      });
+    }
+  });
+</script>
+{% endblock %}

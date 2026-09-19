@@ -1,0 +1,319 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+{% block meta_description %}{{ description }}{% endblock %}
+{% block body_class %}about-page{% endblock %}
+
+{% block extra_css %}
+{{ form.media }}
+{% if enable_map_picker %}
+<link rel="stylesheet" href="{% static 'assets/leaflet/dist/leaflet.css' %}">
+{% endif %}
+<style>
+  .contribution-form-card {
+    border: 1px solid rgba(var(--bs-primary-rgb), 0.14);
+    border-radius: 16px;
+    box-shadow: 0 10px 26px rgba(17, 24, 39, 0.08);
+  }
+
+  .contribution-form-card .form-control,
+  .contribution-form-card .form-select {
+    border-radius: 12px;
+    border-color: rgba(var(--bs-primary-rgb), 0.18);
+  }
+
+  .contribution-form-card .form-control:focus,
+  .contribution-form-card .form-select:focus {
+    border-color: rgba(var(--bs-primary-rgb), 0.55);
+    box-shadow: 0 0 0 .2rem rgba(var(--bs-primary-rgb), 0.12);
+  }
+
+  .contribution-form-card .note-editor {
+    width: 100% !important;
+    max-width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .contribution-form-card .summernote-div,
+  .contribution-form-card .summernote-div iframe {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .contribution-form-card .note-editor.is-invalid {
+    border: 1px solid #dc3545;
+  }
+
+  #resource-pin-map {
+    height: 320px;
+    border: 1px solid rgba(var(--bs-primary-rgb), 0.18);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--surface-color);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-title">
+  <div class="heading">
+    <div class="container">
+      <div class="row justify-content-center text-center">
+        <div class="col-lg-8">
+          <h1 class="heading-title">{{ heading }}</h1>
+          <p class="mb-0">{{ description }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <nav class="breadcrumbs">
+    <div class="container">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'contribute' %}">Contribute</a></li>
+        <li class="current">{{ heading }}</li>
+      </ol>
+    </div>
+  </nav>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card contribution-form-card border-0">
+          <div class="card-body p-4 p-md-5">
+            <form method="post" enctype="multipart/form-data" novalidate id="contribution-form">
+              {% csrf_token %}
+
+              {% if form.non_field_errors %}
+                <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+              {% endif %}
+
+              <div class="alert alert-danger d-none" id="contribution-form-alert" role="alert">
+                Please review the highlighted fields and try again.
+              </div>
+
+              {% for field in form %}
+                {% if field.is_hidden %}
+                  {{ field }}
+                {% else %}
+                <div class="mb-3 {% if field.errors %}has-error{% endif %}">
+                  <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                  {{ field }}
+                  {% if field.help_text %}
+                    <div class="form-text">{{ field.help_text }}</div>
+                  {% endif %}
+                  {% for error in field.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                  {% endfor %}
+                  {% if field.field.required and not field.errors %}
+                    <div class="invalid-feedback js-validation-feedback">Please complete this field.</div>
+                  {% endif %}
+                </div>
+                {% endif %}
+              {% endfor %}
+
+              {% if enable_map_picker %}
+                <div class="mb-3">
+                  <label class="form-label">Pin Location on Map</label>
+                  <div id="resource-pin-map"></div>
+                  <div class="form-text mt-2">Click the map to set precise coordinates. Default focus: {{ default_county }}.</div>
+                  <button class="btn btn-outline-primary btn-sm mt-2" type="button" id="resource-geocode-btn">Find by details</button>
+                </div>
+              {% endif %}
+
+              <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">{{ button_text }}</button>
+                <a href="{% url 'contribute' %}" class="btn btn-outline-secondary">Back</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+{% if enable_map_picker %}
+<script src="{% static 'assets/leaflet/dist/leaflet.js' %}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const latInput = document.getElementById('id_latitude');
+    const lonInput = document.getElementById('id_longitude');
+    const mapEl = document.getElementById('resource-pin-map');
+    if (!latInput || !lonInput || !mapEl || typeof L === 'undefined') return;
+
+    const countyFocus = '{{ default_county|default:"Nakuru County"|escapejs }}';
+    const nakuruCenter = [-0.3031, 36.08];
+    const initialLat = parseFloat(latInput.value);
+    const initialLon = parseFloat(lonInput.value);
+
+    const map = L.map('resource-pin-map').setView(
+      Number.isFinite(initialLat) && Number.isFinite(initialLon) ? [initialLat, initialLon] : nakuruCenter,
+      Number.isFinite(initialLat) && Number.isFinite(initialLon) ? 14 : 10
+    );
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    let marker = null;
+
+    function setPoint(lat, lon) {
+      latInput.value = lat.toFixed(6);
+      lonInput.value = lon.toFixed(6);
+      if (marker) {
+        marker.setLatLng([lat, lon]);
+      } else {
+        marker = L.marker([lat, lon], { draggable: true }).addTo(map);
+        marker.on('dragend', function () {
+          const p = marker.getLatLng();
+          setPoint(p.lat, p.lng);
+        });
+      }
+    }
+
+    if (Number.isFinite(initialLat) && Number.isFinite(initialLon)) {
+      setPoint(initialLat, initialLon);
+    }
+
+    map.on('click', function (event) {
+      setPoint(event.latlng.lat, event.latlng.lng);
+    });
+
+    const geocodeBtn = document.getElementById('resource-geocode-btn');
+    if (!geocodeBtn) return;
+
+    geocodeBtn.addEventListener('click', async function () {
+      const name = document.getElementById('id_name')?.value?.trim() || '';
+      const location = document.getElementById('id_location')?.value?.trim() || '';
+      const address = document.getElementById('id_address')?.value?.trim() || '';
+      let query = [name, address, location].filter(Boolean).join(', ');
+      if (!query) return;
+      if (!query.toLowerCase().includes('county')) query += ', ' + countyFocus;
+      if (!query.toLowerCase().includes('kenya')) query += ', Kenya';
+
+      geocodeBtn.disabled = true;
+      geocodeBtn.textContent = 'Locating...';
+
+      try {
+        const url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=ke&viewbox=33.5,5.5,42.0,-5.2&bounded=1&q=' + encodeURIComponent(query);
+        const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+        if (!response.ok) return;
+        const data = await response.json();
+        if (!data || !data.length) return;
+        const lat = parseFloat(data[0].lat);
+        const lon = parseFloat(data[0].lon);
+        if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
+        map.setView([lat, lon], 15);
+        setPoint(lat, lon);
+      } catch (_) {
+      } finally {
+        geocodeBtn.disabled = false;
+        geocodeBtn.textContent = 'Find by details';
+      }
+    });
+  });
+</script>
+{% endif %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('contribution-form');
+    if (!form) return;
+
+    form.querySelectorAll('.has-error input, .has-error textarea, .has-error select').forEach(function (field) {
+      field.classList.add('is-invalid');
+      const noteEditor = field.closest('.mb-3')?.querySelector('.note-editor');
+      if (noteEditor) noteEditor.classList.add('is-invalid');
+    });
+
+    function setInvalid(field, message) {
+      field.classList.add('is-invalid');
+      const wrapper = field.closest('.mb-3');
+      const feedback = wrapper ? wrapper.querySelector('.js-validation-feedback') : null;
+      if (feedback) {
+        feedback.textContent = message;
+        feedback.classList.add('d-block');
+      }
+      const noteEditor = wrapper ? wrapper.querySelector('.note-editor') : null;
+      if (noteEditor) noteEditor.classList.add('is-invalid');
+    }
+
+    function clearInvalid(field) {
+      field.classList.remove('is-invalid');
+      const wrapper = field.closest('.mb-3');
+      const feedback = wrapper ? wrapper.querySelector('.js-validation-feedback') : null;
+      if (feedback) feedback.classList.remove('d-block');
+      const noteEditor = wrapper ? wrapper.querySelector('.note-editor') : null;
+      if (noteEditor) noteEditor.classList.remove('is-invalid');
+    }
+
+    function validateField(field) {
+      if (!field.hasAttribute('required')) {
+        if (field.checkValidity && field.value && !field.checkValidity()) {
+          setInvalid(field, field.validationMessage || 'Please enter a valid value.');
+          return false;
+        }
+        return true;
+      }
+
+      if (field.type === 'checkbox' && !field.checked) {
+        setInvalid(field, 'Please confirm this field to continue.');
+        return false;
+      }
+
+      const value = (field.value || '').trim();
+      if (!value) {
+        const message = field.tagName === 'SELECT'
+          ? 'Please choose an option.'
+          : 'Please complete this field.';
+        setInvalid(field, message);
+        return false;
+      }
+
+      if (field.checkValidity && !field.checkValidity()) {
+        setInvalid(field, field.validationMessage || 'Please enter a valid value.');
+        return false;
+      }
+
+      return true;
+    }
+
+    form.addEventListener('submit', function (e) {
+      let firstInvalid = null;
+      const fields = form.querySelectorAll('input, textarea, select');
+      fields.forEach(function (field) {
+        clearInvalid(field);
+        const valid = validateField(field);
+        if (!valid && !firstInvalid) firstInvalid = field;
+      });
+
+      if (firstInvalid) {
+        e.preventDefault();
+        const alertEl = document.getElementById('contribution-form-alert');
+        if (alertEl) alertEl.classList.remove('d-none');
+        firstInvalid.focus({ preventScroll: false });
+      }
+    });
+
+    form.querySelectorAll('input, textarea, select').forEach(function (field) {
+      field.addEventListener('input', function () {
+        clearInvalid(field);
+        const alertEl = document.getElementById('contribution-form-alert');
+        if (alertEl) alertEl.classList.add('d-none');
+      });
+      field.addEventListener('change', function () {
+        clearInvalid(field);
+        const alertEl = document.getElementById('contribution-form-alert');
+        if (alertEl) alertEl.classList.add('d-none');
+      });
+    });
+  });
+</script>
+{% endblock %}

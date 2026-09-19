@@ -1,0 +1,365 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Your Email – Voices Against Violence</title>
+  <meta name="description" content="Enter your verification code to confirm your Voices Against Violence account email address.">
+  <meta name="keywords" content="email verification, verification code, account confirmation, Voices Against Violence">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="canonical" href="{{ request.build_absolute_uri }}">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Verify Your Email – Voices Against Violence">
+  <meta property="og:description" content="Confirm your Voices Against Violence account using the verification code sent to your email.">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'assets/img/equality.png' %}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Verify Your Email – Voices Against Violence">
+  <meta name="twitter:description" content="Confirm your Voices Against Violence account using the verification code sent to your email.">
+  <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'assets/img/equality.png' %}">
+  <link href="{% static 'assets/img/equality.png' %}" rel="icon" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary:#8a4fff;
+      --primary-d:#6b3fcc;
+      --border:rgba(138,79,255,.2);
+      --text:#1f2a3d;
+      --muted:#6b7280;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      background: radial-gradient(circle at 12% 8%, rgba(183,148,255,.2), transparent 28%),
+                  radial-gradient(circle at 88% 20%, rgba(138,79,255,.14), transparent 30%),
+                  linear-gradient(140deg, #f8fbff 0%, #f3ecff 100%);
+      padding: 20px;
+    }
+    .card {
+      width: 100%; max-width: 440px;
+      background: linear-gradient(165deg, #ffffff 0%, #faf6ff 100%);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      backdrop-filter: blur(20px);
+      padding: 40px 36px;
+      text-align: center;
+      box-shadow: 0 22px 50px rgba(95,71,149,.18);
+    }
+    .icon-ring {
+      width: 72px; height: 72px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-d));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 32px; color: #fff;
+    }
+    h1 { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .sub { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 28px; }
+    .sub strong { color: var(--primary); }
+    /* OTP input row */
+    .otp-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 24px; }
+    .otp-row input[type="text"] {
+      width: 48px; height: 56px;
+      text-align: center;
+      font-size: 22px; font-weight: 700;
+      background: #ffffff;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      outline: none;
+      transition: border-color .2s, background .2s;
+    }
+    .otp-row input:focus { border-color: var(--primary); background: #ffffff; box-shadow: 0 0 0 2px rgba(138,79,255,.16); }
+    .hidden-input { display: none; }
+    .btn {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-d));
+      color: #fff;
+      border: none; border-radius: 14px;
+      font-family: inherit; font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: opacity .2s, transform .15s;
+    }
+    .btn:hover { opacity: .9; transform: translateY(-1px); }
+    .resend-row { margin-top: 20px; font-size: 13px; color: var(--muted); }
+    .resend-row a { color: var(--primary); text-decoration: none; font-weight: 600; cursor: pointer; }
+    .resend-row a:hover { text-decoration: underline; }
+    .resend-error { margin-top: 8px; color: #c53030; font-size: 12px; display: none; }
+    .resend-error.is-visible { display: block; }
+    .alerts { margin-bottom: 16px; }
+    .alert { padding: 10px 14px; border-radius: 10px; font-size: 13px; margin-bottom: 8px; text-align: left; }
+    .alert-error   { background: #fff2f2; color: #c53030; border: 1px solid rgba(197,48,48,.25); }
+    .alert-success { background: #f5efff; color: #6b3fcc; border: 1px solid rgba(138,79,255,.26); }
+    .alert-info    { background: #eef5ff; color: #3f6cad; border: 1px solid rgba(63,108,173,.22); }
+
+    .form-alert {
+      background: #fff2f2;
+      color: #c53030;
+      border: 1px solid rgba(197, 48, 48, 0.25);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      margin-bottom: 12px;
+      text-align: left;
+      display: none;
+    }
+
+    .input-error {
+      border-color: #c53030 !important;
+      box-shadow: 0 0 0 2px rgba(197, 48, 48, 0.15);
+    }
+
+    .field-error {
+      color: #c53030;
+      font-size: 12px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .field-error.is-visible {
+      display: block;
+    }
+
+    .particles-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: radial-gradient(circle at 35% 35%, #f4e9ff 0%, #b684ff 45%, #8a4fff 100%);
+      border-radius: 50%;
+      opacity: 0;
+      box-shadow: 0 0 5px rgba(138, 79, 255, 0.6), 0 0 9px rgba(138, 79, 255, 0.28);
+      animation: float linear infinite;
+    }
+    .particle::after {
+      content: '';
+      position: absolute;
+      width: 34%;
+      height: 34%;
+      left: 26%;
+      top: 24%;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.9);
+    }
+    @keyframes float {
+      0% {
+        transform: translateY(calc(100vh + 32px)) scale(0.45);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.92;
+      }
+      90% {
+        opacity: 0.58;
+      }
+      100% {
+        transform: translateY(-16vh) scale(1.35);
+        opacity: 0;
+      }
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+<div class="particles-container" id="particles"></div>
+<div class="card">
+  <div class="icon-ring"><i class="bi bi-envelope-check"></i></div>
+  <h1>Check Your Email</h1>
+  <p class="sub">
+    We sent a <strong>6-digit verification code</strong> to your email address.<br>
+    Enter it below to activate your account.
+  </p>
+
+  {% if messages %}
+  <div class="alerts">
+    {% for msg in messages %}
+    <div class="alert alert-{% if 'error' in msg.tags %}error{% elif 'success' in msg.tags %}success{% else %}info{% endif %}">
+      {{ msg }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <form method="post" action="{% url 'verify_email' %}" id="verify-form">
+    {% csrf_token %}
+    <!-- Hidden single input that gets populated by JS -->
+    <input type="hidden" name="code" id="full-code">
+
+    <div class="form-alert" id="verify-alert">Please enter the full 6-digit code.</div>
+
+    <!-- Visual 6-box OTP input -->
+    <div class="otp-row" id="otp-boxes">
+      <input type="text" maxlength="1" class="otp-digit" inputmode="numeric" pattern="[0-9]" autocomplete="one-time-code">
+      <input type="text" maxlength="1" class="otp-digit" inputmode="numeric" pattern="[0-9]">
+      <input type="text" maxlength="1" class="otp-digit" inputmode="numeric" pattern="[0-9]">
+      <input type="text" maxlength="1" class="otp-digit" inputmode="numeric" pattern="[0-9]">
+      <input type="text" maxlength="1" class="otp-digit" inputmode="numeric" pattern="[0-9]">
+      <input type="text" maxlength="1" class="otp-digit" inputmode="numeric" pattern="[0-9]">
+    </div>
+    <div class="field-error" id="verify-code-error">Please enter all 6 digits.</div>
+
+    <button type="submit" class="btn">
+      <i class="bi bi-shield-check"></i> Verify & Continue
+    </button>
+  </form>
+
+  <div class="resend-row">
+    Didn't receive it?
+    <a id="resend-link" onclick="resendCode(this)">Resend code</a>
+    <div id="resend-error" class="resend-error"></div>
+  </div>
+</div>
+
+<script>
+  function createParticles() {
+    const container = document.getElementById('particles');
+    if (!container) return;
+
+    for (let i = 0; i < 48; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.cssText = `
+        left: ${Math.random() * 100}%;
+        width: ${Math.random() * 1.8 + 3}px;
+        height: ${Math.random() * 1.8 + 3}px;
+        animation-duration: ${Math.random() * 4 + 10}s;
+        animation-delay: ${Math.random() * 6}s;
+      `;
+      container.appendChild(p);
+    }
+  }
+
+  const digits = document.querySelectorAll('.otp-digit');
+  const resendLink = document.getElementById('resend-link');
+  const resendDefaultText = 'Resend code';
+  let resendTimer = null;
+
+  digits.forEach((input, idx) => {
+    input.addEventListener('input', e => {
+      const val = e.target.value.replace(/\D/g,'');
+      e.target.value = val;
+      if (val && idx < digits.length - 1) digits[idx+1].focus();
+      syncCode();
+    });
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Backspace' && !input.value && idx > 0) digits[idx-1].focus();
+    });
+    input.addEventListener('paste', e => {
+      e.preventDefault();
+      const text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g,'');
+      [...text.slice(0,6)].forEach((ch, i) => { if (digits[i]) digits[i].value = ch; });
+      syncCode();
+      digits[Math.min(text.length, 5)].focus();
+    });
+  });
+
+  function syncCode() {
+    document.getElementById('full-code').value = [...digits].map(d=>d.value).join('');
+  }
+
+  document.getElementById('verify-form').addEventListener('submit', e => {
+    syncCode();
+    if (document.getElementById('full-code').value.length !== 6) {
+      e.preventDefault();
+      const alertEl = document.getElementById('verify-alert');
+      const errorEl = document.getElementById('verify-code-error');
+      if (alertEl) alertEl.style.display = 'block';
+      if (errorEl) errorEl.classList.add('is-visible');
+      digits.forEach(d => d.classList.add('input-error'));
+      digits[0]?.focus({ preventScroll: false });
+    }
+  });
+
+  digits.forEach((input) => {
+    input.addEventListener('input', () => {
+      input.classList.remove('input-error');
+      const alertEl = document.getElementById('verify-alert');
+      const errorEl = document.getElementById('verify-code-error');
+      if (alertEl) alertEl.style.display = 'none';
+      if (errorEl) errorEl.classList.remove('is-visible');
+    });
+  });
+
+  function setResendDisabled(disabled) {
+    if (disabled) {
+      resendLink.style.pointerEvents = 'none';
+      resendLink.style.opacity = '.5';
+      resendLink.setAttribute('aria-disabled', 'true');
+    } else {
+      resendLink.style.pointerEvents = '';
+      resendLink.style.opacity = '1';
+      resendLink.removeAttribute('aria-disabled');
+    }
+  }
+
+  function startCooldown(seconds = 60) {
+    if (resendTimer) {
+      clearInterval(resendTimer);
+    }
+
+    let remaining = seconds;
+    setResendDisabled(true);
+    resendLink.textContent = `Resend in ${remaining}s`;
+
+    resendTimer = setInterval(() => {
+      remaining -= 1;
+      if (remaining <= 0) {
+        clearInterval(resendTimer);
+        resendTimer = null;
+        setResendDisabled(false);
+        resendLink.textContent = resendDefaultText;
+        return;
+      }
+
+      resendLink.textContent = `Resend in ${remaining}s`;
+    }, 1000);
+  }
+
+  // Resend with cooldown
+  function resendCode() {
+    if (resendLink.getAttribute('aria-disabled') === 'true') {
+      return;
+    }
+
+    fetch("{% url 'resend_code' %}")
+      .then(r => r.json())
+      .then(d => {
+        const resendError = document.getElementById('resend-error');
+        if (resendError) {
+          resendError.textContent = '';
+          resendError.classList.remove('is-visible');
+        }
+        if (d.success) {
+          startCooldown(60);
+        } else if (d.error) {
+          if (resendError) {
+            resendError.textContent = d.error;
+            resendError.classList.add('is-visible');
+          }
+        }
+      });
+  }
+
+  resendLink.textContent = resendDefaultText;
+  createParticles();
+  digits[0].focus();
+</script>
+</body>
+</html>

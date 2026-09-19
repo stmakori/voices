@@ -1,0 +1,417 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Voices Against Violence - Safe GBV Reporting & Support System Kenya{% endblock %}
+
+{% block meta_description %}Report Gender-Based Violence safely and anonymously in Kenya. Access free educational resources, find nearby support services, safe houses, and emergency help. Available 24/7.{% endblock %}
+
+{% block meta_keywords %}GBV Kenya, Gender Based Violence reporting, anonymous GBV report, safe houses Kenya, police posts, GBV education, domestic violence support Kenya, sexual assault help, survivor resources, emergency GBV hotline{% endblock %}
+
+{% block body_class %}index-page{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section id="hero" class="blog-hero section" aria-label="Featured content carousel">
+  <div class="container-fluid p-0" data-aos="fade">
+    <div id="blogHeroCarousel"
+         class="carousel slide blog-hero-slider carousel-fade"
+         data-bs-ride="carousel"
+         data-bs-interval="5000"
+         aria-roledescription="carousel">
+
+      <div class="carousel-indicators" aria-label="Carousel navigation">
+        <button type="button" data-bs-target="#blogHeroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#blogHeroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#blogHeroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        <button type="button" data-bs-target="#blogHeroCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
+        <button type="button" data-bs-target="#blogHeroCarousel" data-bs-slide-to="4" aria-label="Slide 5"></button>
+      </div>
+
+      <div class="carousel-inner" role="list">
+
+        <div class="carousel-item active" role="listitem">
+          <div class="blog-hero-item">
+            <img src="{% static 'assets/img/blog/GBV IMAGE1.jpg' %}" alt="Safe GBV reporting platform" class="d-block w-100 img-fluid" loading="eager">
+            <div class="blog-hero-content">
+              <span class="category" role="text">Support &amp; Safety</span>
+              <h2 class="h1">Your Voice Matters - Share a Report Safely and Confidentially</h2>
+              <div class="meta">
+                <span class="author">Voices Against Violence</span>
+                <span class="date">Kenya</span>
+                <span class="read-time">24/7 Available</span>
+              </div>
+              <a href="{% url 'report_gbv' %}" class="read-more" aria-label="Go to confidential GBV reporting page">Report Confidentially <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="carousel-item" role="listitem">
+          <div class="blog-hero-item">
+            <img src="{% static 'assets/img/blog/GBV IMAGE2.jpg' %}" alt="GBV education and awareness resources" class="d-block w-100 img-fluid" loading="lazy">
+            <div class="blog-hero-content">
+              <span class="category" role="text">Education</span>
+              <h2 class="h1">Understanding Gender-Based Violence: Knowledge is Power</h2>
+              <div class="meta">
+                <span class="author">Learn &amp; Protect</span>
+                <span class="date">Resources Available</span>
+                <span class="read-time">Free Access</span>
+              </div>
+              <a href="{% url 'education' %}" class="read-more" aria-label="Access free GBV education resources">Learn More <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="carousel-item" role="listitem">
+          <div class="blog-hero-item">
+            <img src="{% static 'assets/img/blog/markus-winkler-7y8upK94IM8-unsplash.jpg' %}" alt="Support resources and safe houses across Kenya" class="d-block w-100 img-fluid" loading="lazy">
+            <div class="blog-hero-content">
+              <span class="category" role="text">Resources</span>
+              <h2 class="h1">Find Nearby Support: Police Stations, Legal Aid &amp; Safe Houses</h2>
+              <div class="meta">
+                <span class="author">Get Help Now</span>
+                <span class="date">Locations Across Kenya</span>
+                <span class="read-time">Immediate Support</span>
+              </div>
+              <a href="{% url 'resources' %}" class="read-more" aria-label="Find GBV support resources near you">Find Resources <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="carousel-item" role="listitem">
+          <div class="blog-hero-item">
+            <img src="{% static 'assets/img/blog/GBV 1.jpg' %}" alt="Community support against gender-based violence" class="d-block w-100 img-fluid" loading="lazy">
+            <div class="blog-hero-content">
+              <span class="category" role="text">Community</span>
+              <h2 class="h1">Together We Can End Gender-Based Violence</h2>
+              <div class="meta">
+                <span class="author">Voices Against Violence</span>
+                <span class="date">Kenya</span>
+                <span class="read-time">Join Us</span>
+              </div>
+              <a href="{% url 'contribute' %}" class="read-more" aria-label="Support our mission to end GBV">Contribute <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="carousel-item" role="listitem">
+          <div class="blog-hero-item">
+            <img src="{% static 'assets/img/blog/GBV IMAGE3.jpg' %}" alt="GBV awareness and prevention initiatives" class="d-block w-100 img-fluid" loading="lazy">
+            <div class="blog-hero-content">
+              <span class="category" role="text">Awareness</span>
+              <h2 class="h1">Raising Awareness: Building a Safer Future for All</h2>
+              <div class="meta">
+                <span class="author">Voices Against Violence</span>
+                <span class="date">Kenya</span>
+                <span class="read-time">Stay Informed</span>
+              </div>
+              <a href="{% url 'about' %}" class="read-more" aria-label="Learn about our organization">Learn About Us <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <button class="carousel-control-prev" type="button" data-bs-target="#blogHeroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous slide</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#blogHeroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next slide</span>
+      </button>
+
+    </div>
+  </div>
+</section><!-- /Hero Section -->
+
+<!-- Quick Actions Section -->
+<section id="quick-actions" class="section bg-light py-5" aria-labelledby="quick-actions-heading">
+  <div class="container" data-aos="fade-up">
+
+    <h2 id="quick-actions-heading" class="visually-hidden">Quick Access Services</h2>
+
+    <div class="row g-4">
+
+      <div class="col-lg-4 col-md-6" data-aos="zoom-in" data-aos-delay="100">
+        <article class="card h-100 border-0 shadow-sm text-center">
+          <div class="card-body p-4">
+            <div class="display-4 text-danger mb-3" aria-hidden="true">
+              <i class="bi bi-shield-exclamation"></i>
+            </div>
+            <h3 class="h4 mb-3">Report GBV</h3>
+            <p class="card-text text-muted mb-4">Share a report safely and confidentially. Every report is handled with care.</p>
+            <a href="{% url 'report_gbv' %}" class="btn btn-danger btn-lg" aria-label="Go to confidential GBV reporting form">
+              Report Confidentially
+            </a>
+          </div>
+        </article>
+      </div>
+
+      <div class="col-lg-4 col-md-6" data-aos="zoom-in" data-aos-delay="200">
+        <article class="card h-100 border-0 shadow-sm text-center">
+          <div class="card-body p-4">
+            <div class="display-4 text-primary mb-3" aria-hidden="true">
+              <i class="bi bi-book"></i>
+            </div>
+            <h3 class="h4 mb-3">Learn About GBV</h3>
+            <p class="card-text text-muted mb-4">Explore educational resources about GBV, prevention strategies, and support options.</p>
+            <a href="{% url 'education' %}" class="btn btn-primary btn-lg" aria-label="Access GBV education and learning resources">
+              Learn More
+            </a>
+          </div>
+        </article>
+      </div>
+
+      <div class="col-lg-4 col-md-6" data-aos="zoom-in" data-aos-delay="300">
+        <article class="card h-100 border-0 shadow-sm text-center">
+          <div class="card-body p-4">
+            <div class="display-4 text-info mb-3" aria-hidden="true">
+              <i class="bi bi-geo-alt"></i>
+            </div>
+            <h3 class="h4 mb-3">Find Resources</h3>
+            <p class="card-text text-muted mb-4">Find nearby police posts, legal aid, safe houses, and counseling services across Kenya.</p>
+            <a href="{% url 'resources' %}" class="btn btn-info btn-lg text-white" aria-label="Find GBV support services near you">
+              Find Help
+            </a>
+          </div>
+        </article>
+      </div>
+
+    </div>
+  </div>
+</section><!-- /Quick Actions Section -->
+
+<!-- About GBV Section -->
+<section id="about-gbv" class="section py-5" aria-labelledby="about-heading">
+  <div class="container" data-aos="fade-up">
+    <div class="row align-items-center g-4">
+
+      <div class="col-lg-6" data-aos="fade-right">
+        <img src="{% static 'assets/img/blog/istockphoto-1253675077-1024x1024.webp' %}"
+             alt="Voices Against Violence team providing GBV support and education"
+             class="img-fluid rounded shadow"
+             loading="lazy">
+      </div>
+
+      <div class="col-lg-6" data-aos="fade-left">
+        <span class="description-title text-muted text-uppercase small">About Our Mission</span>
+        <h2 id="about-heading" class="display-6 mb-4">Voices Against Violence: Ending GBV in Kenya</h2>
+        <p class="lead mb-4">
+          Gender-Based Violence (GBV) affects people of all genders in Kenya. Our platform offers a safe,
+          confidential way to share reports while learning about prevention and support.
+        </p>
+        <p class="mb-4">
+          Everyone deserves to live free from violence. Through reporting,
+          education, and resource access, we are building a safer Kenya for all.
+        </p>
+
+        <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-check-circle-fill text-success fs-4 me-2" aria-hidden="true"></i>
+              <span>24/7 Reporting Available</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-check-circle-fill text-success fs-4 me-2" aria-hidden="true"></i>
+              <span>Anonymous &amp; Confidential</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-check-circle-fill text-success fs-4 me-2" aria-hidden="true"></i>
+              <span>Free Educational Resources</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-check-circle-fill text-success fs-4 me-2" aria-hidden="true"></i>
+              <span>Nationwide Resource Finder</span>
+            </div>
+          </div>
+        </div>
+
+        <a href="{% url 'about' %}" class="btn btn-danger btn-lg" aria-label="Learn more about Voices Against Violence organization">
+          Learn More About Us
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section><!-- /About GBV Section -->
+
+<!-- Emergency Section -->
+<section id="emergency" class="section bg-danger text-white py-5" aria-labelledby="emergency-heading">
+  <div class="container text-center" data-aos="fade-up">
+    <div class="display-1 mb-4" aria-hidden="true">
+      <i class="bi bi-telephone-fill"></i>
+    </div>
+
+    <h2 id="emergency-heading" class="display-5 mb-3">Emergency? Need Immediate Help?</h2>
+    <p class="lead mb-5 opacity-75">
+      If you or someone you know is in immediate danger, please contact emergency services immediately.
+    </p>
+
+    <div class="row g-4 justify-content-center">
+
+      <div class="col-lg-3 col-md-4 col-sm-6">
+        <article class="card bg-white bg-opacity-10 border-0 text-white">
+          <div class="card-body p-4">
+            <h3 class="h5 mb-3">Emergency Services</h3>
+            <p class="display-4 fw-bold mb-2">
+              <a href="tel:999" class="text-white text-decoration-none" aria-label="Call Kenya emergency services at 999">999</a>
+            </p>
+            <p class="small mb-0 opacity-75">Kenya Police Emergency Line</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="col-lg-3 col-md-4 col-sm-6">
+        <article class="card bg-white bg-opacity-10 border-0 text-white">
+          <div class="card-body p-4">
+            <h3 class="h5 mb-3">GBV Hotline</h3>
+            <p class="display-4 fw-bold mb-2">
+              <a href="tel:1195" class="text-white text-decoration-none" aria-label="Call GBV support hotline at 1195">1195</a>
+            </p>
+            <p class="small mb-0 opacity-75">Free 24/7 GBV Support</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="col-lg-3 col-md-4 col-sm-6">
+        <article class="card bg-white bg-opacity-10 border-0 text-white">
+          <div class="card-body p-4">
+            <h3 class="h5 mb-3">Child Helpline</h3>
+            <p class="display-4 fw-bold mb-2">
+              <a href="tel:116" class="text-white text-decoration-none" aria-label="Call child protection services at 116">116</a>
+            </p>
+            <p class="small mb-0 opacity-75">Child Protection Services</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="col-lg-3 col-md-4 col-sm-6">
+        <article class="card bg-white bg-opacity-10 border-0 text-white">
+          <div class="card-body p-4">
+            <h3 class="h5 mb-3">Gender Violence Recovery Centre</h3>
+            <p class="display-6 fw-bold mb-2">
+              <a href="tel:0709674301" class="text-white text-decoration-none" aria-label="Call Gender Violence Recovery Centre at 0709 674 301">0709 674 301</a>
+            </p>
+            <p class="small mb-0 opacity-75">Medical &amp; Counseling Support</p>
+          </div>
+        </article>
+      </div>
+
+    </div>
+
+    <div class="mt-5">
+      <p class="text-white opacity-75">
+        <strong>Your safety is our priority.</strong> All calls are confidential and free of charge.
+      </p>
+    </div>
+  </div>
+</section><!-- /Emergency Section -->
+
+<!-- Latest Education Articles Section -->
+<section id="latest-education" class="latest-posts section py-5" aria-labelledby="education-heading">
+  <div class="container section-title text-center mb-5" data-aos="fade-up">
+    <h2 id="education-heading" class="display-6">Latest GBV Education Articles</h2>
+    <p class="text-muted">Learn about Gender-Based Violence, prevention strategies, and support mechanisms</p>
+  </div>
+
+  <div class="container" data-aos="fade-up" data-aos-delay="100">
+    <div class="row g-4">
+      {% for article in articles %}
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:1 }}00">
+        <article class="card h-100 border-0 shadow-sm">
+          <div class="position-relative overflow-hidden">
+            {% if article.image %}
+              <img src="{{ article.image.url }}"
+                   class="card-img-top"
+                   alt="{{ article.title }}"
+                   loading="lazy">
+            {% endif %}
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <span class="badge bg-primary">{{ article.get_category_display }}</span>
+            </div>
+            <h3 class="h5 card-title">{{ article.title }}</h3>
+            <p class="card-text text-muted">{{ article.content|striptags|truncatewords:20 }}</p>
+            <a href="{% url 'education' %}" class="btn btn-outline-primary" aria-label="Read more about {{ article.title }}">
+              Read More <i class="bi bi-arrow-right" aria-hidden="true"></i>
+            </a>
+          </div>
+        </article>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section><!-- /Latest Education Articles Section -->
+
+{% endblock %}
+
+{% block extra_js %}
+{% if not user.is_authenticated %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const loginUrl = "{% url 'login' %}";
+    const selector = '.main a.btn, .main a.read-more';
+    const publicPaths = new Set([
+      '/',
+      "{% url 'about' %}",
+      "{% url 'contact' %}",
+      "{% url 'login' %}",
+      "{% url 'signup' %}",
+    ]);
+
+    function showLoginRequiredToast() {
+      const container = document.getElementById('vav-toast-container') || (function () {
+        const el = document.createElement('div');
+        el.id = 'vav-toast-container';
+        el.className = 'toast-container position-fixed top-0 end-0 p-3';
+        el.style.zIndex = '1090';
+        el.setAttribute('aria-live', 'polite');
+        el.setAttribute('aria-atomic', 'true');
+        document.body.appendChild(el);
+        return el;
+      })();
+
+      const toast = document.createElement('div');
+      toast.className = 'toast align-items-center border-0 vav-toast vav-toast--info';
+      toast.setAttribute('role', 'alert');
+      toast.setAttribute('aria-live', 'assertive');
+      toast.setAttribute('aria-atomic', 'true');
+      toast.setAttribute('data-bs-autohide', 'true');
+      toast.setAttribute('data-bs-delay', '1200');
+      toast.innerHTML = '<div class="toast-body d-flex align-items-center gap-2"><i class="bi bi-info-circle-fill flex-shrink-0" style="font-size:1.1rem;"></i><span class="me-auto">Please log in to continue.</span></div>';
+      container.appendChild(toast);
+      bootstrap.Toast.getOrCreateInstance(toast).show();
+      toast.addEventListener('hidden.bs.toast', function () { toast.remove(); });
+    }
+
+    document.querySelectorAll(selector).forEach(function (link) {
+      link.addEventListener('click', function (event) {
+        const href = (link.getAttribute('href') || '').trim();
+        if (!href || href === '#' || href.startsWith('tel:') || href.startsWith('mailto:') || href.startsWith('javascript:')) {
+          return;
+        }
+
+        const pathname = new URL(href, window.location.origin).pathname;
+        if (publicPaths.has(pathname)) {
+          return;
+        }
+
+        event.preventDefault();
+        showLoginRequiredToast();
+        setTimeout(function () {
+          window.location.href = loginUrl + '?next=' + encodeURIComponent(href);
+        }, 350);
+      });
+    });
+  });
+</script>
+{% endif %}
+{% endblock %}

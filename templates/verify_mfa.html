@@ -1,0 +1,168 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phone Verification – Voices Against Violence</title>
+  <meta name="description" content="Verify your sign-in with the code sent to your registered phone number.">
+  <meta name="keywords" content="phone verification, multi-factor authentication, sign in security, Voices Against Violence">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="canonical" href="{{ request.build_absolute_uri }}">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Phone Verification – Voices Against Violence">
+  <meta property="og:description" content="Verify your sign-in with the code sent to your registered phone number.">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'assets/img/equality.png' %}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Phone Verification – Voices Against Violence">
+  <meta name="twitter:description" content="Verify your sign-in with the code sent to your registered phone number.">
+  <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'assets/img/equality.png' %}">
+  <link href="{% static 'assets/img/equality.png' %}" rel="icon" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/css/auth-flow.css' %}" rel="stylesheet">
+  <style>
+    .form-alert {
+      background: #fff2f2;
+      color: #c53030;
+      border: 1px solid rgba(197, 48, 48, 0.25);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      margin-bottom: 12px;
+      display: none;
+    }
+
+    .input-error {
+      border-color: #c53030 !important;
+      box-shadow: 0 0 0 2px rgba(197, 48, 48, 0.15);
+    }
+
+    .field-error {
+      color: #c53030;
+      font-size: 12px;
+      margin-top: 8px;
+      display: none;
+    }
+
+    .field-error.is-visible {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+<div class="particles-container" id="particles"></div>
+<div class="auth-flow-wrap">
+  <div class="auth-flow-card">
+    <div class="auth-flow-head">
+      <img class="auth-flow-brand" src="{% static 'assets/img/equality.png' %}" alt="Voices Against Violence Logo">
+      <div class="auth-flow-icon"><i class="bi bi-phone"></i></div>
+      <h1>Phone Verification</h1>
+      <p>Enter the 6-digit code sent to your registered phone number.</p>
+    </div>
+
+    {% if messages %}
+    <div class="alerts">
+      {% for msg in messages %}
+      <div class="alert-custom alert-{% if 'error' in msg.tags %}error{% elif 'success' in msg.tags %}success{% else %}info{% endif %}">{{ msg }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post" id="mfa-form" novalidate>
+      {% csrf_token %}
+      <input type="hidden" name="mfa_code" id="full-code">
+      <div class="form-alert" id="mfa-alert">Please enter the full 6-digit code.</div>
+      <div class="form-group">
+        <label class="form-label">Verification Code</label>
+        <div class="otp-row" id="otp-boxes">
+          <input type="text" maxlength="1" class="otp-digit" inputmode="numeric" autocomplete="one-time-code">
+          <input type="text" maxlength="1" class="otp-digit" inputmode="numeric">
+          <input type="text" maxlength="1" class="otp-digit" inputmode="numeric">
+          <input type="text" maxlength="1" class="otp-digit" inputmode="numeric">
+          <input type="text" maxlength="1" class="otp-digit" inputmode="numeric">
+          <input type="text" maxlength="1" class="otp-digit" inputmode="numeric">
+        </div>
+        <div class="field-error" id="mfa-code-error">Please enter all 6 digits.</div>
+      </div>
+      <button type="submit" class="btn-auth"><i class="bi bi-shield-check"></i> Verify & Sign In</button>
+    </form>
+
+    <a href="{% url 'login' %}" class="back-link">
+      <i class="bi bi-arrow-left"></i> Back to sign in
+    </a>
+  </div>
+</div>
+
+<script>
+  function createParticles() {
+    const container = document.getElementById('particles');
+    if (!container) return;
+
+    for (let i = 0; i < 48; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.cssText = `
+        left: ${Math.random() * 100}%;
+        width: ${Math.random() * 1.8 + 3}px;
+        height: ${Math.random() * 1.8 + 3}px;
+        animation-duration: ${Math.random() * 4 + 10}s;
+        animation-delay: ${Math.random() * 6}s;
+      `;
+      container.appendChild(p);
+    }
+  }
+
+  const digits = document.querySelectorAll('.otp-digit');
+  digits.forEach((input, idx) => {
+    input.addEventListener('input', e => {
+      e.target.value = e.target.value.replace(/\D/g, '');
+      if (e.target.value && idx < digits.length - 1) digits[idx + 1].focus();
+      syncCode();
+    });
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Backspace' && !input.value && idx > 0) digits[idx - 1].focus();
+    });
+    input.addEventListener('paste', e => {
+      e.preventDefault();
+      const text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '');
+      [...text.slice(0, 6)].forEach((ch, i) => { if (digits[i]) digits[i].value = ch; });
+      syncCode();
+      digits[Math.min(text.length, 5)].focus();
+    });
+  });
+
+  function syncCode() {
+    document.getElementById('full-code').value = [...digits].map(d => d.value).join('');
+  }
+
+  document.getElementById('mfa-form').addEventListener('submit', e => {
+    syncCode();
+    if (document.getElementById('full-code').value.length !== 6) {
+      e.preventDefault();
+      const alertEl = document.getElementById('mfa-alert');
+      const errorEl = document.getElementById('mfa-code-error');
+      if (alertEl) alertEl.style.display = 'block';
+      if (errorEl) errorEl.classList.add('is-visible');
+      digits.forEach(d => d.classList.add('input-error'));
+      digits[0]?.focus({ preventScroll: false });
+    }
+  });
+
+  digits.forEach((input) => {
+    input.addEventListener('input', () => {
+      input.classList.remove('input-error');
+      const alertEl = document.getElementById('mfa-alert');
+      const errorEl = document.getElementById('mfa-code-error');
+      if (alertEl) alertEl.style.display = 'none';
+      if (errorEl) errorEl.classList.remove('is-visible');
+    });
+  });
+
+  createParticles();
+  if (digits.length) digits[0].focus();
+</script>
+</body>
+</html>

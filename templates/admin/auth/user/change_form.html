@@ -1,0 +1,534 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+  /* ── Full-width form: remove ALL surrounding whitespace ─────── */
+  /* Strip padding from content-wrapper, content, and container-fluid */
+  .content-wrapper > .content,
+  .content-wrapper > .content > .container-fluid,
+  .content-wrapper > .content > .container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  /* Form column → full width */
+  #content-main .col-lg-9 {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  /* Sidebar col is now empty — hide it */
+  #content-main .col-lg-3 {
+    display: none !important;
+  }
+  /* Kill Bootstrap row gutters that create left/right gaps */
+  #content-main .row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  #content-main, #content-main form, #content-main form > div, #user_form {
+    width: 100% !important; max-width: none !important;
+  }
+  /* Remove top padding inside the card so fields start immediately */
+  #content-main .card-body {
+    padding-top: 0.75rem !important;
+  }
+  #user_form .aligned, #user_form .module, #user_form fieldset,
+  #user_form .inline-group, #user_form .tab-content, #user_form .tab-pane {
+    width: 100% !important; max-width: none !important;
+  }
+
+  /* ── Hide Select2 containers and stray <select> elements that appear
+         alongside the filter_vertical dual-panel selector ─────────── */
+  #user_form .related-widget-wrapper > .select2-container,
+  #user_form .related-widget-wrapper > select {
+    display: none !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* Keep admin two-column layout so permissions/groups labels remain visible */
+  /* Avoid hiding .col-sm-3 globally — we only restyle inner modules to be full width. */
+
+  /* ── Module / fieldset cards ─────────────────────────────────── */
+  #user_form .module, #user_form fieldset, #user_form .inline-group,
+  #user_form .tab-content, #user_form .tab-pane {
+    background: #ffffff !important;
+    border: 1px solid #e5e0ef !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 16px rgba(90,45,122,0.07) !important;
+    overflow: hidden !important;
+  }
+  #user_form .module + .module, #user_form fieldset + fieldset,
+  #user_form .inline-group + .inline-group { margin-top: 1rem !important; }
+
+  /* Section headers */
+  #user_form .module > h2, #user_form .module > h3,
+  #user_form fieldset > h2, #user_form fieldset > h3,
+  #user_form .inline-group > h2, #user_form .inline-group > h3 {
+    margin: 0 !important;
+    padding: 0.85rem 1.1rem !important;
+    background: linear-gradient(135deg, #5A2D7A 0%, #8B4C9F 100%) !important;
+    color: #fff !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.03em !important;
+  }
+
+  /* Form rows */
+  #user_form .module .form-row, #user_form fieldset .form-row,
+  #user_form .inline-group .form-row {
+    padding: 0.85rem 1.1rem !important;
+    border-bottom: 1px solid #f0ebfa !important;
+  }
+  #user_form .module .form-row:last-child, #user_form fieldset .form-row:last-child,
+  #user_form .inline-group .form-row:last-child { border-bottom: 0 !important; }
+
+  #user_form .aligned label, #user_form .form-row label, #user_form .inline-related label {
+    font-weight: 600 !important; color: #1f2937 !important;
+  }
+  #user_form .aligned .help, #user_form .form-row .help,
+  #user_form .inline-related .help, #user_form .helptext {
+    color: #6b7280 !important; font-style: italic !important;
+  }
+
+  /* Inputs */
+  #user_form input[type="text"], #user_form input[type="email"],
+  #user_form input[type="password"], #user_form input[type="number"],
+  #user_form textarea, #user_form select {
+    border-radius: 10px !important;
+    border: 1px solid #d9d3e8 !important;
+    background: #fff !important;
+  }
+  #user_form input[type="text"]:focus, #user_form input[type="email"]:focus,
+  #user_form input[type="password"]:focus, #user_form input[type="number"]:focus,
+  #user_form textarea:focus, #user_form select:focus {
+    border-color: #8B4C9F !important;
+    box-shadow: 0 0 0 3px rgba(139,76,159,0.1) !important;
+  }
+
+  /* ── Permissions selector: modern dual-panel ────────────────── */
+  #user_form .selector {
+    width: 100% !important;
+    max-width: none !important;
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) 4.5rem minmax(0,1fr) !important;
+    align-items: stretch !important;
+    gap: 0 !important;
+    padding: 0 !important;
+    border: 1px solid #e0d6f0 !important;
+    border-radius: 14px !important;
+    background: transparent !important;
+    box-shadow: 0 4px 20px rgba(90,45,122,0.08) !important;
+    overflow: hidden !important;
+  }
+
+  /* ── Panels ───────── */
+  #user_form .selector .selector-available,
+  #user_form .selector .selector-chosen {
+    min-width: 0 !important;
+    width: 100% !important;
+    background: #fff !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+
+  /* ── Panel headers ─── */
+  #user_form .selector .selector-available h2 {
+    background: linear-gradient(135deg, #1a7f74 0%, #20B2AA 100%) !important;
+    color: #fff !important;
+    margin: 0 !important;
+    padding: 0.7rem 1rem !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    font-family: 'Montserrat', sans-serif !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+  #user_form .selector .selector-chosen h2 {
+    background: linear-gradient(135deg, #5A2D7A 0%, #8B4C9F 100%) !important;
+    color: #fff !important;
+    margin: 0 !important;
+    padding: 0.7rem 1rem !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    font-family: 'Montserrat', sans-serif !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+
+  /* Count badges inside headers */
+  #user_form .selector h2 .vav-count {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 20px !important;
+    height: 20px !important;
+    padding: 0 5px !important;
+    border-radius: 999px !important;
+    background: rgba(255,255,255,0.25) !important;
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+  }
+
+  /* ── Search filter ─── */
+  #user_form .selector .selector-filter {
+    padding: 0.55rem 0.75rem !important;
+    background: #f9f6ff !important;
+    border-bottom: 1px solid #ede7f6 !important;
+    position: relative !important;
+  }
+  #user_form .selector .selector-filter::before {
+    content: "🔍";
+    position: absolute !important;
+    left: 1.1rem !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    font-size: 0.78rem !important;
+    opacity: 0.45 !important;
+    pointer-events: none !important;
+    font-family: inherit !important;
+    line-height: 1 !important;
+  }
+  #user_form .selector .selector-filter input {
+    width: 100% !important;
+    border: 1px solid #d9d3e8 !important;
+    border-radius: 8px !important;
+    padding: 0.42rem 0.75rem 0.42rem 1.8rem !important;
+    font-size: 0.85rem !important;
+    background: #fff !important;
+    font-family: 'Roboto', sans-serif !important;
+    transition: border-color .2s, box-shadow .2s !important;
+  }
+  #user_form .selector .selector-filter input:focus {
+    border-color: #8B4C9F !important;
+    box-shadow: 0 0 0 3px rgba(139,76,159,0.12) !important;
+    outline: none !important;
+  }
+
+  /* ── List boxes ─── */
+  #user_form .selector select {
+    flex: 1 !important;
+    min-height: 340px !important;
+    max-height: 420px !important;
+    border: 0 !important;
+    padding: 0.4rem !important;
+    background: #fff !important;
+    overflow-y: auto !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: #d8ccee #f5f0ff !important;
+    font-size: 0.84rem !important;
+    font-family: 'Roboto', sans-serif !important;
+  }
+  #user_form .selector .selector-chosen select {
+    background: #fdf9ff !important;
+  }
+  #user_form .selector select::-webkit-scrollbar { width: 6px !important; }
+  #user_form .selector select::-webkit-scrollbar-track { background: #f5f0ff !important; }
+  #user_form .selector select::-webkit-scrollbar-thumb {
+    background: #c4b4e0 !important; border-radius: 99px !important;
+  }
+  #user_form .selector select option {
+    padding: 0.38rem 0.6rem !important;
+    border-radius: 6px !important;
+    margin-bottom: 1px !important;
+    color: #374151 !important;
+    cursor: pointer !important;
+  }
+  #user_form .selector select option:hover { background: #f3e8ff !important; color: #5A2D7A !important; }
+  #user_form .selector select option:checked {
+    background: linear-gradient(135deg, #5A2D7A, #8B4C9F) !important;
+    color: #fff !important;
+  }
+
+  /* ── Centre column with transfer buttons ─── */
+  #user_form .selector .selector-chooser {
+    background: #f4effe !important;
+    border-left: 1px solid #e0d6f0 !important;
+    border-right: 1px solid #e0d6f0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    padding: 0.75rem 0.5rem !important;
+  }
+  #user_form .selector .selector-chooser ul {
+    list-style: none !important;
+    margin: 0 !important; padding: 0 !important;
+    display: flex !important; flex-direction: column !important; gap: 0.5rem !important;
+  }
+  #user_form .selector .selector-chooser li { list-style: none !important; }
+
+  /* All four buttons base */
+  #user_form .selector .selector-chooser li button {
+    width: 3rem !important;
+    height: 2.4rem !important;
+    border-radius: 8px !important;
+    border: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0 !important;
+    font-size: 0 !important;
+    cursor: pointer !important;
+    transition: transform .18s ease, box-shadow .18s ease, filter .18s ease !important;
+    position: relative !important;
+  }
+
+  /* Add selected → (primary) */
+  #user_form .selector .selector-chooser li button.selector-add {
+    background: linear-gradient(135deg, #5A2D7A 0%, #8B4C9F 100%) !important;
+    box-shadow: 0 3px 10px rgba(90,45,122,0.22) !important;
+  }
+  #user_form .selector .selector-chooser li button.selector-add::after {
+    content: "▶";
+    font-size: 0.85rem !important;
+    color: #fff !important;
+    font-family: inherit !important;
+    line-height: 1 !important;
+  }
+
+  /* Add all ▶▶ (lighter) */
+  #user_form .selector .selector-chooser li button.selector-chooseall {
+    background: rgba(139,76,159,0.12) !important;
+    box-shadow: none !important;
+    border: 1px solid rgba(139,76,159,0.25) !important;
+  }
+  #user_form .selector .selector-chooser li button.selector-chooseall::after {
+    content: "▶▶";
+    font-size: 0.65rem !important;
+    color: #5A2D7A !important;
+    font-family: inherit !important;
+    line-height: 1 !important;
+  }
+
+  /* Divider between add/remove pairs */
+  #user_form .selector .selector-chooser li.chooser-divider {
+    width: 2rem !important;
+    height: 1px !important;
+    background: #d9d3e8 !important;
+    margin: 0.1rem auto !important;
+  }
+
+  /* Remove selected ◀ (neutral) */
+  #user_form .selector .selector-chooser li button.selector-remove {
+    background: #fff !important;
+    border: 1px solid #f5a5a5 !important;
+    box-shadow: 0 2px 6px rgba(239,68,68,0.08) !important;
+  }
+  #user_form .selector .selector-chooser li button.selector-remove::after {
+    content: "◀";
+    font-size: 0.85rem !important;
+    color: #dc2626 !important;
+    font-family: inherit !important;
+    line-height: 1 !important;
+  }
+
+  /* Clear all ◀◀ */
+  #user_form .selector .selector-chooser li button.selector-clearall {
+    background: rgba(239,68,68,0.06) !important;
+    border: 1px solid rgba(239,68,68,0.2) !important;
+  }
+  #user_form .selector .selector-chooser li button.selector-clearall::after {
+    content: "◀◀";
+    font-size: 0.65rem !important;
+    color: #dc2626 !important;
+    font-family: inherit !important;
+    line-height: 1 !important;
+  }
+
+  /* Hover / active states */
+  #user_form .selector .selector-chooser li button.selector-add:hover,
+  #user_form .selector .selector-chooser li button.selector-chooseall:hover {
+    filter: brightness(1.08) !important;
+    transform: translateX(2px) !important;
+    box-shadow: 0 5px 14px rgba(90,45,122,0.28) !important;
+  }
+  #user_form .selector .selector-chooser li button.selector-remove:hover,
+  #user_form .selector .selector-chooser li button.selector-clearall:hover {
+    background: #fef2f2 !important;
+    border-color: #f87171 !important;
+    transform: translateX(-2px) !important;
+  }
+  #user_form .selector .selector-chooser li button:disabled {
+    opacity: 0.35 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  /* ── Responsive ─────────────────────────────────────────────── */
+  @media (max-width: 900px) {
+    #user_form .selector {
+      grid-template-columns: 1fr !important;
+      grid-template-rows: auto auto auto !important;
+    }
+    #user_form .selector .selector-available { border-radius: 14px 14px 0 0 !important; }
+    #user_form .selector .selector-chosen   { border-radius: 0 0 14px 14px !important; }
+    #user_form .selector .selector-chooser {
+      flex-direction: row !important;
+      border: none !important;
+      border-top: 1px solid #e0d6f0 !important;
+      border-bottom: 1px solid #e0d6f0 !important;
+      padding: 0.6rem !important;
+    }
+    #user_form .selector .selector-chooser ul {
+      flex-direction: row !important; gap: 0.4rem !important;
+    }
+    #user_form .selector .selector-chooser li button.selector-add::after { content: "▼" !important; }
+    #user_form .selector .selector-chooser li button.selector-chooseall::after { content: "▼▼" !important; }
+    #user_form .selector .selector-chooser li button.selector-remove::after { content: "▲" !important; }
+    #user_form .selector .selector-chooser li button.selector-clearall::after { content: "▲▲" !important; }
+    #user_form .selector .selector-chooser li button.selector-add:hover,
+    #user_form .selector .selector-chooser li button.selector-chooseall:hover { transform: translateY(2px) !important; }
+    #user_form .selector .selector-chooser li button.selector-remove:hover,
+    #user_form .selector .selector-chooser li button.selector-clearall:hover { transform: translateY(-2px) !important; }
+  }
+
+  /* ── Action bar: flows naturally above the footer ────────────── */
+  .vav-action-bar {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    padding: 0.65rem 1rem !important;
+    margin-top: 1rem !important;
+    background: #fff !important;
+    border: 1px solid #e5e0ef !important;
+    border-radius: 12px !important;
+    box-shadow: 0 2px 8px rgba(90,45,122,0.07) !important;
+  }
+
+  /* Dissolve Jazzmin's d-flex wrapper so buttons flow into the bar directly */
+  .vav-action-bar > div { display: contents !important; }
+
+  /* All buttons compact and auto-width */
+  .vav-action-bar input[type="submit"],
+  .vav-action-bar a.btn {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 0.42rem 1rem !important;
+    font-size: 0.84rem !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    border: 1px solid #d9d3e8 !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+    text-decoration: none !important;
+    transition: background .15s !important;
+  }
+
+  .vav-action-bar input[name="_save"] {
+    background: linear-gradient(135deg, #5A2D7A, #8B4C9F) !important;
+    color: #fff !important;
+    border-color: transparent !important;
+    box-shadow: 0 3px 10px rgba(90,45,122,0.25) !important;
+  }
+  .vav-action-bar input[name="_save"]:hover {
+    background: linear-gradient(135deg, #4a2367, #7c3a8e) !important;
+  }
+  .vav-action-bar input[name="_addanother"],
+  .vav-action-bar input[name="_continue"] {
+    background: #f0ebff !important;
+    color: #5A2D7A !important;
+    border-color: #c9aee0 !important;
+  }
+  .vav-action-bar input[name="_addanother"]:hover,
+  .vav-action-bar input[name="_continue"]:hover {
+    background: #e4d8f8 !important;
+  }
+  .vav-action-bar a.btn-danger {
+    background: #fef2f2 !important;
+    color: #ef4444 !important;
+    border-color: #fca5a5 !important;
+    margin-left: auto !important;
+  }
+  .vav-action-bar a.btn-danger:hover {
+    background: #ef4444 !important;
+    color: #fff !important;
+  }
+</style>
+{% endblock %}
+
+{# Suppress default submit rows — buttons rendered in after_field_sets below #}
+{% block submit_row %}{% endblock %}
+{% block submit_buttons_top %}{% endblock %}
+
+{# Render action bar naturally below the form card, above the footer #}
+{% block after_field_sets %}
+<div class="col-12">
+  <div class="vav-action-bar">
+    {% submit_row %}
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+{{ block.super }}
+{% endblock %}
+
+{% block extrajs %}
+{{ block.super }}
+<script>
+(function () {
+  function updateCounts() {
+    document.querySelectorAll('#user_form .selector').forEach(function (sel) {
+      var avail  = sel.querySelector('.selector-available select');
+      var chosen = sel.querySelector('.selector-chosen select');
+      var h2Avail  = sel.querySelector('.selector-available h2');
+      var h2Chosen = sel.querySelector('.selector-chosen h2');
+      if (!avail || !chosen) return;
+
+      function badge(h2, count) {
+        var b = h2.querySelector('.vav-count');
+        if (!b) { b = document.createElement('span'); b.className = 'vav-count'; h2.appendChild(b); }
+        b.textContent = count;
+      }
+      badge(h2Avail,  avail.options.length);
+      badge(h2Chosen, chosen.options.length);
+    });
+  }
+
+  function addDivider(chooser) {
+    var ul = chooser.querySelector('ul');
+    if (!ul || ul.querySelector('.chooser-divider')) return;
+    var removeBtn = ul.querySelector('.selector-remove');
+    if (!removeBtn) return;
+    var li = document.createElement('li');
+    li.className = 'chooser-divider';
+    ul.insertBefore(li, removeBtn.parentElement);
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    updateCounts();
+    document.querySelectorAll('#user_form .selector .selector-chooser').forEach(addDivider);
+
+    // Re-count after any button click that moves options
+    document.querySelectorAll('#user_form .selector .selector-chooser button').forEach(function (btn) {
+      btn.addEventListener('click', function () { setTimeout(updateCounts, 60); });
+    });
+  });
+})();
+</script>
+{% endblock %}
+
+{% block submit_buttons_bottom %}{% endblock %}

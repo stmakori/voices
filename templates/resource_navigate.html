@@ -1,0 +1,488 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Directions — {{ resource.name }}{% endblock %}
+{% block meta_description %}Get directions to {{ resource.name }} in {{ resource.location }} through Voices Against Violence.{% endblock %}
+{% block meta_keywords %}directions, {{ resource.name }}, {{ resource.location }}, support resource{% endblock %}
+{% block meta_robots %}noindex,follow{% endblock %}
+
+{% block extra_css %}
+<style>
+  #map {
+    height: clamp(320px, 64vh, 700px);
+    min-height: 300px;
+    border: 1px solid #e6e6e6;
+    border-radius: 8px;
+    background: #f8f9fa;
+  }
+
+  .route-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  @media (max-width: 768px) {
+    #map {
+      height: clamp(280px, 50vh, 460px);
+      min-height: 260px;
+    }
+
+    .route-actions .btn {
+      flex: 1 1 100%;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row">
+    <div class="col-lg-8 offset-lg-2">
+      <div class="mb-3">
+        <a href="{% url 'resources' %}" class="btn btn-outline-secondary btn-sm">
+          <i class="bi bi-arrow-left"></i> Back to resource list
+        </a>
+      </div>
+          <h3>{{ resource.name }}</h3>
+          <p class="text-muted">{{ resource.location }}{% if resource.address %} — {{ resource.address }}{% endif %}</p>
+      <div id="map"></div>
+      <p id="status" class="mt-2 text-muted">Requesting your location…</p>
+      <pre id="debug" class="mt-2 small ui-55e98bc8"></pre>
+      <p class="mt-2 route-actions">
+        <a id="external-link" href="#" target="_blank" class="btn btn-outline-secondary">Open in external maps</a>
+        <button id="precise-btn" class="btn btn-primary">Use precise location</button>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+  <link rel="stylesheet" href="{% static 'assets/leaflet/dist/leaflet.css' %}" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+
+  <script src="{% static 'assets/leaflet/dist/leaflet.js' %}"></script>
+  <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.min.js"></script>
+
+  <script>
+    const destinationQuery = "{{ destination_query|escapejs }}";
+    const destName = "{{ resource.name|escapejs }}";
+    const destLocation = "{{ resource.location|escapejs }}";
+    const resourceType = "{{ resource.resource_type|escapejs }}";
+    const defaultCounty = "{{ default_county|default:'Nakuru County'|escapejs }}";
+    const destinationLatRaw = "{{ destination_latitude|default_if_none:'' }}";
+    const destinationLonRaw = "{{ destination_longitude|default_if_none:'' }}";
+    const defaultCountyLatRaw = "{{ default_county_latitude|default_if_none:'' }}";
+    const defaultCountyLonRaw = "{{ default_county_longitude|default_if_none:'' }}";
+    const destinationLat = destinationLatRaw ? parseFloat(destinationLatRaw) : null;
+    const destinationLon = destinationLonRaw ? parseFloat(destinationLonRaw) : null;
+    const defaultCountyLat = defaultCountyLatRaw ? parseFloat(defaultCountyLatRaw) : null;
+    const defaultCountyLon = defaultCountyLonRaw ? parseFloat(defaultCountyLonRaw) : null;
+
+    // Enable debug output only when `?debug=1` is present in the URL.
+    const DEBUG_ENABLED = (typeof window !== 'undefined') && new URLSearchParams(window.location.search).get('debug') === '1';
+
+    function markerColor(type) {
+      if (type === 'police') return '#0d6efd'; // blue
+      if (type === 'safehouse') return '#dc3545'; // red
+      if (type === 'church') return '#6f42c1'; // purple
+      if (type === 'hospital') return '#198754'; // green
+      if (type === 'counseling') return '#fd7e14'; // orange
+      if (type === 'legal') return '#20c997'; // teal
+      return '#6c757d'; // gray
+    }
+
+    function setStatus(msg) {
+      const el = document.getElementById('status');
+      if (el) el.textContent = msg;
+      // Only reveal the debug box when explicitly enabled via URL param.
+      const dbg = document.getElementById('debug');
+      if (dbg && DEBUG_ENABLED) dbg.style.display = 'block';
+    }
+
+    function debug(msg) {
+      if (!DEBUG_ENABLED) return;
+      const dbg = document.getElementById('debug');
+      if (!dbg) return;
+      try { dbg.textContent += '\n' + msg; } catch(e) { dbg.textContent = String(msg); }
+      dbg.scrollTop = dbg.scrollHeight;
+    }
+
+    // Capture global errors & unhandled rejections to the debug box (visible with ?debug=1)
+    if (typeof window !== 'undefined') {
+      window.addEventListener('error', function(e){
+        try { debug('Global error: ' + (e && e.message) + ' at ' + (e && e.filename) + ':' + (e && e.lineno)); } catch(_){}
+      });
+      window.addEventListener('unhandledrejection', function(evt){
+        try { debug('UnhandledRejection: ' + (evt && evt.reason ? (evt.reason.stack || evt.reason) : evt)); } catch(_){}
+      });
+    }
+
+    function normalizeKenyaQuery(query) {
+      let q = (query || '').trim();
+      if (!q) return q;
+      const lower = q.toLowerCase();
+      if (!lower.includes('county')) q += ', ' + defaultCounty;
+      if (!q.toLowerCase().includes('kenya')) q += ', Kenya';
+      return q;
+    }
+
+    async function geocode(query) {
+      const normalizedQuery = normalizeKenyaQuery(query);
+      // Primary: Photon (OpenStreetMap-based geocoder)
+      const photonUrl = 'https://photon.komoot.io/api/?q=' + encodeURIComponent(normalizedQuery) + '&limit=1';
+      debug('Geocode (photon) request: ' + photonUrl);
+      try {
+        const pres = await fetch(photonUrl, { headers: { 'Accept': 'application/json' } });
+        debug('Photon status: ' + (pres && pres.status));
+        if (pres && pres.ok) {
+          const pdata = await pres.json().catch(e=>{ debug('Photon JSON parse error: '+e); return null; });
+          debug('Photon result: ' + JSON.stringify(pdata && pdata.features && pdata.features[0] ? pdata.features[0] : pdata));
+          if (pdata && pdata.features && pdata.features.length > 0) {
+            const feat = pdata.features[0];
+            if (feat.geometry && feat.geometry.coordinates) {
+              // Photon geometry coordinates are [lon, lat]
+              return { lat: parseFloat(feat.geometry.coordinates[1]), lon: parseFloat(feat.geometry.coordinates[0]) };
+            }
+          }
+        } else {
+          const t = await (pres && pres.text ? pres.text().catch(()=>'<no body>') : '<no response>');
+          debug('Photon body: ' + t);
+        }
+      } catch (e) {
+        debug('Photon fetch error: ' + e);
+      }
+
+      // Fallback: Nominatim (if Photon failed)
+      const url = 'https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(normalizedQuery) + '&limit=1&addressdetails=0&countrycodes=ke&viewbox=33.5,5.5,42.0,-5.2&bounded=1';
+      debug('Geocode fallback (nominatim) request: ' + url);
+      try {
+        const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+        debug('Nominatim status: ' + (res && res.status));
+        if (!res || !res.ok) {
+          const text = await (res && res.text ? res.text().catch(()=>'<no body>') : '<no response>');
+          debug('Nominatim response body: ' + text);
+          return null;
+        }
+        const data = await res.json().catch(e=>{ debug('Nominatim JSON parse error: '+e); return null; });
+        debug('Nominatim result: ' + JSON.stringify(data && data[0] ? data[0] : data));
+        if (!data || data.length === 0) return null;
+        return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
+      } catch (e) {
+        debug('Nominatim fetch error: ' + e);
+        return null;
+      }
+    }
+
+    const LEAFLET_CSS = "{% static 'assets/leaflet/dist/leaflet.css' %}";
+    const LEAFLET_JS = "{% static 'assets/leaflet/dist/leaflet.js' %}";
+
+    async function ensureLeaflet() {
+      if (window.L) return;
+      // Inject Leaflet CSS if missing
+      if (!document.querySelector('link[href*="leaflet"]')) {
+        const l = document.createElement('link');
+        l.rel = 'stylesheet';
+        l.href = LEAFLET_CSS;
+        document.head.appendChild(l);
+      }
+      // If Leaflet script already present but not loaded, wait a short while
+      if (window.L) return;
+      if (!document.querySelector('script[src*="leaflet"]')) {
+        await new Promise(function(resolve, reject) {
+          const s = document.createElement('script');
+          s.src = LEAFLET_JS;
+          s.onload = resolve; s.onerror = function(e){ reject(new Error('Failed to load Leaflet')); };
+          document.head.appendChild(s);
+        }).catch(function(e){ debug('Leaflet load error: '+e); });
+      } else {
+        // wait briefly for it to initialize
+        let waited = 0;
+        while (!window.L && waited < 5000) {
+          // eslint-disable-next-line no-await-in-loop
+          await new Promise(r => setTimeout(r, 100));
+          waited += 100;
+        }
+      }
+    }
+
+    let map = null;
+
+    function initMap(userPos, destPos) {
+      if (!map) {
+        map = L.map('map');
+      } else {
+        // remove existing layers except the tile layer
+        map.eachLayer(function(layer) {
+          if (layer && layer._url !== 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png') {
+            try { map.removeLayer(layer); } catch(e) {}
+          }
+        });
+      }
+      const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+      setTimeout(function () { try { map.invalidateSize(); } catch(_) {} }, 150);
+      // Make sure the map shows something immediately while routing loads
+      if (destPos) {
+        map.setView([destPos.lat, destPos.lon], 13);
+      } else if (userPos) {
+        map.setView([userPos.lat, userPos.lon], 13);
+      } else {
+        map.setView([0,0], 2);
+      }
+      // If we have a destination, add a marker (and center appropriately).
+      if (destPos) {
+        if (userPos) {
+          // show a view between user and destination
+          const centerLat = (userPos.lat + destPos.lat) / 2;
+          const centerLon = (userPos.lon + destPos.lon) / 2;
+          map.setView([centerLat, centerLon], 12);
+        } else {
+          map.setView([destPos.lat, destPos.lon], 15);
+        }
+        L.circleMarker([destPos.lat, destPos.lon], {
+          radius: 9,
+          color: markerColor(resourceType),
+          weight: 2,
+          fillColor: markerColor(resourceType),
+          fillOpacity: 0.9,
+        }).addTo(map).bindPopup('Destination');
+      }
+      // If neither provided, fall back to world view (already set above).
+    }
+
+    // Perform routing given a user position and destination.
+    async function runRouting(userPos, dest) {
+      try {
+        // Prepare OSRM params (lon,lat)
+        const originParam = userPos.lon + ',' + userPos.lat;
+        const destParam = dest.lon + ',' + dest.lat;
+        setStatus('Requesting a route…');
+
+        async function fetchRouteWithProfile(profile) {
+          const url = '/api/route/?origin=' + encodeURIComponent(originParam) + '&destination=' + encodeURIComponent(destParam) + '&profile=' + encodeURIComponent(profile);
+          const r = await fetch(url);
+          const text = await r.text().catch(()=>null);
+          debug('/api/route(' + profile + ') status: ' + (r && r.status));
+          debug('/api/route(' + profile + ') body: ' + (text || '<no body>'));
+          if (!r.ok) {
+            throw new Error('Route proxy failed: ' + r.status + ' body: ' + (text||''));
+          }
+          return text ? JSON.parse(text) : null;
+        }
+
+        let jr = null;
+        try {
+          jr = await fetchRouteWithProfile('driving');
+        } catch (firstErr) {
+          debug('Driving profile failed, retrying with walking profile: ' + firstErr);
+          setStatus('Primary route unavailable, retrying…');
+          jr = await fetchRouteWithProfile('walking');
+        }
+
+        if (jr.code !== 'Ok' || !jr.routes || jr.routes.length === 0) throw new Error('No route');
+
+        // Draw route geometry
+        try { initMap(userPos, dest); } catch (e) { console.warn('initMap error:', e); }
+
+        let geom = jr.routes[0].geometry;
+        let geojson = geom;
+        if (!geojson) throw new Error('No geometry in route response');
+        if (!geojson.type && geojson.coordinates) {
+          geojson = { type: 'LineString', coordinates: geojson.coordinates };
+        }
+
+        const routeLayer = L.geoJSON(geojson, { style: { color: '#2b7cff', weight: 5, opacity: 0.9 } }).addTo(map);
+        const bounds = routeLayer.getBounds ? routeLayer.getBounds() : null;
+        if (bounds) map.fitBounds(bounds, { padding: [40,40] });
+
+        // Add markers
+        L.circleMarker([dest.lat, dest.lon], {
+          radius: 9,
+          color: markerColor(resourceType),
+          weight: 2,
+          fillColor: markerColor(resourceType),
+          fillOpacity: 0.9,
+        }).addTo(map).bindPopup('Destination');
+        L.marker([userPos.lat, userPos.lon]).addTo(map).bindPopup(userPos.approx ? 'Approximate location' : 'You');
+
+        const osmRoute = encodeURIComponent(userPos.lat + ',' + userPos.lon + ';' + dest.lat + ',' + dest.lon);
+        document.getElementById('external-link').href = 'https://www.openstreetmap.org/directions?engine=graphhopper_foot&route=' + osmRoute;
+        if (jr.fallback) {
+          setStatus('Route service is busy. Showing approximate guidance.');
+        } else {
+          setStatus('Route ready.');
+        }
+      } catch (err) {
+        debug('runRouting error: ' + err);
+        throw err;
+      }
+    }
+
+    async function requestPreciseLocation() {
+      return new Promise(function(resolve, reject) {
+        if (!navigator.geolocation) {
+          reject(new Error('Geolocation is not available in this browser.'));
+          return;
+        }
+        navigator.geolocation.getCurrentPosition(
+          function(pos) {
+            resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude, approx: false });
+          },
+          function(err) {
+            reject(err);
+          },
+          { enableHighAccuracy: true, timeout: 20000 }
+        );
+      });
+    }
+
+    // Wire the explicit "Use precise location" button to trigger a geolocation prompt.
+    (function wirePreciseButton(){
+      const btn = document.getElementById('precise-btn');
+      if (!btn) return;
+      btn.addEventListener('click', async function(){
+        setStatus('Requesting precise location…');
+        try {
+          const userPos = await requestPreciseLocation();
+          // Find destination again if needed
+          const destResult = await findDestination();
+          if (!destResult) {
+            setStatus('Unable to find the destination location.');
+            return;
+          }
+          await runRouting(userPos, destResult.pos);
+        } catch (e) {
+          debug('Precise location request failed: ' + e);
+          if (e && (e.code === 1 || String(e).toLowerCase().includes('denied'))) {
+            setStatus('Location access is blocked. Enable location permission for this site in your browser settings, then try again.');
+          } else {
+            setStatus('Unable to get a precise location.');
+          }
+        }
+      });
+    })();
+
+    async function findDestination() {
+      if (destinationLat !== null && destinationLon !== null) {
+        return {
+          pos: { lat: parseFloat(destinationLat), lon: parseFloat(destinationLon) },
+          query: 'stored_coordinates',
+        };
+      }
+
+      // Try progressively simpler queries if initial search fails.
+      // Prefer the explicit resource name first.
+      const candidates = [];
+      const resourceAddress = "{{ resource.address|default:''|escapejs }}";
+      const nameCity = destName && destLocation ? (destName + ', ' + destLocation) : null;
+      if (destName) candidates.push(destName);
+      if (nameCity && nameCity !== destName) candidates.push(nameCity);
+      if (resourceAddress) candidates.push(resourceAddress);
+      if (destinationQuery) candidates.push(destinationQuery);
+      if (destLocation && destLocation !== destinationQuery && destLocation !== destName) candidates.push(destLocation);
+
+      for (const q of candidates) {
+        try {
+          setStatus('Geocoding: ' + q);
+          const result = await geocode(q);
+          if (result) return { pos: result, query: q };
+        } catch (e) {
+          console.warn('Geocode attempt failed for', q, e);
+        }
+      }
+
+      if (defaultCountyLat !== null && defaultCountyLon !== null) {
+        return {
+          pos: { lat: defaultCountyLat, lon: defaultCountyLon },
+          query: 'default_county_fallback',
+        };
+      }
+
+      return null;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      (async function() {
+        await ensureLeaflet();
+      try {
+        setStatus('Finding the destination location…');
+        const destResult = await findDestination();
+        if (!destResult) {
+          setStatus('Unable to find the destination location.');
+          document.getElementById('external-link').href = 'https://www.openstreetmap.org/search?query=' + encodeURIComponent(destinationQuery || destName || destLocation);
+          return;
+        }
+
+        if (destResult.query === 'default_county_fallback') {
+          setStatus('Using the default county location while the exact destination is refined.');
+        }
+
+        const dest = destResult.pos;
+        const destQueryUsed = destResult.query;
+        // Use OpenStreetMap for external link when available
+        document.getElementById('external-link').href = 'https://www.openstreetmap.org/directions?engine=graphhopper_foot&route=' + encodeURIComponent(dest.lat + ',' + dest.lon);
+
+        // Always show destination mini-map immediately, even before route calculation.
+        initMap(null, dest);
+
+        if (!navigator.geolocation) {
+          setStatus('Location services are not available. Showing the destination only.');
+          return;
+        }
+
+        setStatus('Requesting your location…');
+
+        // Request location directly so the browser can show a permission prompt when needed.
+        try {
+          let userPos = null;
+          const useCountyFallback = async () => {
+            if (defaultCountyLat !== null && defaultCountyLon !== null) {
+              debug('Using default county fallback for user location.');
+              return { lat: defaultCountyLat, lon: defaultCountyLon, approx: true };
+            }
+            return null;
+          };
+
+          try {
+            userPos = await requestPreciseLocation();
+          } catch (err) {
+            debug('Geolocation prompt failed/denied or unavailable: ' + err);
+            userPos = await useCountyFallback();
+            if (!userPos && err && (err.code === 1 || String(err).toLowerCase().includes('denied'))) {
+              setStatus('Location permission denied. Please allow location access for this site and reload.');
+              return;
+            }
+          }
+
+          if (!userPos) {
+            setStatus('Could not determine your location automatically. Showing the destination only.');
+            initMap(null, dest);
+            return;
+          }
+
+          // We have a user position; calculate and draw route.
+          setStatus('Calculating your route…');
+          await runRouting(userPos, dest);
+
+        } catch (e) {
+          console.error('Silent geolocation/routing error', e);
+          const msg = (e && e.message) ? e.message : String(e);
+          setStatus('Routing failed: ' + msg);
+          initMap(null, dest);
+        }
+
+      } catch (err) {
+        console.error(err);
+        try { debug('Outer error: ' + (err && err.stack ? err.stack : err)); } catch(e) { /* ignore */ }
+        setStatus('An error occurred while preparing the map.');
+        const ext = document.getElementById('external-link');
+        if (ext) ext.href = 'https://www.openstreetmap.org/search?query=' + encodeURIComponent(destinationQuery || destName || destLocation);
+      }
+      })();
+    });
+  </script>
+{% endblock %}

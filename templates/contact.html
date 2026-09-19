@@ -1,0 +1,574 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Contact Us - Voices Against Violence{% endblock %}
+
+{% block meta_description %}
+Contact Voices Against Violence for support, questions, or assistance. We're here to help.
+{% endblock %}
+
+{% block meta_keywords %}
+GBV support, contact, help, assistance, Kenya
+{% endblock %}
+
+{% block body_class %}contact-page{% endblock %}
+
+{% block content %}
+
+<!-- Page Title -->
+<div class="page-title">
+  <div class="heading">
+    <div class="container">
+      <div class="row d-flex justify-content-center text-center">
+        <div class="col-lg-8">
+          <h1 class="heading-title">Contact Us</h1>
+          <p class="mb-0">
+            Need help, have questions, or want to connect? We are here to support you, no matter your gender.
+            For emergencies, please call 999 (Police) or 1195 (GBV Hotline) right away.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="breadcrumbs">
+    <div class="container">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li class="current">Contact</li>
+      </ol>
+    </div>
+  </nav>
+</div>
+<!-- End Page Title -->
+
+<!-- Contact Section -->
+<section id="contact" class="contact section">
+  <div class="container">
+    <div class="contact-wrapper">
+
+      <div class="contact-info-panel">
+        <div class="contact-info-header">
+          <h3>Get Support and Guidance</h3>
+          <p>We are here to help with support, questions, or general guidance. All communications are confidential.</p>
+        </div>
+
+        <div class="contact-info-cards">
+
+          <div class="info-card">
+            <div class="icon-container">
+              <i class="bi bi-telephone-fill"></i>
+            </div>
+            <div class="card-content">
+              <h4>Emergency Services</h4>
+              <p><strong>999</strong> - Kenya Police</p>
+              <p><strong>1195</strong> - GBV Hotline (24/7)</p>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="icon-container">
+              <i class="bi bi-envelope-open"></i>
+            </div>
+            <div class="card-content">
+              <h4>Email Support</h4>
+              <p>support@voicesagainstviolence.ke</p>
+              <p>info@voicesagainstviolence.ke</p>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="icon-container">
+              <i class="bi bi-clock-history"></i>
+            </div>
+            <div class="card-content">
+              <h4>Available 24/7</h4>
+              <p>Reporting system available anytime</p>
+              <p>Support services always accessible</p>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="icon-container">
+              <i class="bi bi-shield-lock"></i>
+            </div>
+            <div class="card-content">
+              <h4>Confidential</h4>
+              <p>All communications are private</p>
+              <p>Your information is protected</p>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="social-links-panel">
+          <h5>Follow Us</h5>
+          <div class="social-icons">
+            <a href="#"><i class="bi bi-facebook"></i></a>
+            <a href="#"><i class="bi bi-twitter-x"></i></a>
+            <a href="#"><i class="bi bi-instagram"></i></a>
+            <a href="#"><i class="bi bi-linkedin"></i></a>
+            <a href="#"><i class="bi bi-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form-panel">
+        <div class="map-container ui-f68cf151">
+          <div class="ui-23b83a44" id="contact-map"></div>
+        </div>
+        
+        <div class="location-status mb-3">
+          <p id="location-status" class="text-muted small mb-2">Detecting your location...</p>
+          <button id="use-location-btn" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-geo-alt"></i> Use my location
+          </button>
+        </div>
+
+        <div class="form-container">
+          <h3>Send Us a Message</h3>
+          <p>
+            Have questions, need support, or want to learn more? Fill out the form below and we will get back to you as soon as possible.
+            For GBV reporting, please use our <a href="{% url 'report_gbv' %}">Report GBV</a> page.
+          </p>
+
+          <form method="post" action="{% url 'contact' %}" id="contact-form" novalidate>
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="alert alert-danger d-none" id="contact-form-alert" role="alert">
+              Please review the highlighted fields and try again.
+            </div>
+            <div class="form-floating mb-3">
+              {{ form.name }}
+              <label for="{{ form.name.id_for_label }}">Full Name</label>
+              {{ form.name.errors }}
+              {% if not form.name.errors %}
+              <div class="invalid-feedback js-validation-feedback">Please enter at least 2 characters.</div>
+              {% endif %}
+            </div>
+
+            <div class="form-floating mb-3">
+              {{ form.email }}
+              <label for="{{ form.email.id_for_label }}">Email Address</label>
+              {{ form.email.errors }}
+              {% if not form.email.errors %}
+              <div class="invalid-feedback js-validation-feedback">Please enter a valid email address.</div>
+              {% endif %}
+            </div>
+
+            <div class="form-floating mb-3">
+              {{ form.subject }}
+              <label for="{{ form.subject.id_for_label }}">Subject</label>
+              {{ form.subject.errors }}
+              {% if not form.subject.errors %}
+              <div class="invalid-feedback js-validation-feedback">Please enter a subject.</div>
+              {% endif %}
+            </div>
+
+            <div class="form-floating mb-3">
+              {{ form.message }}
+              <label for="{{ form.message.id_for_label }}">Your Message</label>
+              {{ form.message.errors }}
+              {% if not form.message.errors %}
+              <div class="invalid-feedback js-validation-feedback">Please enter at least 10 characters.</div>
+              {% endif %}
+            </div>
+
+            {% if messages %}
+            <div class="my-3">
+              {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+              {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="d-grid">
+              <button type="submit" class="btn-submit">
+                Send Message <i class="bi bi-send-fill ms-2"></i>
+              </button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<!-- /Contact Section -->
+
+
+
+{% endblock %}
+
+{% block extra_js %}
+<link rel="stylesheet" href="{% static 'assets/leaflet/dist/leaflet.css' %}" />
+<script src="{% static 'assets/leaflet/dist/leaflet.js' %}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Name validation - only allow letters and spaces
+    const contactNameInput = document.querySelector('#contact input[name="name"]');
+    if (contactNameInput) {
+      contactNameInput.addEventListener('input', function(e) {
+        // Remove any characters that are not letters, spaces, hyphens, or apostrophes
+        this.value = this.value.replace(/[^a-zA-Z\s\-']/g, '');
+      });
+    }
+
+    // Contact form validation
+    const contactForm = document.querySelector('#contact form');
+    if (contactForm) {
+      contactForm.addEventListener('submit', function(e) {
+        const name = contactForm.querySelector('input[name="name"]');
+        const email = contactForm.querySelector('input[name="email"]');
+        const subject = contactForm.querySelector('input[name="subject"]');
+        const message = contactForm.querySelector('textarea[name="message"]');
+        const alertEl = document.getElementById('contact-form-alert');
+
+        function setInvalid(field, messageText) {
+          field.classList.add('is-invalid');
+          const wrapper = field.closest('.form-floating');
+          const feedback = wrapper ? wrapper.querySelector('.js-validation-feedback') : null;
+          if (feedback) {
+            feedback.textContent = messageText;
+            feedback.classList.add('d-block');
+          }
+        }
+
+        function clearInvalid(field) {
+          field.classList.remove('is-invalid');
+          const wrapper = field.closest('.form-floating');
+          const feedback = wrapper ? wrapper.querySelector('.js-validation-feedback') : null;
+          if (feedback) feedback.classList.remove('d-block');
+        }
+
+        const fields = [name, email, subject, message].filter(Boolean);
+        let firstInvalid = null;
+
+        fields.forEach(field => {
+          clearInvalid(field);
+          if (field.hasAttribute('required') && !field.value.trim()) {
+            setInvalid(field, 'Please complete this field.');
+            if (!firstInvalid) firstInvalid = field;
+            return;
+          }
+
+          if (field === name && field.value.trim() && field.value.trim().length < 2) {
+            setInvalid(field, 'Please enter at least 2 characters.');
+            if (!firstInvalid) firstInvalid = field;
+            return;
+          }
+
+          if (field === message && field.value.trim() && field.value.trim().length < 10) {
+            setInvalid(field, 'Please enter at least 10 characters.');
+            if (!firstInvalid) firstInvalid = field;
+            return;
+          }
+
+          if (field.checkValidity && !field.checkValidity()) {
+            setInvalid(field, field.validationMessage || 'Please enter a valid value.');
+            if (!firstInvalid) firstInvalid = field;
+          }
+        });
+
+        if (firstInvalid) {
+          e.preventDefault();
+          if (alertEl) alertEl.classList.remove('d-none');
+          firstInvalid.focus({ preventScroll: false });
+          return false;
+        }
+      });
+
+      contactForm.querySelectorAll('input, textarea').forEach(field => {
+        field.addEventListener('input', () => {
+          field.classList.remove('is-invalid');
+          const wrapper = field.closest('.form-floating');
+          const feedback = wrapper ? wrapper.querySelector('.js-validation-feedback') : null;
+          if (feedback) feedback.classList.remove('d-block');
+          const alertEl = document.getElementById('contact-form-alert');
+          if (alertEl) alertEl.classList.add('d-none');
+        });
+      });
+    }
+  });
+</script>
+  <script>
+    // Default location: Nakuru, Kenya (fallback)
+    var defaultLat = -0.39;
+    var defaultLon = 36.06;
+    var map, marker;
+    var userMarker = null;
+    var baseTileLayer = null;
+    var tileLoaded = false;
+    var tileErrorCount = 0;
+
+    const LEAFLET_CSS = "{% static 'assets/leaflet/dist/leaflet.css' %}";
+    const LEAFLET_JS = "{% static 'assets/leaflet/dist/leaflet.js' %}";
+
+    async function ensureLeaflet() {
+      if (window.L && typeof window.L.map === 'function') return;
+
+      if (!document.querySelector('link[data-leaflet="contact"]')) {
+        const css = document.createElement('link');
+        css.rel = 'stylesheet';
+        css.href = LEAFLET_CSS;
+        css.setAttribute('data-leaflet', 'contact');
+        document.head.appendChild(css);
+      }
+
+      await new Promise((resolve, reject) => {
+        if (window.L && typeof window.L.map === 'function') return resolve();
+        const script = document.createElement('script');
+        script.src = LEAFLET_JS;
+        script.async = true;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    }
+
+    function setLocationStatus(msg, isError = false) {
+      var el = document.getElementById('location-status');
+      if (el) {
+        el.textContent = msg;
+        el.className = isError ? 'text-danger small mb-2' : 'text-muted small mb-2';
+      }
+    }
+
+    function initMap(userLat, userLon) {
+      if (!window.L || !document.getElementById('contact-map')) {
+        setLocationStatus('Map library failed to load. Please refresh and try again.', true);
+        return;
+      }
+
+      if (map) {
+        map.remove();
+        map = null;
+        marker = null;
+        userMarker = null;
+      }
+
+      var centerLat = userLat !== null ? userLat : defaultLat;
+      var centerLon = userLon !== null ? userLon : defaultLon;
+      var zoomLevel = userLat !== null ? 12 : 10;
+      
+      map = L.map('contact-map').setView([centerLat, centerLon], zoomLevel);
+
+      tileLoaded = false;
+      tileErrorCount = 0;
+
+      baseTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      });
+
+      baseTileLayer.on('load', function() {
+        tileLoaded = true;
+      });
+
+      baseTileLayer.on('tileerror', function() {
+        tileErrorCount += 1;
+      });
+
+      baseTileLayer.addTo(map);
+      
+      // Organization marker
+      marker = L.marker([defaultLat, defaultLon]).addTo(map);
+      marker.bindPopup("<strong>Voices Against Violence</strong><br>Nakuru, Kenya");
+      
+      // If we have user location, add a marker for them
+      if (userLat !== null && userLon !== null) {
+        userMarker = L.marker([userLat, userLon], {
+          icon: L.divIcon({
+            className: 'user-location-marker',
+            html: '<div style="background-color:#4285F4;width:16px;height:16px;border-radius:50%;border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);"></div>',
+            iconSize: [16, 16],
+            iconAnchor: [8, 8]
+          })
+        }).addTo(map);
+        userMarker.bindPopup("Your Location").openPopup();
+        
+        // Fit bounds to show both markers
+        var bounds = L.latLngBounds([
+          [defaultLat, defaultLon],
+          [userLat, userLon]
+        ]);
+        map.fitBounds(bounds, { padding: [40, 40] });
+      } else {
+        marker.openPopup();
+      }
+
+      setTimeout(function() {
+        if (map) map.invalidateSize(true);
+      }, 250);
+
+      if (!window.__vavContactMapResizeBound) {
+        window.__vavContactMapResizeBound = true;
+        window.addEventListener('resize', function() {
+          if (!map) return;
+          setTimeout(function() {
+            if (map) map.invalidateSize(true);
+          }, 180);
+        });
+      }
+
+      setTimeout(function() {
+        if (map && !tileLoaded && tileErrorCount > 0) {
+          setLocationStatus('Map tiles failed to load. Showing fallback map.', true);
+          renderFallbackMap(centerLat, centerLon);
+        }
+      }, 5000);
+    }
+
+    function renderFallbackMap(lat, lon) {
+      if (map) {
+        map.remove();
+        map = null;
+      }
+
+      var el = document.getElementById('contact-map');
+      if (!el) return;
+
+      var delta = 0.02;
+      var left = lon - delta;
+      var right = lon + delta;
+      var bottom = lat - delta;
+      var top = lat + delta;
+
+      var src = 'https://www.openstreetmap.org/export/embed.html?bbox=' +
+        left + '%2C' + bottom + '%2C' + right + '%2C' + top +
+        '&layer=mapnik&marker=' + lat + '%2C' + lon;
+
+      el.innerHTML = '<iframe title="Map fallback" src="' + src + '" style="border:0;width:100%;height:100%;min-height:280px;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>';
+    }
+
+    // Try to get user location silently on page load
+    function requestUserLocation() {
+      if (!navigator.geolocation) {
+        setLocationStatus('Geolocation is not supported by your browser.', true);
+        initMap(null, null);
+        return;
+      }
+
+      setLocationStatus('Detecting your location...');
+
+      // First check permission status if available
+      if (navigator.permissions && navigator.permissions.query) {
+        navigator.permissions.query({ name: 'geolocation' }).then(function(result) {
+          if (result.state === 'granted') {
+            trySilentGeolocation();
+          } else if (result.state === 'prompt') {
+            // Try silent request first
+            trySilentGeolocation();
+          } else {
+            // Denied - use default
+            setLocationStatus('Location access denied. Showing default location.');
+            initMap(null, null);
+          }
+        }).catch(function() {
+          trySilentGeolocation();
+        });
+      } else {
+        trySilentGeolocation();
+      }
+    }
+
+    function trySilentGeolocation() {
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          var userLat = position.coords.latitude;
+          var userLon = position.coords.longitude;
+          setLocationStatus('Location detected! Showing you on the map.');
+          initMap(userLat, userLon);
+        },
+        function(error) {
+          switch(error.code) {
+            case error.PERMISSION_DENIED:
+              setLocationStatus('Location access denied. Click "Use my location" to enable.');
+              break;
+            case error.POSITION_UNAVAILABLE:
+              setLocationStatus('Location information unavailable. Showing default location.');
+              break;
+            case error.TIMEOUT:
+              setLocationStatus('Location request timed out. Showing default location.');
+              break;
+            default:
+              setLocationStatus('Unable to get location. Showing default location.');
+          }
+          initMap(null, null);
+        },
+        { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
+      );
+    }
+
+    // Manual location request button
+    var useLocationBtn = document.getElementById('use-location-btn');
+    if (useLocationBtn) {
+      useLocationBtn.addEventListener('click', function() {
+      if (!navigator.geolocation) {
+        setLocationStatus('Geolocation is not supported by your browser.', true);
+        return;
+      }
+
+      setLocationStatus('Requesting your location...');
+      
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          var userLat = position.coords.latitude;
+          var userLon = position.coords.longitude;
+          setLocationStatus('Location detected! Showing you on the map.');
+          initMap(userLat, userLon);
+        },
+        function(error) {
+          var msg = 'Unable to get location: ';
+          switch(error.code) {
+            case error.PERMISSION_DENIED:
+              msg += 'Location access was denied.';
+              break;
+            case error.POSITION_UNAVAILABLE:
+              msg += 'Location information unavailable.';
+              break;
+            case error.TIMEOUT:
+              msg += 'Location request timed out.';
+              break;
+            default:
+              msg += 'An unknown error occurred.';
+          }
+          setLocationStatus(msg, true);
+        },
+        { enableHighAccuracy: true, timeout: 20000 }
+      );
+      });
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', async function() {
+      try {
+        await ensureLeaflet();
+        requestUserLocation();
+      } catch (e) {
+        setLocationStatus('Unable to load map resources right now.', true);
+        renderFallbackMap(defaultLat, defaultLon);
+      }
+
+      window.addEventListener('resize', function() {
+        if (map) map.invalidateSize(true);
+      });
+      
+      // Auto-hide success messages after 5 seconds
+      setTimeout(function() {
+        var alerts = document.querySelectorAll('.alert:not(.alert-danger)');
+        alerts.forEach(function(alert) {
+          alert.style.transition = 'opacity 0.5s ease';
+          alert.style.opacity = '0';
+          setTimeout(function() {
+            alert.remove();
+          }, 500);
+        });
+      }, 5000);
+    });
+  </script>
+{% endblock %}

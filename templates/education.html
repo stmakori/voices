@@ -1,0 +1,775 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}GBV Education, Blogs & Stories - Voices Against Violence{% endblock %}
+
+{% block meta_description %}Comprehensive educational blogs, articles, and community stories about Gender-Based Violence, prevention strategies, and support mechanisms in Kenya.{% endblock %}
+
+{% block meta_keywords %}GBV education, Gender Based Violence, prevention, awareness, Kenya, blogs, articles, stories{% endblock %}
+
+{% block body_class %}category-page{% endblock %}
+
+{% block extra_css %}
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&display=swap');
+
+  .category-page .page-title .heading {
+    padding: 42px 0;
+  }
+
+  .category-page .page-title nav {
+    padding: 12px 0;
+  }
+
+  .education-type-selector {
+    padding-top: 32px !important;
+    padding-bottom: 32px !important;
+  }
+
+  @media (min-width: 992px) {
+    .education-sidebar {
+      position: sticky;
+      top: 110px;
+      max-height: calc(100vh - 130px);
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+  }
+
+  .education-topics .widget-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .education-topics .education-topic-link {
+    display: block;
+    padding: 12px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #333;
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+    font-size: 0.95rem;
+    line-height: 1.45;
+  }
+
+  .education-topics .education-topic-link:hover,
+  .education-topics .education-topic-link:focus {
+    background: #f0f0f0;
+    color: #333;
+  }
+
+  .education-topics .education-topic-link.is-active,
+  .education-topics .education-topic-link.is-active:hover,
+  .education-topics .education-topic-link.is-active:focus {
+    background: #7c3aed;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .education-topics .education-topic-count {
+    float: right;
+    color: #7c3aed;
+    font-weight: 700;
+  }
+
+  .education-topics .education-topic-link.is-active .education-topic-count {
+    color: #fff;
+  }
+
+  .education-topics ul li {
+    margin-bottom: 8px !important;
+  }
+
+  .education-topics ul li a {
+    padding: 9px 12px !important;
+    font-size: 0.94rem;
+    line-height: 1.3;
+  }
+
+  .content-card .ui-9fb64252 {
+    height: auto;
+    aspect-ratio: 16 / 10;
+    background: linear-gradient(135deg, #f2ecff 0%, #f8f5ff 100%);
+  }
+
+  .content-card {
+    border: 1px solid rgba(124, 58, 237, 0.14);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 28px rgba(17, 24, 39, 0.08);
+    transition: transform 0.32s ease, box-shadow 0.32s ease, border-color 0.32s ease;
+  }
+
+  .content-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(124, 58, 237, 0.28);
+    box-shadow: 0 18px 36px rgba(124, 58, 237, 0.18);
+  }
+
+  .content-card .ui-9fb64252::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(to top, rgba(17, 24, 39, 0.18) 0%, rgba(17, 24, 39, 0) 42%);
+    opacity: 0;
+    transition: opacity 0.32s ease;
+  }
+
+  .content-card:hover .ui-9fb64252::after {
+    opacity: 1;
+  }
+
+  .content-card .ui-481cd970 {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 0.5s ease;
+  }
+
+  .content-card:hover .ui-481cd970 {
+    transform: scale(1.045);
+  }
+
+  .content-card .ui-8141b7ee {
+    padding: 22px;
+    gap: 10px;
+  }
+
+  .content-card .content-topline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .content-card .content-type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+    background: #ede9fe;
+    color: #5b21b6;
+  }
+
+  .content-card .content-category {
+    font-size: 0.78rem;
+    color: #6b7280;
+    font-weight: 600;
+  }
+
+  .content-card .ui-9df847fa {
+    margin-bottom: 6px;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: #4b5563;
+  }
+
+  .content-card .ui-9df847fa span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #f5f3ff;
+    color: #5b21b6;
+    font-weight: 500;
+  }
+
+  .content-card .ui-7388b2f3 {
+    margin-bottom: 4px;
+    font-size: 1.08rem;
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .content-card .ui-136f566d {
+    margin-bottom: 14px;
+    color: #4b5563;
+    line-height: 1.7;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .content-card .ui-6d98ffd8 {
+    margin-top: auto;
+    padding-top: 2px;
+    font-weight: 700;
+  }
+
+  .content-card:hover .ui-6d98ffd8 {
+    color: #5b21b6;
+    gap: 12px;
+  }
+
+  .content-card .ui-7c57c566,
+  .content-card .ui-5d48f325 {
+    box-shadow: 0 8px 18px rgba(58, 33, 92, 0.24);
+    border-radius: 999px;
+    backdrop-filter: blur(2px);
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+
+  .editorial-article-card {
+    background: #ffffff;
+    border-radius: 2px;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.05);
+    height: 100%;
+    transition: transform 0.32s ease, box-shadow 0.32s ease, border-color 0.32s ease;
+  }
+
+  .editorial-article-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(124, 58, 237, 0.28);
+    box-shadow: 0 18px 36px rgba(58, 33, 92, 0.24);
+  }
+
+  .editorial-article-media {
+    aspect-ratio: 16 / 10;
+    background: #fafaf8;
+    overflow: hidden;
+  }
+
+  .editorial-article-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+  }
+
+  .editorial-article-card:hover .editorial-article-media img {
+    transform: scale(1.045);
+  }
+
+  .editorial-article-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.4rem;
+    border-bottom: 1px solid #e5e7eb;
+    background: #fafaf8;
+  }
+
+  .editorial-badge {
+    display: inline-block;
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 0.3rem 0.75rem;
+    border-radius: 2px;
+  }
+
+  .editorial-badge-awareness {
+    background: #fef3c7;
+    color: #92400e;
+  }
+
+  .editorial-badge-education {
+    background: #d1fae5;
+    color: #065f46;
+  }
+
+  .editorial-badge-support,
+  .editorial-badge-legal,
+  .editorial-badge-prevention,
+  .editorial-badge-recovery,
+  .editorial-badge-other {
+    background: #f3e8ff;
+    color: #6b21a8;
+  }
+
+  .editorial-reading-time {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 0.8rem;
+    color: #6b7280;
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  .editorial-article-body {
+    padding: 1.5rem 1.4rem 1.8rem;
+  }
+
+  .editorial-article-kicker {
+    display: block;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 0.76rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #9333ea;
+    font-weight: 600;
+    margin-bottom: 0.55rem;
+  }
+
+  .editorial-article-body h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.45rem;
+    font-weight: 700;
+    line-height: 1.28;
+    color: #1a1a2e;
+    margin-bottom: 0.95rem;
+    letter-spacing: -0.3px;
+  }
+
+  .editorial-article-excerpt {
+    font-family: 'Source Serif 4', Georgia, serif;
+    color: #374151;
+    line-height: 1.8;
+    font-size: 1rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .editorial-article-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: #6b21a8;
+    text-decoration: none;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+
+  .editorial-article-link:hover {
+    color: #4c1d95;
+  }
+
+  .stories-wrap {
+    margin-top: 3rem;
+  }
+
+  .stories-header {
+    margin-bottom: 1.2rem;
+  }
+
+  .stories-header h2 {
+    margin-bottom: 0.35rem;
+    font-family: 'Playfair Display', Georgia, serif;
+    color: #4c1d95;
+    letter-spacing: -0.2px;
+  }
+
+  .stories-header p {
+    margin: 0;
+    color: #4b5563;
+  }
+
+  .stories-grid {
+    display: grid;
+    gap: 1.15rem;
+  }
+
+  .story-card {
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    border-radius: 16px;
+    padding: 1.15rem 1.2rem 1.25rem;
+    background: #fff;
+    box-shadow: 0 10px 24px rgba(17, 24, 39, 0.06);
+    transition: transform 0.26s ease, box-shadow 0.26s ease, border-color 0.26s ease;
+  }
+
+  .story-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(124, 58, 237, 0.32);
+    box-shadow: 0 18px 32px rgba(76, 29, 149, 0.13);
+  }
+
+  .story-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.8rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .story-title {
+    margin: 0;
+    font-family: 'Playfair Display', Georgia, serif;
+    color: #5b21b6;
+    line-height: 1.25;
+    letter-spacing: -0.2px;
+    font-size: 1.9rem;
+  }
+
+  .story-source-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 999px;
+    background: #f3e8ff;
+    color: #6b21a8;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+    padding: 0.35rem 0.68rem;
+    white-space: nowrap;
+  }
+
+  .story-meta {
+    margin-bottom: 0.65rem;
+    color: #6b7280;
+    font-size: 0.9rem;
+  }
+
+  .story-summary {
+    margin-bottom: 0.7rem;
+    color: #374151;
+    line-height: 1.65;
+  }
+
+  .story-details {
+    border-top: 1px dashed rgba(124, 58, 237, 0.25);
+    padding-top: 0.62rem;
+  }
+
+  .story-details summary {
+    list-style: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #5b21b6;
+    font-weight: 700;
+    user-select: none;
+  }
+
+  .story-details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .story-details summary .story-caret {
+    transition: transform 0.22s ease;
+    font-size: 0.86rem;
+  }
+
+  .story-details[open] summary .story-caret {
+    transform: rotate(90deg);
+  }
+
+  .story-content {
+    margin-top: 0.62rem;
+    background: #faf7ff;
+    border: 1px solid #eadcff;
+    border-radius: 12px;
+    padding: 0.85rem 0.95rem;
+    color: #3f3f46;
+    line-height: 1.72;
+  }
+
+  .story-content p:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 576px) {
+    .content-card .ui-9fb64252,
+    .editorial-article-media {
+      aspect-ratio: 16 / 11;
+    }
+
+    .content-card .content-topline,
+    .editorial-article-meta {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .story-head {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.45rem;
+    }
+
+    .story-title {
+      font-size: 1.78rem;
+    }
+  }
+</style>
+
+
+{% endblock %}
+
+{% block content %}
+
+<!-- Page Title -->
+<div class="page-title">
+  <div class="heading">
+  <div class="container">
+    <div class="row d-flex justify-content-center text-center">
+      <div class="col-lg-8">
+        <h1 class="heading-title">
+          {% if current_category %}
+            {{ current_category|title }} Content
+          {% else %}
+            GBV Education, Blogs & Stories
+          {% endif %}
+        </h1>
+        <p class="mb-0">
+          {% if current_category %}
+            Explore {{ current_category }} content about GBV in Kenya, with practical guidance and support.
+          {% else %}
+            Learn about GBV, recognize warning signs, explore prevention strategies, and find support options across Kenya. These resources are for everyone.
+          {% endif %}
+        </p>
+      </div>
+    </div>
+  </div>
+  </div>
+  <nav class="breadcrumbs">
+    <div class="container">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li class="current">Education</li>
+      </ol>
+    </div>
+  </nav>
+</div><!-- End Page Title -->
+
+<!-- Content Type Selector -->
+<section class="education-type-selector ui-5288c36c">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+          <a href="{% url 'education' %}{% if current_category %}?category={{ current_category }}{% endif %}" class="btn btn-lg {% if current_type == 'all' %}btn-primary{% else %}btn-outline-primary{% endif %} ui-4a0332dc">
+            <i class="bi bi-collection"></i> All Content
+          </a>
+          <a href="{% url 'education' %}?type=blogs{% if current_category %}&category={{ current_category }}{% endif %}" class="btn btn-lg {% if current_type == 'blogs' %}btn-primary{% else %}btn-outline-primary{% endif %} ui-4a0332dc">
+            <i class="bi bi-chat-square-text"></i> Blogs
+          </a>
+          <a href="{% url 'education' %}?type=articles{% if current_category %}&category={{ current_category }}{% endif %}" class="btn btn-lg {% if current_type == 'articles' %}btn-primary{% else %}btn-outline-primary{% endif %} ui-4a0332dc">
+            <i class="bi bi-book"></i> Articles
+          </a>
+          <a href="{% url 'education' %}?type=stories" class="btn btn-lg {% if current_type == 'stories' %}btn-primary{% else %}btn-outline-primary{% endif %} ui-4a0332dc">
+            <i class="bi bi-chat-heart"></i> Stories
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container py-5">
+  <div class="row">
+    <div class="col-lg-9">
+
+      <!-- Content Section (Blogs & Articles Combined) -->
+      {% if blogs.object_list or articles.object_list or stories %}
+      <section class="content-section">
+        {% if blogs.object_list or articles.object_list %}
+        <div class="row gy-4">
+          {% for blog in blogs %}
+          <div class="col-lg-6">
+            <div class="content-card ui-9319bcd3">
+              <!-- Image -->
+              <div class="ui-9fb64252">
+                {% if blog.image %}
+                <img class="ui-481cd970" src="{{ blog.image.url }}" alt="{{ blog.title }}">
+                {% else %}
+                <img class="ui-481cd970" src="{% static 'assets/img/blog/GBV IMAGE1.jpg' %}" alt="{{ blog.title }}">
+                {% endif %}
+                <span class="ui-7c57c566">Blog</span>
+              </div>
+              <!-- Content -->
+              <div class="ui-8141b7ee">
+                <div class="content-topline">
+                  <span class="content-type-badge"><i class="bi bi-chat-square-text"></i> Blog</span>
+                  <span class="content-category">{{ blog.get_category_display }}</span>
+                </div>
+                <div class="ui-9df847fa">
+                  <span><i class="bi bi-calendar3"></i> {{ blog.created_at|date:'M j, Y' }}</span>
+                  <span><i class="bi bi-clock"></i> {{ blog.read_time|default:5 }} min read</span>
+                  <span><i class="bi bi-eye"></i> {{ blog.views }} views</span>
+                </div>
+                <h3 class="ui-7388b2f3">{{ blog.title }}</h3>
+                <p class="ui-136f566d">{{ blog.content|striptags|truncatewords:25 }}</p>
+                <a class="ui-6d98ffd8" href="{% url 'blog_detail' blog.id %}">
+                  Read More <i class="bi bi-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+          {% for article in articles %}
+          <div class="col-lg-6">
+            <article class="editorial-article-card">
+              <div class="editorial-article-media">
+                {% if article.image %}
+                <img src="{{ article.image.url }}" alt="{{ article.title }}">
+                {% else %}
+                <img src="{% static 'assets/img/blog/GBV IMAGE1.jpg' %}" alt="{{ article.title }}">
+                {% endif %}
+              </div>
+              <div class="editorial-article-meta">
+                <span class="editorial-badge editorial-badge-{{ article.category }}">{{ article.get_category_display }}</span>
+                <span class="editorial-reading-time">{{ article.read_time|default:5 }} min read</span>
+                <span class="editorial-reading-time"><i class="bi bi-eye"></i> {{ article.views }} views</span>
+              </div>
+              <div class="editorial-article-body">
+                <span class="editorial-article-kicker">Article {{ forloop.counter|stringformat:'02d' }}</span>
+                <h3>{{ article.title }}</h3>
+                <p class="editorial-article-excerpt">{{ article.content|striptags|truncatewords:34 }}</p>
+                <a class="editorial-article-link" href="{% url 'article_detail' article.id %}">
+                  Read Article <i class="bi bi-arrow-right"></i>
+                </a>
+              </div>
+            </article>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </section>
+
+      <!-- No Content Message -->
+      {% else %}
+      <div class="text-center py-5">
+        <i class="bi bi-inbox ui-b2adf428"></i>
+        <h3 class="mt-3 text-muted">No content yet</h3>
+        <p class="text-muted">Try a different category or content type.</p>
+      </div>
+      {% endif %}
+
+      {% if total_pages > 1 %}
+      <nav class="mt-4" aria-label="Education pagination">
+        <ul class="pagination justify-content-center">
+          {% if has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ prev_page }}{% if current_category %}&category={{ current_category }}{% endif %}{% if current_type %}&type={{ current_type }}{% endif %}">Previous</a>
+          </li>
+          {% else %}
+          <li class="page-item disabled"><span class="page-link">Previous</span></li>
+          {% endif %}
+
+          <li class="page-item disabled">
+            <span class="page-link">Page {{ current_page }} of {{ total_pages }}</span>
+          </li>
+
+          {% if has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ next_page }}{% if current_category %}&category={{ current_category }}{% endif %}{% if current_type %}&type={{ current_type }}{% endif %}">Next</a>
+          </li>
+          {% else %}
+          <li class="page-item disabled"><span class="page-link">Next</span></li>
+          {% endif %}
+        </ul>
+      </nav>
+      {% endif %}
+
+      <!-- Community Stories — moved here, inside content block -->
+      {% if stories %}
+      <section class="stories-wrap mt-5">
+        <div class="stories-header">
+          <h2>Community Stories</h2>
+          <p>Short, practical stories for support, healing, and awareness.</p>
+        </div>
+        <div class="stories-grid">
+          {% for s in stories %}
+          <article class="story-card" lang="{{ s.language }}">
+            <div class="story-head">
+              <h3 class="story-title">{{ s.title }}</h3>
+              <span class="story-source-pill"><i class="bi bi-chat-heart"></i> {{ s.source_type }}</span>
+            </div>
+            <p class="story-meta"><strong>{{ s.source_type }}</strong> · {{ s.created_at|date:'M j, Y' }}{% if s.author_name %} · {{ s.author_name }}{% endif %}</p>
+            <p class="story-summary">{{ s.summary }}</p>
+            <details class="story-details">
+              <summary><span class="story-caret">▶</span> Read story</summary>
+              <div class="story-content">{{ s.content|linebreaks }}</div>
+            </details>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
+    </div>
+
+    <div class="col-lg-3 sidebar">
+
+      <div class="widgets-container education-sidebar">
+
+        <!-- Quick Help Widget -->
+        <div class="search-widget widget-item ui-21203542">
+          <h3 class="widget-title ui-f6234f9f">Need Immediate Help?</h3>
+          <div class="d-flex flex-column gap-2 mt-3">
+            <a href="tel:999" class="btn ui-d2d13073">
+              <i class="bi bi-telephone-fill"></i> Emergency: 999
+            </a>
+            <a href="tel:1195" class="btn ui-aa70b789">
+              <i class="bi bi-telephone-fill"></i> GBV Hotline: 1195
+            </a>
+            <a href="{% url 'report_gbv' %}" class="btn ui-aa70b789">
+              <i class="bi bi-shield-exclamation"></i> Report GBV
+            </a>
+          </div>
+        </div><!--/Quick Help Widget -->
+
+        <!-- Categories Widget -->
+        {% if current_type != 'blogs' and current_type != 'stories' %}
+        <div class="categories-widget widget-item education-topics">
+          <h3 class="widget-title">Education Topics</h3>
+          <ul class="mt-3 ui-d7b8ceae">
+            <li class="ui-7b754eef"><a href="{% url 'education' %}{% if current_type != 'all' %}?type={{ current_type }}{% endif %}" class="education-topic-link {% if not current_category %}is-active{% endif %}">All Content <span class="education-topic-count">({{ category_counts.education|add:category_counts.prevention|add:category_counts.support|add:category_counts.legal|add:category_counts.awareness|add:category_counts.recovery|add:category_counts.other }})</span></a></li>
+            <li class="ui-7b754eef"><a href="{% url 'education' %}?category=education{% if current_type != 'all' %}&type={{ current_type }}{% endif %}" class="education-topic-link {% if current_category == 'education' %}is-active{% endif %}">Understanding GBV <span class="education-topic-count">({{ category_counts.education }})</span></a></li>
+            <li class="ui-7b754eef"><a href="{% url 'education' %}?category=prevention{% if current_type != 'all' %}&type={{ current_type }}{% endif %}" class="education-topic-link {% if current_category == 'prevention' %}is-active{% endif %}">Prevention <span class="education-topic-count">({{ category_counts.prevention }})</span></a></li>
+            <li class="ui-7b754eef"><a href="{% url 'education' %}?category=support{% if current_type != 'all' %}&type={{ current_type }}{% endif %}" class="education-topic-link {% if current_category == 'support' %}is-active{% endif %}">Support Services <span class="education-topic-count">({{ category_counts.support }})</span></a></li>
+            <li class="ui-7b754eef"><a href="{% url 'education' %}?category=legal{% if current_type != 'all' %}&type={{ current_type }}{% endif %}" class="education-topic-link {% if current_category == 'legal' %}is-active{% endif %}">Legal Rights <span class="education-topic-count">({{ category_counts.legal }})</span></a></li>
+            <li class="ui-7b754eef"><a href="{% url 'education' %}?category=recovery{% if current_type != 'all' %}&type={{ current_type }}{% endif %}" class="education-topic-link {% if current_category == 'recovery' %}is-active{% endif %}">Recovery &amp; Healing <span class="education-topic-count">({{ category_counts.recovery }})</span></a></li>
+            <li class="ui-7b754eef"><a href="{% url 'education' %}?category=awareness{% if current_type != 'all' %}&type={{ current_type }}{% endif %}" class="education-topic-link {% if current_category == 'awareness' %}is-active{% endif %}">Community Resources <span class="education-topic-count">({{ category_counts.awareness }})</span></a></li>
+          </ul>
+        </div><!--/Categories Widget -->
+        {% endif %}
+
+        <!-- Resources Widget -->
+        <div class="recent-posts-widget widget-item">
+          <h3 class="widget-title">Quick Resources</h3>
+          <div class="post-item">
+            <i class="bi bi-geo-alt-fill ui-015bed64"></i>
+            <div>
+              <h4><a href="{% url 'resources' %}">Find Nearby Support</a></h4>
+              <p>Locate police posts, safe houses, and support services near you</p>
+            </div>
+          </div>
+          <div class="post-item">
+            <i class="bi bi-file-earmark-text ui-8686f12f"></i>
+            <div>
+              <h4><a href="{% url 'report_gbv' %}">Share a Report</a></h4>
+              <p>Share a report safely and confidentially</p>
+            </div>
+          </div>
+          <div class="post-item">
+            <i class="bi bi-heart ui-2a95c5f0"></i>
+            <div>
+              <h4><a href="{% url 'contact' %}">Get Support</a></h4>
+              <p>Contact our support team for guidance</p>
+            </div>
+          </div>
+        </div><!--/Resources Widget -->
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

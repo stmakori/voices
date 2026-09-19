@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Emergency Contacts - Voices Against Violence{% endblock %}
+
+{% block meta_description %}Emergency contacts and hotlines for gender-based violence support in Kenya. Get immediate help 24/7.{% endblock %}
+
+{% block meta_keywords %}emergency contacts Kenya, GBV hotline, police emergency, child helpline, gender violence support{% endblock %}
+
+{% block body_class %}emergency-page{% endblock %}
+
+{% block content %}
+
+<!-- Page Title -->
+<div class="page-title">
+  <div class="heading">
+    <div class="container">
+      <div class="row d-flex justify-content-center text-center">
+        <div class="col-lg-8">
+          <h1 class="heading-title">Emergency Contacts</h1>
+          <p class="mb-0">
+            Immediate help and support services for GBV in Kenya
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <nav aria-label="breadcrumb" class="breadcrumbs">
+    <div class="container">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li aria-current="page" class="current">Emergency Contacts</li>
+      </ol>
+    </div>
+  </nav>
+</div><!-- End Page Title -->
+
+<!-- Emergency Section -->
+<section id="emergency-contacts" class="section bg-danger text-white py-5">
+  <div class="container" data-aos="fade-up">
+    <div class="text-center mb-5">
+      <div class="display-1 mb-4" aria-hidden="true">
+        <i class="bi bi-telephone-fill"></i>
+      </div>
+      <h2 class="display-5 mb-3">Emergency? Need Immediate Help?</h2>
+      <p class="lead opacity-75">
+        If you or someone you know is in immediate danger, contact emergency services right away.
+        All calls are confidential and free of charge.
+      </p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+
+      <div class="col-lg-3 col-md-4 col-sm-6">
+        <article class="card bg-white bg-opacity-10 border-0 text-white h-100">
+          <div class="card-body p-4 text-center">
+            <div class="display-4 mb-3" aria-hidden="true">
+              <i class="bi bi-shield-exclamation"></i>
+            </div>
+            <h3 class="h5 mb-3">Emergency Services</h3>
+            <p class="display-4 fw-bold mb-2">
+              <a href="tel:999" class="text-white text-decoration-none" aria-label="Call Kenya emergency services at 999">999</a>
+            </p>
+            <p class="small mb-0 opacity-75">Kenya Police Emergency Line</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="col-lg-3 col-md-4 col-sm-6">
+        <article class="card bg-white bg-opacity-10 border-0 text-white h-100">
+          <div class="card-body p-4 text-center">
+            <div class="display-4 mb-3" aria-hidden="true">
+              <i class="bi bi-heart-pulse"></i>
+            </div>
+            <h3 class="h5 mb-3">GBV Hotline</h3>
+            <p class="display-4 fw-bold mb-2">
+              <a href="tel:1195" class="text-white text-decoration-none" aria-label="Call GBV support hotline at 1195">1195</a>
+            </p>
+            <p class="small mb-0 opacity-75">Free 24/7 GBV Support</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="col-lg-3 col-md-4 col-sm-6">
+        <article class="card bg-white bg-opacity-10 border-0 text-white h-100">
+          <div class="card-body p-4 text-center">
+            <div class="display-4 mb-3" aria-hidden="true">
+              <i class="bi bi-person-arms-up"></i>
+            </div>
+            <h3 class="h5 mb-3">Child Helpline</h3>
+            <p class="display-4 fw-bold mb-2">
+              <a href="tel:116" class="text-white text-decoration-none" aria-label="Call child protection services at 116">116</a>
+            </p>
+            <p class="small mb-0 opacity-75">Child Protection Services</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="col-lg-3 col-md-4 col-sm-6">
+        <article class="card bg-white bg-opacity-10 border-0 text-white h-100">
+          <div class="card-body p-4 text-center">
+            <div class="display-4 mb-3" aria-hidden="true">
+              <i class="bi bi-hospital"></i>
+            </div>
+            <h3 class="h5 mb-3">Gender Violence Recovery Centre</h3>
+            <p class="display-6 fw-bold mb-2">
+              <a href="tel:0709674301" class="text-white text-decoration-none" aria-label="Call Gender Violence Recovery Centre at 0709 674 301">0709 674 301</a>
+            </p>
+            <p class="small mb-0 opacity-75">Medical and Counseling Support</p>
+          </div>
+        </article>
+      </div>
+
+    </div>
+
+    <div class="text-center mt-5">
+      <div class="alert alert-light bg-white bg-opacity-10 border-0 text-white" role="alert">
+        <strong>Your safety is our priority.</strong> All emergency services are available 24/7 and provide immediate assistance.
+      </div>
+    </div>
+  </div>
+</section><!-- /Emergency Section -->
+
+<!-- Additional Support Services -->
+<section id="support-services" class="section py-5">
+  <div class="container" data-aos="fade-up">
+    <div class="section-title text-center mb-5">
+      <h2>Additional Support Services</h2>
+      <p>More resources for GBV support across Kenya</p>
+    </div>
+
+    <div class="row g-4">
+
+      <div class="col-lg-6" data-aos="fade-right">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center mb-3">
+              <div class="display-6 text-primary me-3" aria-hidden="true">
+                <i class="bi bi-house-door"></i>
+              </div>
+              <h3 class="h5 mb-0">Safe Houses & Shelters</h3>
+            </div>
+            <p class="card-text text-muted mb-4">
+              Emergency shelters and safe houses provide immediate protection and support for survivors of GBV.
+            </p>
+            <a href="{% url 'resources' %}?resource_type=safehouse" class="btn btn-outline-primary">Find Safe Houses</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6" data-aos="fade-left">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center mb-3">
+              <div class="display-6 text-info me-3" aria-hidden="true">
+                <i class="bi bi-geo-alt"></i>
+              </div>
+              <h3 class="h5 mb-0">Police Stations</h3>
+            </div>
+            <p class="card-text text-muted mb-4">
+              Locate nearby police stations and gender desks that handle GBV cases with care and expertise.
+            </p>
+            <a href="{% url 'resources' %}?resource_type=police" class="btn btn-outline-info">Find Police Stations</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6" data-aos="fade-right">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center mb-3">
+              <div class="display-6 text-success me-3" aria-hidden="true">
+                <i class="bi bi-chat-dots"></i>
+              </div>
+              <h3 class="h5 mb-0">Counseling Services</h3>
+            </div>
+            <p class="card-text text-muted mb-4">
+              Professional counseling and psychological support for survivors, available through organizations across Kenya.
+            </p>
+            <a href="{% url 'resources' %}" class="btn btn-outline-success">Find Counseling</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6" data-aos="fade-left">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center mb-3">
+              <div class="display-6 text-warning me-3" aria-hidden="true">
+                <i class="bi bi-file-earmark-text"></i>
+              </div>
+              <h3 class="h5 mb-0">Legal Aid</h3>
+            </div>
+            <p class="card-text text-muted mb-4">
+              Free legal assistance and representation for GBV survivors, including protection orders and court support.
+            </p>
+            <a href="{% url 'resources' %}" class="btn btn-outline-warning">Find Legal Aid</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section><!-- /Additional Support Services -->
+
+<!-- Call to Action -->
+<section class="cta-section py-5 bg-light">
+  <div class="container text-center">
+    <h2>Need More Help?</h2>
+    <p class="mb-4">Access our resources and support services</p>
+    <a href="{% url 'report_gbv' %}" class="btn btn-danger btn-lg me-3">Share a Report Safely</a>
+    <a href="{% url 'resources' %}" class="btn btn-primary btn-lg me-3">Find Resources</a>
+    <a href="{% url 'education' %}" class="btn btn-outline-primary btn-lg">Learn More</a>
+  </div>
+</section>
+
+{% endblock %}

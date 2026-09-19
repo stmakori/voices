@@ -1,0 +1,281 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}All Resources Map - Voices Against Violence{% endblock %}
+{% block meta_description %}Interactive map showing all support resources across Kenya.{% endblock %}
+{% block meta_keywords %}resource map, support resources Kenya, safe houses, police posts, legal aid{% endblock %}
+{% block body_class %}category-page{% endblock %}
+
+{% block extra_css %}
+<style>
+  #resource-map {
+    height: clamp(340px, 68vh, 760px);
+    border: 1px solid #e6e6e6;
+    border-radius: 10px;
+  }
+  .map-legend {
+    background: white;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    font-size: 14px;
+    line-height: 1.8;
+  }
+  .map-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .map-legend-color {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid #333;
+  }
+
+  @media (max-width: 991px) {
+    #resource-map {
+      height: clamp(320px, 62vh, 620px);
+    }
+
+    .map-legend {
+      padding: 10px 12px;
+      font-size: 12px;
+      line-height: 1.5;
+      max-width: 180px;
+    }
+
+    .map-legend-item {
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .map-legend-color {
+      width: 14px;
+      height: 14px;
+      border-width: 1px;
+    }
+  }
+
+  @media (max-width: 575px) {
+    #resource-map {
+      height: clamp(300px, 54vh, 460px);
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-title">
+  <div class="heading">
+    <div class="container">
+      <div class="row d-flex justify-content-center text-center">
+        <div class="col-lg-8">
+          <h1 class="heading-title">All Resources Map</h1>
+          <p class="mb-0">Explore support resources on one interactive map. Click markers to view details and get directions.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <nav class="breadcrumbs">
+    <div class="container">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'resources' %}">Find Resources</a></li>
+        <li class="current">All Resources Map</li>
+      </ol>
+    </div>
+  </nav>
+</div>
+
+<section class="section">
+  <div class="container" data-aos="fade-up">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+      <p id="map-count" class="mb-0 text-muted">Showing {{ resources_count }} resources</p>
+      <a href="{% url 'resources' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Back to Resource List
+      </a>
+    </div>
+
+    <div class="mb-3 p-3 border rounded bg-light">
+      <div class="d-flex flex-wrap align-items-center gap-3">
+        <strong>Filter map:</strong>
+        <label class="form-check-label"><input class="form-check-input me-1 map-filter" type="checkbox" value="police" checked> Police</label>
+        <label class="form-check-label"><input class="form-check-input me-1 map-filter" type="checkbox" value="safehouse" checked> Safe Houses</label>
+        <label class="form-check-label"><input class="form-check-input me-1 map-filter" type="checkbox" value="church" checked> Churches</label>
+        <label class="form-check-label"><input class="form-check-input me-1 map-filter" type="checkbox" value="hospital" checked> Hospitals</label>
+        <label class="form-check-label"><input class="form-check-input me-1 map-filter" type="checkbox" value="counseling" checked> Counseling</label>
+        <label class="form-check-label"><input class="form-check-input me-1 map-filter" type="checkbox" value="legal" checked> Legal Aid</label>
+        <label class="form-check-label"><input class="form-check-input me-1 map-filter" type="checkbox" value="other" checked> Other</label>
+      </div>
+    </div>
+
+    <div id="resource-map"></div>
+    <p id="map-status" class="mt-2 text-muted">Loading resources on the map…</p>
+  </div>
+</section>
+
+{{ resources_data|json_script:"resources-data" }}
+{% endblock %}
+
+{% block extra_js %}
+<link rel="stylesheet" href="{% static 'assets/leaflet/dist/leaflet.css' %}">
+<script src="{% static 'assets/leaflet/dist/leaflet.js' %}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async function() {
+    const statusEl = document.getElementById('map-status');
+    const countEl = document.getElementById('map-count');
+    const resources = JSON.parse(document.getElementById('resources-data').textContent || '[]');
+    const filterInputs = Array.from(document.querySelectorAll('.map-filter'));
+
+    function setStatus(text) {
+      if (statusEl) statusEl.textContent = text;
+    }
+
+    const map = L.map('resource-map').setView([-0.0236, 37.9062], 6);
+
+    const osmTiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors',
+      referrerPolicy: 'strict-origin-when-cross-origin'
+    });
+
+    const cartoTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      maxZoom: 20,
+      attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+    });
+
+    osmTiles.on('tileerror', function() {
+      // Fall back if OSM blocks requests without Referer in strict/privacy contexts.
+      if (map.hasLayer(osmTiles)) {
+        map.removeLayer(osmTiles);
+        cartoTiles.addTo(map);
+        setStatus('Map ready using fallback tiles (OSM blocked this request).');
+      }
+    });
+
+    osmTiles.addTo(map);
+
+    const markerLayer = L.layerGroup().addTo(map);
+
+    function markerColor(resourceType) {
+      if (resourceType === 'police') return '#0d6efd';
+      if (resourceType === 'safehouse') return '#dc3545';
+      if (resourceType === 'church') return '#6f42c1';
+      if (resourceType === 'hospital') return '#198754';
+      if (resourceType === 'counseling') return '#fd7e14';
+      if (resourceType === 'legal') return '#20c997';
+      return '#6c757d';
+    }
+
+    let placed = 0;
+    let failed = 0;
+
+    function selectedTypes() {
+      return new Set(
+        filterInputs
+          .filter(input => input.checked)
+          .map(input => input.value)
+      );
+    }
+
+    function renderMarkers() {
+      markerLayer.clearLayers();
+      const bounds = L.latLngBounds();
+      placed = 0;
+      failed = 0;
+
+      const enabledTypes = selectedTypes();
+
+      for (const resource of resources) {
+        if (!enabledTypes.has(resource.resource_type || 'other')) {
+          continue;
+        }
+
+        if (resource.latitude == null || resource.longitude == null) {
+          failed += 1;
+          continue;
+        }
+
+        const point = {
+          lat: parseFloat(resource.latitude),
+          lon: parseFloat(resource.longitude),
+        };
+
+        if (!Number.isFinite(point.lat) || !Number.isFinite(point.lon)) {
+          failed += 1;
+          continue;
+        }
+
+        const marker = L.circleMarker([point.lat, point.lon], {
+          radius: 8,
+          color: markerColor(resource.resource_type),
+          weight: 2,
+          fillColor: markerColor(resource.resource_type),
+          fillOpacity: 0.9,
+        });
+
+        const popup = [
+          '<strong>' + (resource.name || 'Resource') + '</strong>',
+          '<br><small>' + (resource.resource_type_label || resource.resource_type || '') + '</small>',
+          resource.location ? '<br><i class="bi bi-geo-alt"></i> ' + resource.location : '',
+          resource.address ? '<br>' + resource.address : '',
+          resource.phone ? '<br><a href="tel:' + resource.phone + '">' + resource.phone + '</a>' : '',
+          '<br><a class="btn btn-sm btn-primary mt-2" href="' + resource.navigate_url + '">Get Directions</a>'
+        ].join('');
+
+        marker.bindPopup(popup);
+        marker.addTo(markerLayer);
+        bounds.extend([point.lat, point.lon]);
+        placed += 1;
+      }
+
+      if (placed > 0 && bounds.isValid()) {
+        map.fitBounds(bounds, { padding: [30, 30] });
+      }
+
+      if (countEl) {
+        countEl.textContent = 'Showing ' + placed + ' resources';
+      }
+
+      if (placed === 0) {
+        setStatus('No resources match the current filter.');
+      } else if (failed > 0) {
+        setStatus('Map ready: ' + placed + ' resources shown (' + failed + ' could not be located).');
+      } else {
+        setStatus('Map ready: all ' + placed + ' filtered resources shown.');
+      }
+    }
+
+    // Add legend
+    const legendControl = L.control({ position: 'topright' });
+    legendControl.onAdd = function (map) {
+      const div = L.DomUtil.create('div', 'map-legend');
+      const items = [
+        { type: 'police', label: 'Police Posts', color: '#0d6efd' },
+        { type: 'safehouse', label: 'Safe Houses', color: '#dc3545' },
+        { type: 'church', label: 'Churches', color: '#6f42c1' },
+        { type: 'hospital', label: 'Hospitals', color: '#198754' },
+        { type: 'counseling', label: 'Counseling Centers', color: '#fd7e14' },
+        { type: 'legal', label: 'Legal Aid', color: '#20c997' },
+      ];
+      let html = '<strong>Resource Types</strong><br>';
+      items.forEach(item => {
+        html += '<div class="map-legend-item">' +
+                '<div class="map-legend-color" style="background-color: ' + item.color + ';"></div>' +
+                '<span>' + item.label + '</span>' +
+                '</div>';
+      });
+      div.innerHTML = html;
+      return div;
+    };
+    legendControl.addTo(map);
+
+    renderMarkers();
+    filterInputs.forEach(function(input) {
+      input.addEventListener('change', renderMarkers);
+    });
+  });
+</script>
+{% endblock %}

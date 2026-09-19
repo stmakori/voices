@@ -1,0 +1,353 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>{% block title %}Voices Against Violence - GBV Reporting & Support Kenya{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Voices Against Violence provides confidential GBV reporting, support resources, and education across Kenya. Find safe houses, legal aid, counseling services, and emergency help.{% endblock %}">
+  <meta name="keywords" content="{% block meta_keywords %}GBV reporting Kenya, gender-based violence, survivor support, safe houses Kenya, domestic violence help, sexual assault reporting, women's rights Kenya{% endblock %}">
+  <meta name="robots" content="{% block meta_robots %}index,follow{% endblock %}">
+  <link rel="canonical" href="{% block canonical_url %}{{ request.build_absolute_uri }}{% endblock %}">
+  <meta property="og:site_name" content="Voices Against Violence">
+  <meta property="og:locale" content="en_KE">
+  <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+  <meta property="og:title" content="{% block og_title %}Voices Against Violence - GBV Reporting & Support Kenya{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}Voices Against Violence provides confidential GBV reporting, support resources, and education across Kenya. Find safe houses, legal aid, counseling services, and emergency help.{% endblock %}">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'assets/img/equality.png' %}{% endblock %}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{% block twitter_title %}Voices Against Violence - GBV Reporting & Support Kenya{% endblock %}">
+  <meta name="twitter:description" content="{% block twitter_description %}Voices Against Violence provides confidential GBV reporting, support resources, and education across Kenya. Find safe houses, legal aid, counseling services, and emergency help.{% endblock %}">
+  <meta name="twitter:image" content="{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'assets/img/equality.png' %}{% endblock %}">
+  {% block extra_meta %}{% endblock %}
+
+  <!-- Security Headers -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- Favicons -->
+  <link href="{% static 'assets/img/equality.png' %}" rel="icon" type="image/png">
+  <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon" type="image/png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/aos/aos.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link href="{% static 'assets/css/main.css' %}" rel="stylesheet">
+
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body class="{% block body_class %}index-page{% endblock %}">
+
+  <!-- Skip to main content for accessibility -->
+  <a href="#main-content" class="visually-hidden-focusable">Skip to main content</a>
+
+  <header id="header" class="header d-flex align-items-center position-relative">
+    <div class="container position-relative d-flex align-items-center justify-content-between">
+
+      <a href="{% url 'home' %}" class="logo d-flex align-items-center me-auto me-xl-0" aria-label="Voices Against Violence Home">
+        {% if request.resolver_match and request.resolver_match.url_name == 'home' %}
+        <h1 class="sitename">Voices Against Violence</h1>
+        {% else %}
+        <span class="sitename">Voices Against Violence</span>
+        {% endif %}
+      </a>
+
+<nav id="navmenu" class="navmenu" aria-label="Main navigation">
+        <ul>
+          <li><a href="{% url 'home' %}" {% if request.resolver_match.url_name == 'home' %}class="active"{% endif %}>Home</a></li>
+          <li><a href="{% url 'about' %}" {% if request.resolver_match.url_name == 'about' %}class="active"{% endif %}>About</a></li>
+          {% if user.is_authenticated and request.session.user_type == 'contributor' %}
+          <li><a href="javascript:void(0)" class="role-disabled" aria-disabled="true" title="Contributors cannot access the report form">Report GBV</a></li>
+          {% else %}
+          <li><a href="{% url 'report_gbv' %}" {% if request.resolver_match.url_name == 'report_gbv' %}class="active"{% endif %}>Report GBV</a></li>
+          {% endif %}
+          <li><a href="{% url 'education' %}" {% if request.resolver_match.url_name == 'education' %}class="active"{% endif %}>Education</a></li>
+          <li><a href="{% url 'resources' %}" {% if request.resolver_match.url_name == 'resources' %}class="active"{% endif %}>Find Resources</a></li>
+          {% if user.is_authenticated and request.session.user_type == 'victim' %}
+          <li><a href="javascript:void(0)" class="role-disabled" aria-disabled="true" title="Reporters cannot access the contribute page">Contribute</a></li>
+          {% else %}
+          <li><a href="{% url 'contribute' %}" {% if request.resolver_match.url_name == 'contribute' %}class="active"{% endif %}>Contribute</a></li>
+          {% endif %}
+          <li><a href="{% url 'contact' %}" {% if request.resolver_match.url_name == 'contact' %}class="active"{% endif %}>Contact</a></li>
+          {% if not user.is_authenticated %}
+          <li class="mobile-auth-item d-xl-none"><a href="{% url 'login' %}"><i class="bi bi-box-arrow-in-right"></i> Login</a></li>
+          <li class="mobile-auth-item d-xl-none"><a href="{% url 'signup' %}"><i class="bi bi-person-plus"></i> Sign Up</a></li>
+          {% endif %}
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list" aria-label="Toggle mobile menu" aria-expanded="false"></i>
+      </nav>
+
+      <div class="header-social-links {% if not user.is_authenticated %}header-social-links-guest{% endif %}">
+        {% if user.is_authenticated %}
+        <div class="dropdown account-dropdown">
+          <button class="account-toggle dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Open account menu" title="{{ request.user.username }} · {% if request.session.user_type == 'contributor' %}Contributor{% else %}Reporter{% endif %}" data-bs-placement="bottom">
+            <i class="bi bi-person-circle"></i>
+            <span class="account-label">{{ request.user.username }}</span>
+            <span class="account-role {% if request.session.user_type == 'contributor' %}role-contributor{% else %}role-victim{% endif %}">
+              <i class="bi {% if request.session.user_type == 'contributor' %}bi-people-fill{% else %}bi-heart-pulse-fill{% endif %}"></i>
+              {% if request.session.user_type == 'contributor' %}Contributor{% else %}Reporter{% endif %}
+            </span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+              <a class="dropdown-item" href="{% url 'myprofile' %}">
+                <i class="bi bi-person"></i> My Profile
+              </a>
+            </li>
+            {% if request.session.user_type == 'contributor' %}
+            <li>
+              <a class="dropdown-item" href="{% url 'my_contributions' %}">
+                <i class="bi bi-pencil-square"></i> My Contributions
+              </a>
+            </li>
+            {% endif %}
+            <li>
+              <button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#changeRoleModal">
+                <i class="bi bi-arrow-repeat"></i>
+                {% if request.session.user_type == 'contributor' %}
+                I want to report
+                {% else %}
+                I want to contribute
+                {% endif %}
+              </button>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a class="dropdown-item" href="{% url 'logout' %}">
+                <i class="bi bi-box-arrow-right"></i> Logout
+              </a>
+            </li>
+          </ul>
+        </div>
+        {% else %}
+        <a href="{% url 'login' %}" class="account-link" aria-label="Sign in">
+          <i class="bi bi-box-arrow-in-right"></i> Login
+        </a>
+        <a href="{% url 'signup' %}" class="account-link" aria-label="Create account">
+          <i class="bi bi-person-plus"></i> Sign Up
+        </a>
+        {% endif %}
+      </div>
+
+    </div>
+  </header>
+
+  <main class="main" id="main-content">
+    {% if messages %}
+    <div class="toast-container position-fixed top-0 end-0 p-3" id="vav-toast-container" style="z-index: 1090;" aria-live="polite" aria-atomic="true">
+      {% for message in messages %}
+      {% with tags=message.tags %}
+      <div class="toast align-items-center border-0 vav-toast vav-toast--{% if 'error' in tags or 'danger' in tags %}danger{% elif 'warning' in tags %}warning{% elif 'success' in tags %}success{% else %}info{% endif %}" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
+        <div class="toast-body d-flex align-items-center gap-2">
+          <i class="bi {% if 'error' in tags or 'danger' in tags %}bi-exclamation-circle-fill{% elif 'warning' in tags %}bi-exclamation-triangle-fill{% elif 'success' in tags %}bi-check-circle-fill{% else %}bi-info-circle-fill{% endif %} flex-shrink-0" style="font-size:1.1rem;"></i>
+          <span class="me-auto">{{ message }}</span>
+          <button type="button" class="btn-close ms-2" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
+      {% endwith %}
+      {% endfor %}
+    </div>
+    {% endif %}
+    
+    {% block content %}{% endblock %}
+  </main>
+
+  <a
+    href="{% if user.is_authenticated %}{% url 'ai_chat' %}{% else %}{% url 'login' %}?next={% url 'ai_chat' %}{% endif %}"
+    class="ai-fab"
+    aria-label="Open AI support chat"
+    title="Chat with AI Support"
+  >
+    <span class="ai-fab__icon"><i class="bi bi-chat-dots-fill"></i></span>
+    <span class="ai-fab__label">AI Help</span>
+  </a>
+
+  {% if user.is_authenticated %}
+  <div class="modal fade" id="changeRoleModal" tabindex="-1" aria-labelledby="changeRoleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="changeRoleModalLabel">Confirm Role Switch</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          {% if request.session.user_type == 'contributor' %}
+          You are about to switch to <strong>Reporter</strong>. Contribution tools will be unavailable while you report.
+          {% else %}
+          You are about to switch to <strong>Contributor</strong>. The report form will be unavailable while you contribute.
+          {% endif %}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <form method="post" action="{% url 'change_role' %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <button type="submit" class="btn btn-primary">Yes, update my role</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <footer id="footer" class="footer position-relative light-background">
+
+    <div class="container">
+      <div class="row gy-4">
+
+        <div class="col-lg-4 col-md-6">
+          <div class="footer-brand">
+            <a href="{% url 'home' %}" class="logo d-flex align-items-center mb-3" aria-label="Voices Against Violence Home">
+              <span class="sitename">Voices Against Violence</span>
+            </a>
+            <p class="tagline">A confidential platform for GBV reporting, education, and support in Kenya.</p>
+
+            <div class="social-links mt-4">
+              <a href="https://facebook.com/voicesagainstviolence" target="_blank" rel="noopener noreferrer" aria-label="Visit our Facebook page"><i class="bi bi-facebook"></i></a>
+              <a href="https://instagram.com/voicesagainstviolence" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Instagram"><i class="bi bi-instagram"></i></a>
+              <a href="https://linkedin.com/company/voicesagainstviolence" target="_blank" rel="noopener noreferrer" aria-label="Connect on LinkedIn"><i class="bi bi-linkedin"></i></a>
+              <a href="https://twitter.com/voicesagainstviolence" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Twitter"><i class="bi bi-twitter-x"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6 col-md-6">
+          <div class="footer-links-grid">
+            <div class="row">
+              <div class="col-6 col-md-4 mb-3">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                  <li><a href="{% url 'report_gbv' %}">Report GBV</a></li>
+                  <li><a href="{% url 'education' %}">Education</a></li>
+                  <li><a href="{% url 'resources' %}">Find Resources</a></li>
+                  <li><a href="{% url 'contribute' %}">Contribute</a></li>
+                  <li><a href="{% url 'about' %}">About Us</a></li>
+                </ul>
+              </div>
+
+              <div class="col-6 col-md-4 mb-3">
+                <h5>Support</h5>
+                <ul class="list-unstyled">
+                  <li><a href="{% url 'contact' %}">Contact Us</a></li>
+                  <li><a href="tel:999">Emergency: 999</a></li>
+                  <li><a href="tel:1195">GBV Hotline: 1195</a></li>
+                  <li><a href="{% url 'privacy_policy' %}">Privacy Policy</a></li>
+                  <li><a href="{% url 'terms_of_service' %}">Terms of Service</a></li>
+                </ul>
+              </div>
+
+              <div class="col-6 col-md-4 mb-3">
+                <h5>Resources</h5>
+                <ul class="list-unstyled">
+                  <li><a href="{% url 'resources' %}">Police Stations</a></li>
+                  <li><a href="{% url 'resources' %}">Safe Houses</a></li>
+                  <li><a href="{% url 'resources' %}">Legal Aid</a></li>
+                  <li><a href="{% url 'resources' %}">Counseling Services</a></li>
+                  <li><a href="{% url 'education' %}">GBV Education</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-12">
+          <div class="footer-cta">
+            <h5>Need Help Now?</h5>
+            <a href="{% url 'report_gbv' %}" class="btn btn-outline-primary w-100 mb-2">Report Confidentially</a>
+            <p class="small text-muted mt-2">24/7 Support Available</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="footer-bottom-content">
+              <p class="mb-0">&copy; {% now "Y" %} <strong>Voices Against Violence</strong>. All Rights Reserved.</p>
+            </div>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <p class="mb-0 small text-muted">Serving communities across Kenya</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </footer>
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center" aria-label="Scroll to top">
+    <i class="bi bi-arrow-up-short"></i>
+  </a>
+
+  <!-- Preloader -->
+  <div id="preloader" aria-label="Loading"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/php-email-form/validate.js' %}"></script>
+  <script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
+  <script src="{% static 'assets/vendor/swiper/swiper-bundle.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/purecounter/purecounter_vanilla.js' %}"></script>
+
+  <!-- Main JS File -->
+  <script src="{% static 'assets/js/main.js' %}"></script>
+
+  <script>
+    // Role-based nav link gating
+    (function () {
+      const role = "{{ request.session.user_type|default:'' }}";
+      if (!role) return;
+
+      const rules = [];
+      if (role === "contributor") {
+        rules.push({ path: "{% url 'report_gbv' %}", message: "Contributors cannot access the report form" });
+      }
+      if (role === "victim") {
+        rules.push({ path: "{% url 'contribute' %}", message: "Reporters cannot access the contribute page" });
+      }
+
+      rules.forEach(function (rule) {
+        document.querySelectorAll("a[href='" + rule.path + "']").forEach(function (link) {
+          link.classList.add("role-disabled");
+          link.setAttribute("aria-disabled", "true");
+          link.setAttribute("title", rule.message);
+          link.addEventListener("click", function (event) { event.preventDefault(); });
+        });
+      });
+    })();
+  </script>
+
+  <script>
+    // Auto-show Bootstrap toasts
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('.vav-toast').forEach(function (el) {
+        bootstrap.Toast.getOrCreateInstance(el).show();
+      });
+
+      // Bootstrap tooltips (account button on narrow screens)
+      document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
+        bootstrap.Tooltip.getOrCreateInstance(el);
+      });
+    });
+  </script>
+
+  {% block extra_js %}{% endblock %}
+</body>
+
+</html>

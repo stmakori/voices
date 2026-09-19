@@ -1,0 +1,460 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Report GBV - Voices Against Violence{% endblock %}
+{% block meta_description %}Report cases of Gender-Based Violence safely and anonymously. Your report will be handled with confidentiality and care.{% endblock %}
+{% block meta_keywords %}GBV reporting, Gender Based Violence, Kenya, anonymous report, confidential{% endblock %}
+{% block body_class %}contact-page{% endblock %}
+
+{% block content %}
+
+<div class="page-title">
+  <div class="heading">
+    <div class="container">
+      <div class="row d-flex justify-content-center text-center">
+        <div class="col-lg-8">
+          <h1 class="heading-title">Report Gender-Based Violence</h1>
+          <p class="mb-0">
+            Your safety and privacy come first. You can report safely and anonymously, and every report is handled with care.
+            This service is available to people of all genders.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <nav class="breadcrumbs">
+    <div class="container">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li class="current">Report GBV</li>
+      </ol>
+    </div>
+  </nav>
+</div>
+
+<section class="section ui-1c74ad51">
+  <div class="container text-center">
+    <div class="alert alert-danger mb-0 ui-a0cd4d2b">
+      <strong><i class="bi bi-exclamation-triangle-fill"></i> Emergency?</strong>
+      If you or someone you know is in immediate danger, call <strong>999</strong> (Police) or <strong>1195</strong> (GBV Hotline) immediately.
+    </div>
+  </div>
+</section>
+
+<section id="report-gbv" class="contact section">
+  <div class="container">
+    <div class="contact-wrapper">
+
+      <div class="contact-info-panel">
+        <div class="contact-info-header">
+          <h3>Your Report is Confidential</h3>
+          <p>We know reporting can be difficult. Share only what you feel comfortable with — we keep everything confidential and secure.</p>
+        </div>
+
+          <div class="contact-info-cards">
+          <div class="info-card">
+            <div class="icon-container"><i class="bi bi-shield-lock"></i></div>
+            <div class="card-content">
+              <h4>100% Confidential</h4>
+              <p>All reports are handled with strict confidentiality. Your identity is protected.</p>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="icon-container"><i class="bi bi-person-check"></i></div>
+            <div class="card-content">
+              <h4>Anonymous Option</h4>
+              <p>Choose to report anonymously — no personal information required.</p>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="icon-container"><i class="bi bi-clock-history"></i></div>
+            <div class="card-content">
+              <h4>24/7 Available</h4>
+              <p>Report at any time, day or night. We're here whenever you need us.</p>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="icon-container"><i class="bi bi-heart"></i></div>
+            <div class="card-content">
+              <h4>Support Available</h4>
+              <p>We'll connect you with appropriate support services and resources.</p>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="icon-container"><i class="bi bi-person-badge"></i></div>
+            <div class="card-content">
+              <h4>ID Collection</h4>
+              <p>Used only for identity verification — if you are under age, provide a guardian's ID. IDs are collected for verification purposes only.</p>
+            </div>
+          </div>
+        </div>
+
+            <div class="social-links-panel">
+          <h5>Need Immediate Help?</h5>
+          <div class="d-flex flex-column gap-2">
+            <a href="tel:999" class="btn ui-fd3cd2f8"><i class="bi bi-telephone-fill"></i> Emergency: 999</a>
+            <a href="tel:1195" class="btn ui-04678c49"><i class="bi bi-telephone-fill"></i> GBV Hotline: 1195</a>
+            <a href="{% url 'resources' %}" class="btn btn-success fw-bold w-100" style="font-size:1rem;padding:0.8rem 0.9rem;">
+              <i class="bi bi-geo-alt me-2"></i> Find Nearby Resources
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form-panel">
+        <div class="form-container">
+          <h3>Share a Report</h3>
+          <p>Fields marked with * are required. Share only what you are comfortable with.</p>
+
+          <form method="post" action="{% url 'report_gbv' %}" class="gbv-form" id="gbv-report-form" novalidate>
+            {% csrf_token %}
+            <div class="alert alert-danger d-none" id="gbv-form-alert" role="alert">
+              Please review the highlighted fields and try again.
+            </div>
+            <div class="alert alert-info">
+              <i class="bi bi-info-circle"></i> <strong>Privacy Notice:</strong>
+              Tick "Report anonymously" below to hide personal fields. If you do not tick it, at least one contact (email or phone) is required so we can follow up. Your name is optional.
+            </div>
+
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <strong>Form Error:</strong>
+              {% for error in form.non_field_errors %}<div>{{ error }}</div>{% endfor %}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endif %}
+
+            <!-- ── Incident Details ─────────────────────────────────────── -->
+            <h6 class="text-muted text-uppercase fw-bold small mb-2 mt-3" style="letter-spacing:.5px;">Incident Details</h6>
+
+            <div class="form-floating mb-3">
+              <select class="form-select {% if form.report_type.errors %}is-invalid{% endif %}" id="reportType" name="report_type" required>
+                <option value="">Select report type...</option>
+                <option value="physical" {% if form.report_type.value == 'physical' %}selected{% endif %}>Physical Violence</option>
+                <option value="sexual" {% if form.report_type.value == 'sexual' %}selected{% endif %}>Sexual Violence</option>
+                <option value="emotional" {% if form.report_type.value == 'emotional' %}selected{% endif %}>Emotional / Psychological Abuse</option>
+                <option value="economic" {% if form.report_type.value == 'economic' %}selected{% endif %}>Economic Abuse</option>
+                <option value="other" {% if form.report_type.value == 'other' %}selected{% endif %}>Other</option>
+              </select>
+              <label for="reportType">Type of GBV *</label>
+              {% if form.report_type.errors %}<div class="invalid-feedback d-block">{{ form.report_type.errors.0 }}</div>
+              {% else %}<div class="invalid-feedback js-validation-feedback">Please choose a report type.</div>{% endif %}
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-sm-6">
+                <div class="form-floating">
+                  <select class="form-select {% if form.county.errors %}is-invalid{% endif %}" id="county" name="county">
+                    <option value="">Select county...</option>
+                    {% for county in kenya_counties %}
+                    <option value="{{ county }}" {% if form.county.value == county %}selected{% endif %}>{{ county }}</option>
+                    {% endfor %}
+                  </select>
+                  <label for="county">County</label>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-floating">
+                  <input type="text" class="form-control {% if form.location.errors %}is-invalid{% endif %}"
+                    id="location" name="location" placeholder="Town / Area" required
+                    value="{{ form.location.value|default:'' }}">
+                  <label for="location">Town / Area *</label>
+                  {% if form.location.errors %}<div class="invalid-feedback d-block">{{ form.location.errors.0 }}</div>
+                  {% else %}<div class="invalid-feedback js-validation-feedback">Please enter a location.</div>{% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="date" class="form-control {% if form.incident_date.errors %}is-invalid{% endif %}"
+                id="incidentDate" name="incident_date" placeholder="Date"
+                value="{{ form.incident_date.value|default:'' }}">
+              <label for="incidentDate">Date of Incident (if known)</label>
+              {% if form.incident_date.errors %}<div class="invalid-feedback d-block">{{ form.incident_date.errors.0 }}</div>{% endif %}
+            </div>
+
+            <div class="form-floating mb-3">
+              <select class="form-select" id="relationshipToPerpetrator" name="relationship_to_perpetrator">
+                <option value="">Select relationship...</option>
+                <option value="partner" {% if form.relationship_to_perpetrator.value == 'partner' %}selected{% endif %}>Intimate Partner / Spouse</option>
+                <option value="family" {% if form.relationship_to_perpetrator.value == 'family' %}selected{% endif %}>Family Member</option>
+                <option value="acquaintance" {% if form.relationship_to_perpetrator.value == 'acquaintance' %}selected{% endif %}>Acquaintance / Neighbour</option>
+                <option value="employer" {% if form.relationship_to_perpetrator.value == 'employer' %}selected{% endif %}>Employer / Authority Figure</option>
+                <option value="stranger" {% if form.relationship_to_perpetrator.value == 'stranger' %}selected{% endif %}>Stranger</option>
+                <option value="unknown" {% if form.relationship_to_perpetrator.value == 'unknown' %}selected{% endif %}>Unknown</option>
+                <option value="other" {% if form.relationship_to_perpetrator.value == 'other' %}selected{% endif %}>Other</option>
+              </select>
+              <label for="relationshipToPerpetrator">Relationship to Perpetrator (Optional)</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <textarea class="form-control {% if form.description.errors %}is-invalid{% endif %} ui-5e9e78c2"
+                id="description" name="description" rows="5" placeholder="Description" required>{{ form.description.value|default:'' }}</textarea>
+              <label for="description">Description of Incident *</label>
+              {% if form.description.errors %}<div class="invalid-feedback d-block">{{ form.description.errors.0 }}</div>
+              {% else %}<div class="invalid-feedback js-validation-feedback">Please share a brief description.</div>{% endif %}
+            </div>
+            <!-- ── Required identity fields (moved above description) ───── -->
+            <div class="row g-3 mb-3">
+              <div class="col-sm-6">
+                <div class="form-floating">
+                  <input type="text" class="form-control {% if form.id_number.errors %}is-invalid{% endif %}"
+                    id="idNumber" name="id_number" placeholder="ID Number" required
+                    value="{{ form.id_number.value|default:'' }}" pattern="[A-Za-z0-9]+" maxlength="20">
+                  <label for="idNumber">National ID / Passport No. *</label>
+                  {% if form.id_number.errors %}<div class="invalid-feedback d-block">{{ form.id_number.errors.0 }}</div>{% endif %}
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-floating">
+                  <select class="form-select {% if form.gender.errors %}is-invalid{% endif %}" id="gender" name="gender" required>
+                    <option value="">Select gender...</option>
+                    <option value="female" {% if form.gender.value == 'female' %}selected{% endif %}>Female</option>
+                    <option value="male" {% if form.gender.value == 'male' %}selected{% endif %}>Male</option>
+                    <option value="non_binary" {% if form.gender.value == 'non_binary' %}selected{% endif %}>Non-binary</option>
+                    <option value="prefer_not" {% if form.gender.value == 'prefer_not' %}selected{% endif %}>Prefer not to say</option>
+                  </select>
+                  <label for="gender">Gender *</label>
+                  {% if form.gender.errors %}<div class="invalid-feedback d-block">{{ form.gender.errors.0 }}</div>{% endif %}
+                </div>
+              </div>
+            </div>
+            <!-- ── Anonymous toggle (moved below description) ───────────── -->
+            <div class="form-check mb-3 p-3 rounded" style="background:#f3e8ff;border:1px solid #c9aee0;">
+              <input class="form-check-input" type="checkbox" id="anonymous" name="anonymous"
+                {% if form.anonymous.value %}checked{% endif %}>
+              <label class="form-check-label fw-semibold" for="anonymous">
+                <i class="bi bi-incognito me-1"></i> Report anonymously (your personal details will not be collected)
+              </label>
+            </div>
+
+            <!-- ── Personal Details (hidden when anonymous) ──────────────── -->
+            <div id="contact-info-section">
+              <h6 class="text-muted text-uppercase fw-bold small mb-2 mt-3" style="letter-spacing:.5px;">
+                Your Details
+              </h6>
+              <p class="text-muted small mb-3" id="details-required-hint">
+                Providing these helps us follow up on your case when you choose not to report anonymously.
+              </p>
+
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control {% if form.name.errors %}is-invalid{% endif %}"
+                  id="name" name="name" placeholder="Full Name"
+                  value="{{ form.name.value|default:'' }}">
+                <label for="name">Full Name <span class="text-muted small">(optional)</span></label>
+                {% if form.name.errors %}<div class="invalid-feedback d-block">{{ form.name.errors.0 }}</div>{% endif %}
+              </div>
+
+              <div class="form-floating mb-3">
+                <input type="tel" class="form-control {% if form.phone.errors %}is-invalid{% endif %}"
+                  id="phone" name="phone" placeholder="Phone"
+                  value="{{ form.phone.value|default:'' }}">
+                <label for="phone">Phone Number <span class="text-muted small">(at least one contact required)</span></label>
+                {% if form.phone.errors %}<div class="invalid-feedback d-block">{{ form.phone.errors.0 }}</div>
+                {% else %}<div class="invalid-feedback js-validation-feedback">Please provide a phone number or email.</div>{% endif %}
+              </div>
+
+              <div class="form-floating mb-3">
+                <input type="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                  id="email" name="email" placeholder="Email"
+                  value="{{ form.email.value|default:'' }}">
+                <label for="email">Email Address</label>
+                {% if form.email.errors %}<div class="invalid-feedback d-block">{{ form.email.errors.0 }}</div>{% endif %}
+              </div>
+            </div>
+
+            <!-- ── Consent & Submit ───────────────────────────────────────── -->
+            <div class="form-check mb-3">
+              <input class="form-check-input {% if form.consent.errors %}is-invalid{% endif %}"
+                type="checkbox" id="consent" name="consent" required
+                {% if form.consent.value %}checked{% endif %}>
+              <label class="form-check-label" for="consent">
+                I understand that this report will be handled confidentially and may be shared with relevant authorities for investigation. *
+              </label>
+              {% if form.consent.errors %}<div class="invalid-feedback d-block">{{ form.consent.errors.0 }}</div>
+              {% else %}<div class="invalid-feedback js-validation-feedback">Please confirm this consent to continue.</div>{% endif %}
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn-submit">Submit Report <i class="bi bi-send-fill ms-2"></i></button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const anonymousCheckbox = document.getElementById('anonymous');
+    const contactSection    = document.getElementById('contact-info-section');
+    const gbvForm           = document.getElementById('gbv-report-form');
+    const incidentDateInput = document.getElementById('incidentDate');
+    const phoneInput        = document.getElementById('phone');
+    const nameInput         = document.getElementById('name');
+    const emailInput        = document.getElementById('email');
+    const consentCheckbox   = document.getElementById('consent');
+    const requiredBadge     = document.getElementById('details-required-badge');
+    const requiredHint      = document.getElementById('details-required-hint');
+
+
+
+    if (incidentDateInput) {
+      incidentDateInput.setAttribute('max', new Date().toISOString().split('T')[0]);
+    }
+
+    function applyAnonymousState(isAnonymous) {
+      if (isAnonymous) {
+        contactSection.style.display = 'none';
+        contactSection.querySelectorAll('input, select').forEach(function (f) {
+          f.value = '';
+          f.removeAttribute('required');
+          f.classList.remove('is-invalid');
+        });
+      } else {
+        contactSection.style.display = 'block';
+        // Name is optional; we do not force it to be required. We only require at least one contact (phone or email) on submit.
+      }
+      if (requiredBadge) requiredBadge.style.display = isAnonymous ? 'none' : '';
+      if (requiredHint)  requiredHint.style.display  = isAnonymous ? 'none' : '';
+      // hide any name-required star marker if present
+      var nameStar = document.getElementById('name-required-star');
+      if (nameStar) nameStar.style.display = 'none';
+    }
+
+    // Initialise state on page load
+    applyAnonymousState(anonymousCheckbox.checked);
+
+    anonymousCheckbox.addEventListener('change', function () {
+      applyAnonymousState(this.checked);
+    });
+
+    // Phone validation
+    if (phoneInput) {
+      phoneInput.addEventListener('input', function () {
+        this.value = this.value.replace(/[^0-9+\s]/g, '');
+      });
+      phoneInput.addEventListener('blur', function () {
+        const ok = !this.value || /^[\d\s+]+$/.test(this.value);
+        this.setCustomValidity(ok ? '' : 'Phone number should only contain numbers, spaces, and + symbol.');
+        this.classList.toggle('is-invalid', !ok && !!this.value);
+      });
+    }
+
+    // Name validation
+    if (nameInput) {
+      nameInput.addEventListener('input', function () {
+        this.value = this.value.replace(/[^a-zA-Z\s\-']/g, '');
+      });
+      nameInput.addEventListener('blur', function () {
+        const ok = !this.value || /^[a-zA-Z\s\-']+$/.test(this.value);
+        this.setCustomValidity(ok ? '' : "Name should only contain letters, spaces, hyphens, and apostrophes.");
+        this.classList.toggle('is-invalid', !ok && !!this.value);
+      });
+    }
+
+    // Date validation
+    if (incidentDateInput) {
+      incidentDateInput.addEventListener('change', function () {
+        const future = new Date(this.value) > new Date();
+        this.setCustomValidity(future ? 'Date cannot be in the future.' : '');
+        this.classList.toggle('is-invalid', future);
+      });
+    }
+
+    function setInvalid(field, message) {
+      field.classList.add('is-invalid');
+      const container = field.closest('.form-floating, .form-check, .col-sm-6');
+      const feedback  = container ? container.querySelector('.js-validation-feedback') : null;
+      if (feedback) { feedback.textContent = message; feedback.classList.add('d-block'); }
+    }
+
+    function clearInvalid(field) {
+      field.classList.remove('is-invalid');
+      const container = field.closest('.form-floating, .form-check, .col-sm-6');
+      const feedback  = container ? container.querySelector('.js-validation-feedback') : null;
+      if (feedback) feedback.classList.remove('d-block');
+    }
+
+    function validateRequired(field) {
+      if (!field.hasAttribute('required')) {
+        if (field.value && field.checkValidity && !field.checkValidity()) {
+          setInvalid(field, field.validationMessage || 'Please enter a valid value.');
+          return false;
+        }
+        return true;
+      }
+      if (field.type === 'checkbox') {
+        if (!field.checked) { setInvalid(field, 'Please confirm this consent to continue.'); return false; }
+        return true;
+      }
+      const value = (field.value || '').trim();
+      if (!value) {
+        setInvalid(field, field.tagName === 'SELECT' ? 'Please make a selection.' : 'Please complete this field.');
+        return false;
+      }
+      if (field.checkValidity && !field.checkValidity()) {
+        setInvalid(field, field.validationMessage || 'Please enter a valid value.');
+        return false;
+      }
+      return true;
+    }
+
+    if (gbvForm) {
+      gbvForm.addEventListener('submit', function (e) {
+        let firstInvalid = null;
+        // Extra: when not anonymous, require at least one of phone/email. Name is optional.
+        if (!anonymousCheckbox.checked) {
+          const hasContact = (phoneInput && (phoneInput.value || '').trim()) ||
+                             (emailInput && (emailInput.value || '').trim());
+          if (!hasContact && phoneInput) {
+            setInvalid(phoneInput, 'Please provide at least a phone number or email.');
+            if (!firstInvalid) firstInvalid = phoneInput;
+          }
+        }
+
+        gbvForm.querySelectorAll('input, textarea, select').forEach(function (field) {
+          // Skip hidden section when anonymous
+          if (anonymousCheckbox.checked && contactSection.contains(field)) return;
+          clearInvalid(field);
+          const valid = validateRequired(field);
+          if (!valid && !firstInvalid) firstInvalid = field;
+        });
+
+        if (firstInvalid) {
+          e.preventDefault();
+          const alertEl = document.getElementById('gbv-form-alert');
+          if (alertEl) alertEl.classList.remove('d-none');
+          firstInvalid.focus({ preventScroll: false });
+          return false;
+        }
+
+        const submitBtn = gbvForm.querySelector('button[type="submit"]');
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Submitting...';
+        }
+        return true;
+      });
+
+      gbvForm.querySelectorAll('input, textarea, select').forEach(function (field) {
+        field.addEventListener('input', function () {
+          clearInvalid(field);
+          const alertEl = document.getElementById('gbv-form-alert');
+          if (alertEl) alertEl.classList.add('d-none');
+        });
+        field.addEventListener('change', function () {
+          clearInvalid(field);
+          const alertEl = document.getElementById('gbv-form-alert');
+          if (alertEl) alertEl.classList.add('d-none');
+        });
+      });
+    }
+  });
+</script>
+{% endblock %}

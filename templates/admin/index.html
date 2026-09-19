@@ -1,0 +1,1239 @@
+{% extends "admin/base_site.html" %}
+
+{% block title %}Admin Dashboard | Voices Against Violence{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<meta name="description" content="Administrative dashboard for managing Voices Against Violence content and platform metrics.">
+<meta name="keywords" content="admin dashboard, content management, Voices Against Violence">
+<meta name="robots" content="noindex,nofollow">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+  .content-main.dashboard-shell {
+    --dash-bg: #ffffff;
+    --dash-surface: #ffffff;
+    --dash-ink: #21263a;
+    --dash-muted: #5d6378;
+    --dash-border: #e5e0ef;
+    --dash-accent: #8B4C9F;
+    --dash-accent-soft: #f3e8ff;
+    --dash-warm: #20B2AA;
+    margin-top: 8px;
+    display: grid;
+    gap: 16px;
+    padding-bottom: 14px;
+  }
+
+  .dashboard-hero {
+    position: relative;
+    border-radius: 18px;
+    padding: 28px 28px;
+    border: none;
+    background: linear-gradient(135deg, #5A2D7A 0%, #8B4C9F 100%);
+    box-shadow: 0 12px 32px rgba(90, 45, 122, 0.25);
+    overflow: hidden;
+  }
+
+  .dashboard-hero::after {
+    content: '';
+    position: absolute;
+    right: -40px;
+    top: -35px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    pointer-events: none;
+  }
+
+  .dashboard-hero::before {
+    content: '';
+    position: absolute;
+    left: -60px;
+    bottom: -60px;
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.04);
+    pointer-events: none;
+  }
+
+  .dashboard-title {
+    margin: 0;
+    color: #ffffff;
+    font-size: clamp(1.4rem, 2.8vw, 2rem);
+    letter-spacing: -0.4px;
+    line-height: 1.1;
+    font-family: 'Montserrat', sans-serif !important;
+  }
+
+  .dashboard-subtitle {
+    margin: 8px 0 0;
+    max-width: 66ch;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 0.94rem;
+  }
+
+  .dashboard-chip-row {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .dashboard-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    backdrop-filter: blur(4px);
+  }
+
+  .dashboard-section-card {
+    border: 1px solid var(--dash-border);
+    border-radius: 16px;
+    background: var(--dash-surface);
+    box-shadow: 0 8px 22px rgba(25, 35, 50, 0.06);
+    padding: 16px;
+  }
+
+  .dashboard-section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .dashboard-section-title {
+    margin: 0;
+    font-size: 1.05rem;
+    color: var(--dash-ink);
+    font-weight: 700;
+  }
+
+  .dashboard-section-note {
+    font-size: 0.81rem;
+    color: var(--dash-muted);
+  }
+
+  .content-main .export-filter-card {
+    margin: 0;
+    padding: 14px;
+    border-radius: 12px;
+    background: linear-gradient(170deg, #ffffff, #faf7ff);
+    border: 1px solid #e5e0ef;
+  }
+
+  .content-main .export-filter-title {
+    margin: 0 0 10px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #2a3046;
+  }
+
+  .content-main .export-filter-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(130px, 1fr));
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .content-main .export-filter-grid label {
+    display: block;
+    font-size: 0.73rem;
+    color: #4f566c;
+    margin-bottom: 5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.45px;
+  }
+
+  .content-main .export-filter-grid input,
+  .content-main .export-filter-grid select {
+    width: 100%;
+    border: 1px solid #d9d3e8;
+    border-radius: 9px;
+    padding: 7px 9px;
+    font-size: 0.82rem;
+    background: #fff;
+    color: #2d3348;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .content-main .export-filter-grid input:focus,
+  .content-main .export-filter-grid select:focus {
+    outline: none;
+    border-color: #8B4C9F;
+    box-shadow: 0 0 0 3px rgba(139, 76, 159, 0.1);
+  }
+
+  .content-main .export-filter-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .content-main .export-filter-actions a,
+  .content-main .export-filter-actions button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    padding: 7px 14px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-decoration: none;
+    border: 1px solid #c9aee0;
+    background: var(--dash-accent-soft);
+    color: #5A2D7A;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .content-main .export-filter-actions a:hover,
+  .content-main .export-filter-actions button:hover {
+    transform: translateY(-1px);
+    background: #ead5f8;
+    border-color: #8B4C9F;
+  }
+
+  .content-main .export-filter-actions button {
+    border-color: #d9d3e8;
+    background: #f9f7ff;
+    color: #5A2D7A;
+  }
+
+  .content-main .export-filter-hint {
+    margin: 10px 0 0;
+    color: #61687f;
+    font-size: 0.76rem;
+  }
+
+  .admin-quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+    margin: 0;
+  }
+
+  .quick-action-card {
+    display: block;
+    text-decoration: none !important;
+    border: 1px solid #e5e0ef;
+    border-radius: 14px;
+    padding: 14px;
+    background: #ffffff;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 12px rgba(90, 45, 122, 0.05);
+  }
+
+  .quick-action-card:hover {
+    transform: translateY(-2px);
+    border-color: #8B4C9F;
+    box-shadow: 0 10px 24px rgba(139, 76, 159, 0.15);
+    background: #faf7ff;
+  }
+
+  .quick-action-title {
+    color: #222a40;
+    font-weight: 700;
+    font-size: 0.98rem;
+    margin-bottom: 4px;
+  }
+
+  .quick-action-subtitle {
+    color: #5f667c;
+    font-size: 0.82rem;
+    margin-bottom: 10px;
+    line-height: 1.35;
+  }
+
+  .quick-action-meta {
+    color: #8B4C9F;
+    font-weight: 700;
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.55px;
+  }
+
+  .quick-action-meta span {
+    font-size: 1.34rem;
+    font-weight: 800;
+    color: #1f2a43;
+    margin-right: 4px;
+    vertical-align: -1px;
+  }
+
+  .admin-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 10px;
+    margin: 0;
+  }
+
+  .metric-card {
+    background: #fff;
+    border: 1px solid #e5e0ef;
+    border-radius: 12px;
+    padding: 12px;
+    transition: all 0.2s ease;
+    border-top: 3px solid #8B4C9F;
+  }
+
+  .metric-card:hover {
+    border-color: #8B4C9F;
+    border-top-color: #5A2D7A;
+    box-shadow: 0 8px 20px rgba(139, 76, 159, 0.12);
+  }
+
+  .metric-label {
+    color: #8B4C9F;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+
+  .metric-value {
+    color: #222a40;
+    font-size: 1.65rem;
+    font-weight: 800;
+    line-height: 1.15;
+  }
+
+  .admin-chart-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 10px;
+    margin: 0;
+  }
+
+  .chart-card {
+    background: #fff;
+    border: 1px solid #ddd8cc;
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 2px 10px rgba(36, 45, 62, 0.05);
+  }
+
+  .chart-card h3 {
+    color: #222a40;
+    font-size: 1.05rem;
+    margin: 0 0 6px;
+    font-weight: 700;
+  }
+
+  .chart-canvas-wrap {
+    position: relative;
+    height: 270px;
+  }
+
+  .metric-subtitle {
+    color: #5e6479;
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+  }
+
+  #status-funnel {
+    display: grid;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .funnel-row {
+    border: 1px solid #e5e0ef;
+    border-radius: 10px;
+    padding: 8px;
+    background: #faf7ff;
+  }
+
+  .funnel-row-head {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #384056;
+    margin-bottom: 5px;
+  }
+
+  .funnel-row-head strong {
+    color: #1d2540;
+  }
+
+  .funnel-track {
+    height: 9px;
+    background: #ede7f6;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .funnel-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #5A2D7A, #20B2AA);
+  }
+
+  .content-main .app-list-card {
+    margin: 0;
+    padding: 14px;
+    border-radius: 14px;
+    background: linear-gradient(165deg, #ffffff, #faf7ff);
+    border: 1px solid #e5e0ef;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 8px 18px rgba(90, 45, 122, 0.06);
+  }
+
+  .content-main .app-list-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ede7f6;
+  }
+
+  .content-main .app-list-title {
+    margin: 0;
+    font-size: 1.0rem;
+    font-weight: 700;
+    color: #252d44;
+  }
+
+  .content-main .app-list-note {
+    font-size: 0.78rem;
+    color: #6b7280;
+  }
+
+  /* CSS Grid: first two columns are fixed (auth, summernote),
+     Voices fills the remaining space on the right.
+     270px gives enough room for "Model Name | Add | Change" without overflow. */
+  .content-main .app-list-grid {
+    display: grid;
+    grid-template-columns: 270px 270px 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  /* Clip any table overflow inside small columns so nothing bleeds into Voices */
+  .content-main .app-list-grid [class*="app-"]:not(.app-Voices) {
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  /* Voices always occupies the last (wide) column */
+  .content-main .app-list-grid .app-Voices {
+    grid-column: 3;
+    grid-row: 1;
+    min-width: 0;
+  }
+
+  .content-main .app-list-card .module {
+    border: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .content-main .app-list-card [class*="app-"] {
+    border: 1px solid #e5e0ef;
+    border-radius: 10px;
+    padding: 10px 12px;
+    background: #ffffff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+
+  .content-main .app-list-card [class*="app-"]:hover {
+    transform: translateY(-1px);
+    border-color: #8B4C9F;
+    box-shadow: 0 6px 14px rgba(139, 76, 159, 0.1);
+  }
+
+  .content-main .app-list-card table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .content-main .app-list-card caption {
+    caption-side: top;
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #37405a;
+    margin-bottom: 8px;
+    letter-spacing: 0.2px;
+  }
+
+  .content-main .app-list-card thead {
+    background: #f3e8ff;
+  }
+
+  .content-main .app-list-card th {
+    color: #5A2D7A;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.45px;
+  }
+
+  .content-main .app-list-card th,
+  .content-main .app-list-card td {
+    padding: 7px 8px;
+    border-bottom: 1px dashed #e5e0ef;
+    vertical-align: middle;
+  }
+
+  .content-main .app-list-card tbody tr {
+    transition: background 0.18s ease;
+  }
+
+  .content-main .app-list-card tbody tr:hover {
+    background: #faf7ff;
+  }
+
+  .content-main .app-list-card tr:last-child th,
+  .content-main .app-list-card tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .content-main .app-list-card th a {
+    color: #5A2D7A;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .content-main .app-list-card th a:hover {
+    color: #8B4C9F;
+  }
+
+  .content-main .app-list-card td {
+    color: #4f566e;
+    font-size: 0.82rem;
+  }
+
+  .content-main .app-list-card td a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 62px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid #c9aee0;
+    background: #f3e8ff;
+    color: #5A2D7A;
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-decoration: none;
+    margin: 2px 6px 2px 0;
+  }
+
+  .content-main .app-list-card td a:hover {
+    background: #ead5f8;
+    border-color: #8B4C9F;
+    color: #5A2D7A;
+  }
+
+  @media (max-width: 1199px) {
+    .admin-quick-actions {
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+  }
+
+  @media (max-width: 991px) {
+    .dashboard-hero {
+      padding: 20px 18px;
+    }
+
+    .content-main .export-filter-grid {
+      grid-template-columns: repeat(2, minmax(130px, 1fr));
+    }
+
+    .admin-chart-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .chart-card {
+      min-width: 0;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .content-main.dashboard-shell {
+      gap: 12px;
+    }
+
+    .admin-quick-actions {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .admin-metrics-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .admin-chart-grid {
+      grid-template-columns: 1fr;
+    }
+
+    /* On tablet, collapse to single column */
+    .content-main .app-list-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .content-main .app-list-grid .app-Voices {
+      grid-column: 1 / -1;
+    }
+
+    .content-main .export-filter-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .chart-canvas-wrap {
+      height: 220px;
+    }
+
+    .dashboard-title {
+      font-size: 1.35rem;
+    }
+  }
+
+  @media (max-width: 479px) {
+    .content-main.dashboard-shell {
+      gap: 10px;
+    }
+
+    .content-main .export-filter-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .admin-quick-actions {
+      grid-template-columns: 1fr;
+    }
+
+    .admin-metrics-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .quick-action-card,
+    .metric-card,
+    .chart-card,
+    .content-main .app-list-card {
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    /* On mobile, stack everything full-width */
+    .content-main .app-list-grid {
+      grid-template-columns: 1fr;
+    }
+    .content-main .app-list-grid .app-Voices {
+      grid-column: 1;
+    }
+
+    .content-main .app-list-card [class*="app-"] {
+      padding: 8px 10px;
+    }
+
+    .content-main .app-list-card table {
+      font-size: 0.78rem;
+    }
+
+    .content-main .app-list-card th,
+    .content-main .app-list-card td {
+      padding: 7px 5px;
+    }
+
+    .quick-action-meta span {
+      display: inline;
+    }
+
+    .dashboard-chip-row {
+      gap: 6px;
+    }
+
+    .dashboard-chip {
+      font-size: 0.72rem;
+      padding: 5px 10px;
+    }
+
+    .export-filter-actions {
+      flex-direction: column;
+    }
+
+    .export-filter-actions a,
+    .export-filter-actions button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-main dashboard-shell">
+  <section class="dashboard-hero">
+    <h2 class="dashboard-title">Admin Command Center</h2>
+    <p class="dashboard-subtitle">Track moderation queues, monitor incoming reports, and export operational data from one structured dashboard.</p>
+    <div class="dashboard-chip-row">
+      <span class="dashboard-chip">Content Moderation</span>
+      <span class="dashboard-chip">Report Operations</span>
+      <span class="dashboard-chip">Data Exports</span>
+    </div>
+  </section>
+
+  <section class="dashboard-section-card">
+    <div class="dashboard-section-head">
+      <h3 class="dashboard-section-title">Export Controls</h3>
+      <span class="dashboard-section-note">Apply filters once, download multiple reports.</span>
+    </div>
+    <div class="export-filter-card">
+      <h3 class="export-filter-title">Export Filters</h3>
+      <div class="export-filter-grid">
+      <div>
+        <label for="filter-start-date">Start Date</label>
+        <input id="filter-start-date" type="date">
+      </div>
+      <div>
+        <label for="filter-end-date">End Date</label>
+        <input id="filter-end-date" type="date">
+      </div>
+      <div>
+        <label for="filter-report-type">Report Type</label>
+        <select id="filter-report-type">
+          <option value="">All Types</option>
+          <option value="physical">Physical</option>
+          <option value="sexual">Sexual</option>
+          <option value="emotional">Emotional</option>
+          <option value="economic">Economic</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div>
+        <label for="filter-status">Report Status</label>
+        <select id="filter-status">
+          <option value="">All Statuses</option>
+          <option value="received">Received</option>
+          <option value="assigned">Assigned</option>
+          <option value="in_progress">In Progress</option>
+          <option value="closed">Closed</option>
+        </select>
+      </div>
+      </div>
+      <div class="export-filter-actions">
+        <a id="export-gbv-link" href="{% url 'export_gbv_reports_csv' %}">Download GBV CSV</a>
+        <a id="export-articles-link" href="{% url 'export_articles_csv' %}">Download Articles CSV</a>
+        <a id="export-blogs-link" href="{% url 'export_blogs_csv' %}">Download Blogs CSV</a>
+        <a id="export-contacts-link" href="{% url 'export_contacts_csv' %}">Download Contacts CSV</a>
+        <a id="export-users-link" href="{% url 'export_users_csv' %}">Download Users CSV</a>
+        <a id="export-logs-link" href="{% url 'export_audit_logs_csv' %}">Download Logs CSV</a>
+        <a id="export-ai-reports-link" href="{% url 'export_ai_reports_csv' %}">Download AI Reports CSV</a>
+        <button type="button" id="reset-export-filters">Reset Filters</button>
+      </div>
+      <p class="export-filter-hint">Filters are applied to the export links above. Dates use report creation date.</p>
+    </div>
+  </section>
+
+  <section class="dashboard-section-card">
+    <div class="dashboard-section-head">
+      <h3 class="dashboard-section-title">Quick Actions</h3>
+      <span class="dashboard-section-note">Jump into high-frequency admin workflows.</span>
+    </div>
+    <div class="admin-quick-actions">
+    <a class="quick-action-card" href="{% url 'admin:Voices_article_changelist' %}?published__exact=0">
+      <div class="quick-action-title">Review Pending Articles</div>
+      <div class="quick-action-subtitle">Open article approval queue</div>
+      <div class="quick-action-meta"><span id="qa-pending-articles">—</span> pending</div>
+    </a>
+    <a class="quick-action-card" href="{% url 'admin:Voices_blog_changelist' %}?published__exact=0">
+      <div class="quick-action-title">Review Pending Blogs</div>
+      <div class="quick-action-subtitle">Open blog approval queue</div>
+      <div class="quick-action-meta"><span id="qa-pending-blogs">—</span> pending</div>
+    </a>
+    <a class="quick-action-card" href="{% url 'admin:Voices_gbvreport_changelist' %}">
+      <div class="quick-action-title">View GBV Reports</div>
+      <div class="quick-action-subtitle">Check latest submitted reports</div>
+      <div class="quick-action-meta"><span id="qa-gbv">—</span> total reports</div>
+    </a>
+    <a class="quick-action-card" href="{% url 'admin:Voices_contact_changelist' %}">
+      <div class="quick-action-title">View Contact Messages</div>
+      <div class="quick-action-subtitle">Respond to incoming messages</div>
+      <div class="quick-action-meta"><span id="qa-contacts">—</span> total messages</div>
+    </a>
+    <a class="quick-action-card" href="{% url 'admin:Voices_article_changelist' %}">
+      <div class="quick-action-title">View Articles</div>
+      <div class="quick-action-subtitle">Browse all published articles</div>
+      <div class="quick-action-meta"><span id="qa-articles">—</span> total articles</div>
+    </a>
+    <a class="quick-action-card" href="{% url 'admin:Voices_blog_changelist' %}">
+      <div class="quick-action-title">View Blogs</div>
+      <div class="quick-action-subtitle">Browse all published blogs</div>
+      <div class="quick-action-meta"><span id="qa-blogs">—</span> total blogs</div>
+    </a>
+    <a class="quick-action-card" href="{% url 'admin:auth_user_changelist' %}">
+      <div class="quick-action-title">View Users</div>
+      <div class="quick-action-subtitle">Manage user accounts</div>
+      <div class="quick-action-meta"><span id="qa-users">—</span> total users</div>
+    </a>
+    <a class="quick-action-card" href="{% url 'export_gbv_reports_csv' %}?status=received">
+      <div class="quick-action-title">Export GBV Reports CSV</div>
+      <div class="quick-action-subtitle">Download received reports (filterable)</div>
+      <div class="quick-action-meta">CSV export</div>
+    </a>
+    <a class="quick-action-card" href="{% url 'export_articles_csv' %}">
+      <div class="quick-action-title">Export Articles CSV</div>
+      <div class="quick-action-subtitle">Download articles data (filterable)</div>
+      <div class="quick-action-meta">CSV export</div>
+    </a>
+    <a class="quick-action-card" href="{% url 'export_blogs_csv' %}">
+      <div class="quick-action-title">Export Blogs CSV</div>
+      <div class="quick-action-subtitle">Download blogs data (filterable)</div>
+      <div class="quick-action-meta">CSV export</div>
+    </a>
+    </div>
+  </section>
+
+  <section class="dashboard-section-card">
+    <div class="dashboard-section-head">
+      <h3 class="dashboard-section-title">Live Metrics</h3>
+      <span class="dashboard-section-note">At-a-glance totals across reports, content, and support.</span>
+    </div>
+    <div class="admin-metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">GBV Reports</div>
+        <div class="metric-value" id="metric-gbv">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Resources</div>
+        <div class="metric-value" id="metric-resources">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Pending Articles</div>
+        <div class="metric-value" id="metric-pending-articles">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Pending Blogs</div>
+        <div class="metric-value" id="metric-pending-blogs">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Articles</div>
+        <div class="metric-value" id="metric-articles">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Blogs</div>
+        <div class="metric-value" id="metric-blogs">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Contacts</div>
+        <div class="metric-value" id="metric-contacts">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Users</div>
+        <div class="metric-value" id="metric-users">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Stories</div>
+        <div class="metric-value" id="metric-stories">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">AI Chat Sessions</div>
+        <div class="metric-value" id="metric-ai-threads">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">AI Messages Sent</div>
+        <div class="metric-value" id="metric-ai-messages">—</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="dashboard-section-card">
+    <div class="dashboard-section-head">
+      <h3 class="dashboard-section-title">Operational Analytics</h3>
+      <span class="dashboard-section-note">Recent trend lines and content type distribution.</span>
+    </div>
+    <div class="admin-chart-grid">
+      <div class="chart-card">
+        <h3>Submissions Trend (Last 6 Months)</h3>
+        <div class="chart-canvas-wrap">
+          <canvas id="trendChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Content Mix</h3>
+        <div class="chart-canvas-wrap">
+          <canvas id="mixChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>GBV Status Funnel</h3>
+        <div class="metric-subtitle">Current case load by workflow stage</div>
+        <div id="status-funnel"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="app-list-card">
+    <div class="app-list-head">
+      <h3 class="app-list-title">Content Management</h3>
+      <span class="app-list-note">Direct links to Django admin models and actions.</span>
+    </div>
+    <div class="app-list-grid">
+      {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', async function () {
+    const gbvBaseExportUrl = '{% url "export_gbv_reports_csv" %}';
+    const articlesBaseExportUrl = '{% url "export_articles_csv" %}';
+    const blogsBaseExportUrl = '{% url "export_blogs_csv" %}';
+    const contactsBaseExportUrl = '{% url "export_contacts_csv" %}';
+    const usersBaseExportUrl = '{% url "export_users_csv" %}';
+    const logsBaseExportUrl = '{% url "export_audit_logs_csv" %}';
+    const aiReportsBaseExportUrl = '{% url "export_ai_reports_csv" %}';
+
+    const startDateInput = document.getElementById('filter-start-date');
+    const endDateInput = document.getElementById('filter-end-date');
+    const reportTypeInput = document.getElementById('filter-report-type');
+
+    // ── Date constraints: neither date may be in the future ────────────────────
+    const todayISO = new Date().toISOString().slice(0, 10);
+    if (startDateInput) startDateInput.max = todayISO;
+    if (endDateInput)   endDateInput.max   = todayISO;
+
+    function enforceDateBounds() {
+      const today = new Date().toISOString().slice(0, 10);
+      // Clamp both values to today if they exceed it
+      if (startDateInput && startDateInput.value > today) startDateInput.value = today;
+      if (endDateInput   && endDateInput.value   > today) endDateInput.value   = today;
+      // Keep end ≥ start
+      if (startDateInput && endDateInput && endDateInput.value && startDateInput.value) {
+        if (endDateInput.value < startDateInput.value) endDateInput.value = startDateInput.value;
+        // Update end date's min to match start date
+        endDateInput.min = startDateInput.value;
+      }
+    }
+
+    if (startDateInput) startDateInput.addEventListener('change', function () {
+      enforceDateBounds();
+      refreshExportLinks();
+    });
+    if (endDateInput) endDateInput.addEventListener('change', function () {
+      enforceDateBounds();
+      refreshExportLinks();
+    });
+    const statusInput = document.getElementById('filter-status');
+    const gbvExportLink = document.getElementById('export-gbv-link');
+    const articlesExportLink = document.getElementById('export-articles-link');
+    const blogsExportLink = document.getElementById('export-blogs-link');
+    const contactsExportLink = document.getElementById('export-contacts-link');
+    const usersExportLink = document.getElementById('export-users-link');
+    const logsExportLink = document.getElementById('export-logs-link');
+    const aiReportsExportLink = document.getElementById('export-ai-reports-link');
+    const resetFiltersBtn = document.getElementById('reset-export-filters');
+
+    // ── Helpers ────────────────────────────────────────────────────────────────
+
+    /** Coerce any value to a finite number, returning `fallback` otherwise. */
+    const toFinite = (v, fallback = 0) => {
+      const n = Number(v);
+      return Number.isFinite(n) ? n : fallback;
+    };
+
+    /** Ensure every element in an array is a finite number. */
+    const sanitizeSeries = (arr) =>
+      Array.isArray(arr) ? arr.map((v) => toFinite(v, 0)) : [];
+
+    /** Sum a series safely. */
+    const sumSeries = (arr) => sanitizeSeries(arr).reduce((a, b) => a + b, 0);
+
+    /**
+     * Derive a clean Y-axis maximum from the actual data values.
+     *
+     * Strategy:
+     *  1. Find the true maximum across all series.
+     *  2. Add 20 % headroom so the tallest bar/line isn't flush with the top.
+     *  3. Round UP to the nearest "nice" number so tick labels are whole numbers.
+     *  4. Enforce a sensible floor (5) so an empty chart still looks reasonable.
+     *  5. Hard-cap at 100 000 to prevent runaway backend values from breaking layout.
+     *
+     * This intentionally IGNORES the backend `y_max` field because that value
+     * was the source of the unbounded-axis bug.
+     */
+    const deriveYMax = (...seriesArrays) => {
+      const all = seriesArrays.flatMap(sanitizeSeries);
+      const dataMax = all.length ? Math.max(...all) : 0;
+
+      if (!Number.isFinite(dataMax) || dataMax <= 0) return 5; // empty/zero data
+
+      const withHeadroom = dataMax * 1.2;
+
+      // Round up to a nice step: pick a magnitude one below the value, round up.
+      const magnitude = Math.pow(10, Math.floor(Math.log10(withHeadroom)) - 1);
+      const nice = Math.ceil(withHeadroom / magnitude) * magnitude;
+
+      return Math.min(Math.max(nice, 5), 100_000);
+    };
+
+    // ── Populate a DOM element safely ─────────────────────────────────────────
+    const setMetric = (id, value) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = String(toFinite(value, 0));
+    };
+
+    const setMetricDecimal = (id, value, digits = 2) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const n = toFinite(value, 0);
+      el.textContent = n.toFixed(digits);
+    };
+
+    const buildQueryString = (entries) => {
+      const params = new URLSearchParams();
+      entries.forEach(([key, value]) => {
+        if (value !== '' && value != null) {
+          params.set(key, String(value));
+        }
+      });
+      const query = params.toString();
+      return query ? `?${query}` : '';
+    };
+
+    const refreshExportLinks = () => {
+      if (!gbvExportLink || !articlesExportLink || !blogsExportLink || !contactsExportLink || !usersExportLink || !logsExportLink || !aiReportsExportLink) return;
+
+      const commonFilters = [
+        ['start_date', startDateInput ? startDateInput.value : ''],
+        ['end_date', endDateInput ? endDateInput.value : ''],
+      ];
+
+      const gbvFilters = [
+        ...commonFilters,
+        ['report_type', reportTypeInput ? reportTypeInput.value : ''],
+        ['status', statusInput ? statusInput.value : ''],
+      ];
+
+      gbvExportLink.href = gbvBaseExportUrl + buildQueryString(gbvFilters);
+      articlesExportLink.href = articlesBaseExportUrl + buildQueryString(commonFilters);
+      blogsExportLink.href = blogsBaseExportUrl + buildQueryString(commonFilters);
+      contactsExportLink.href = contactsBaseExportUrl + buildQueryString(commonFilters);
+      usersExportLink.href = usersBaseExportUrl + buildQueryString(commonFilters);
+      logsExportLink.href = logsBaseExportUrl + buildQueryString(commonFilters);
+      aiReportsExportLink.href = aiReportsBaseExportUrl + buildQueryString(commonFilters);
+    };
+
+    // Date inputs have their own listeners above (with bound enforcement)
+    [reportTypeInput, statusInput].forEach((input) => {
+      if (input) input.addEventListener('change', refreshExportLinks);
+    });
+
+    if (resetFiltersBtn) {
+      resetFiltersBtn.addEventListener('click', () => {
+        if (startDateInput) startDateInput.value = '';
+        if (endDateInput) endDateInput.value = '';
+        if (reportTypeInput) reportTypeInput.value = '';
+        if (statusInput) statusInput.value = '';
+        refreshExportLinks();
+      });
+    }
+
+    refreshExportLinks();
+
+    // ── Fetch ─────────────────────────────────────────────────────────────────
+    let data;
+    try {
+      const response = await fetch('{% url "admin_metrics_api" %}', {
+        credentials: 'same-origin',
+      });
+
+      if (!response.ok) {
+        console.warn('[Dashboard] Metrics API returned', response.status);
+        return;
+      }
+
+      data = await response.json();
+    } catch (err) {
+      console.error('[Dashboard] Failed to fetch metrics:', err);
+      return;
+    }
+
+    // ── Parse response ────────────────────────────────────────────────────────
+    const summary = data.summary || {};
+    const labels  = Array.isArray(data.labels) ? data.labels : [];
+    const series  = data.series  || {};
+
+    const gbvSeries      = sanitizeSeries(series.gbv_reports);
+    const contactsSeries = sanitizeSeries(series.contacts);
+    const articlesSeries = sanitizeSeries(series.articles);
+    const blogsSeries    = sanitizeSeries(series.blogs);
+    const statusBreakdown = summary.status_breakdown || {};
+
+    // ── Metric cards & quick-action badges ───────────────────────────────────
+    setMetric('metric-gbv',              summary.gbv_reports);
+    setMetric('metric-resources',        summary.resources);
+    setMetric('metric-pending-articles', summary.pending_articles);
+    setMetric('metric-pending-blogs',    summary.pending_blogs);
+    setMetric('metric-articles',         summary.articles);
+    setMetric('metric-blogs',            summary.blogs);
+    setMetric('metric-contacts',         summary.contacts);
+    setMetric('metric-users',            summary.users);
+    setMetric('metric-stories',          summary.stories);
+    setMetric('metric-ai-threads',       summary.ai_threads);
+    setMetric('metric-ai-messages',      summary.ai_messages);
+
+    setMetric('qa-pending-articles', summary.pending_articles);
+    setMetric('qa-pending-blogs',    summary.pending_blogs);
+    setMetric('qa-gbv',              summary.gbv_reports);
+    setMetric('qa-contacts',         summary.contacts);
+    setMetric('qa-articles',         summary.articles);
+    setMetric('qa-blogs',            summary.blogs);
+    setMetric('qa-users',            summary.users);
+
+    // ── Trend line chart ──────────────────────────────────────────────────────
+    const trendCtx = document.getElementById('trendChart');
+    if (trendCtx) {
+      if (window.__trendChartInstance) window.__trendChartInstance.destroy();
+
+      // Compute Y max from all trend series in this chart.
+      const trendYMax = deriveYMax(gbvSeries, contactsSeries, articlesSeries, blogsSeries);
+
+      window.__trendChartInstance = new Chart(trendCtx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'GBV Reports',
+              data: gbvSeries,
+              borderColor: '#5A2D7A',
+              backgroundColor: 'rgba(90,45,122,0.12)',
+              tension: 0.35,
+              fill: true,
+            },
+            {
+              label: 'Articles',
+              data: articlesSeries,
+              borderColor: '#8B4C9F',
+              backgroundColor: 'rgba(139,76,159,0.08)',
+              tension: 0.35,
+              fill: true,
+            },
+            {
+              label: 'Blogs',
+              data: blogsSeries,
+              borderColor: '#20B2AA',
+              backgroundColor: 'rgba(32,178,170,0.08)',
+              tension: 0.35,
+              fill: true,
+            },
+            {
+              label: 'Contacts',
+              data: contactsSeries,
+              borderColor: '#FF6B35',
+              backgroundColor: 'rgba(255,107,53,0.08)',
+              tension: 0.35,
+              fill: true,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: false,
+          plugins: {
+            legend: { position: 'top' },
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              min: 0,
+              max: trendYMax,
+              ticks: {
+                precision: 0,
+                maxTicksLimit: 6,
+              },
+            },
+            x: {
+              ticks: { maxRotation: 0 },
+            },
+          },
+        },
+      });
+    }
+
+    // ── Doughnut / mix chart ──────────────────────────────────────────────────
+    const mixCtx = document.getElementById('mixChart');
+    if (mixCtx) {
+      if (window.__mixChartInstance) window.__mixChartInstance.destroy();
+
+      const articlesTotal = sumSeries(articlesSeries);
+      const blogsTotal    = sumSeries(blogsSeries);
+      const reportsTotal  = sumSeries(gbvSeries);
+      const contactsTotal = sumSeries(contactsSeries);
+
+      window.__mixChartInstance = new Chart(mixCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Articles', 'Blogs', 'GBV Reports', 'Contacts'],
+          datasets: [
+            {
+              data: [articlesTotal, blogsTotal, reportsTotal, contactsTotal],
+              backgroundColor: ['#8B4C9F', '#20B2AA', '#5A2D7A', '#FF6B35'],
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: false,
+          plugins: {
+            legend: { position: 'bottom' },
+          },
+        },
+      });
+    }
+
+    // ── Status funnel widget ─────────────────────────────────────────────────
+    const funnelEl = document.getElementById('status-funnel');
+    if (funnelEl) {
+      const steps = [
+        { key: 'received', label: 'Received' },
+        { key: 'assigned', label: 'Assigned' },
+        { key: 'in_progress', label: 'In Progress' },
+        { key: 'closed', label: 'Closed' },
+      ];
+      const values = steps.map(step => toFinite(statusBreakdown[step.key], 0));
+      const maxValue = Math.max(...values, 1);
+
+      funnelEl.innerHTML = steps.map((step, index) => {
+        const value = values[index];
+        const pct = Math.max(8, Math.round((value / maxValue) * 100));
+        return [
+          '<div class="funnel-row">',
+          '  <div class="funnel-row-head">',
+          `    <span>${step.label}</span>`,
+          `    <strong>${value}</strong>`,
+          '  </div>',
+          '  <div class="funnel-track">',
+          `    <div class="funnel-fill" style="width:${pct}%;"></div>`,
+          '  </div>',
+          '</div>'
+        ].join('');
+      }).join('');
+    }
+  });
+</script>
+{% endblock %}

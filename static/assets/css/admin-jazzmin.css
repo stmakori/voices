@@ -1,0 +1,3195 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Roboto:wght@300;400;500;600&display=swap');
+
+:root {
+  --primary-purple: #8B4C9F;
+  --dark-purple: #5A2D7A;
+  --light-purple: #f3e8ff;
+  --sage-bg: #ffffff;
+}
+
+* {
+  font-family: 'Roboto', system-ui, -apple-system, sans-serif !important;
+}
+
+/* Restore FontAwesome font — the wildcard rule above overwrites it otherwise */
+.fa, .fas, .far, .fab, .fal, .fad,
+.fa-solid, .fa-regular, .fa-brands, .fa-light, .fa-thin, .fa-duotone,
+.nav-icon, .icon,
+[class^="fa-"], [class*=" fa-"] {
+  font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", "FontAwesome" !important;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+}
+.fas, .fa-solid { font-weight: 900 !important; }
+.far, .fa-regular { font-weight: 400 !important; }
+.fab, .fa-brands {
+  font-family: "Font Awesome 6 Brands" !important;
+  font-weight: 400 !important;
+}
+
+body.admin {
+  background: #ffffff !important;
+}
+
+h1, h2, h3, h4, h5, h6, .admin h1, .admin h2, .admin h3 {
+  font-family: 'Montserrat', sans-serif !important;
+  letter-spacing: -0.3px !important;
+}
+
+.main-header.navbar {
+  background: linear-gradient(90deg, #5a2d7a 0%, #7c3aed 100%) !important;
+  box-shadow: 0 4px 12px rgba(107, 33, 168, 0.15) !important;
+}
+
+/* Separator before the user (korrie) pill */
+#jazzy-navbar .navbar-nav.ms-auto > .nav-item.dropdown:last-child {
+  position: relative !important;
+  margin-left: 8px !important;
+  padding-left: 14px !important;
+}
+#jazzy-navbar .navbar-nav.ms-auto > .nav-item.dropdown:last-child::before {
+  content: '' !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  height: 22px !important;
+  width: 1px !important;
+  background: rgba(255, 255, 255, 0.28) !important;
+}
+
+/* Korrie user pill */
+#jazzy-navbar .navbar-nav.ms-auto > .nav-item.dropdown:last-child > a.nav-link.btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.45rem !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: min(100%, 360px) !important;
+  padding: 0.42rem 1rem 0.42rem 0.65rem !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.93) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.98) !important;
+  box-shadow: 0 2px 12px rgba(17, 24, 39, 0.14), 0 0 0 0 rgba(139, 76, 159, 0) !important;
+  transition: box-shadow 0.2s, background 0.2s !important;
+}
+
+#jazzy-navbar .navbar-nav.ms-auto > .nav-item.dropdown:last-child > a.nav-link.btn .account-label {
+  display: inline-block !important;
+  max-width: 200px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  color: #3b1f52 !important;
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.01em !important;
+  white-space: nowrap !important;
+  text-shadow: none !important;
+}
+
+#jazzy-navbar .navbar-nav.ms-auto > .nav-item.dropdown:last-child > a.nav-link.btn:hover,
+#jazzy-navbar .navbar-nav.ms-auto > .nav-item.dropdown:last-child > a.nav-link.btn:focus {
+  background: #ffffff !important;
+  border-color: rgba(255, 255, 255, 1) !important;
+  box-shadow: 0 4px 18px rgba(90, 45, 122, 0.22), 0 0 0 3px rgba(255, 255, 255, 0.22) !important;
+}
+
+#jazzy-navbar .navbar-nav.ms-auto > .nav-item.dropdown:last-child > a.nav-link.btn i {
+  color: #5A2D7A !important;
+  font-size: 1rem !important;
+}
+
+#jazzy-usermenu.dropdown-menu {
+  display: none;
+  min-width: 240px !important;
+  padding: 0.5rem !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(250, 247, 255, 0.98)) !important;
+  border: 1px solid rgba(124, 58, 237, 0.14) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 20px 34px rgba(31, 41, 55, 0.14) !important;
+}
+
+#jazzy-usermenu.dropdown-menu.show {
+  display: block !important;
+}
+
+#jazzy-usermenu .dropdown-item {
+  justify-content: center !important;
+  text-align: center !important;
+  margin: 0.06rem 0 !important;
+  padding: 0.75rem 0.9rem !important;
+  border-radius: 12px !important;
+}
+
+#jazzy-usermenu .dropdown-footer {
+  justify-content: center !important;
+  text-align: center !important;
+  margin-top: 0.2rem !important;
+  padding: 0.8rem 0.9rem !important;
+  border-radius: 12px !important;
+}
+
+#jazzy-usermenu .dropdown-header,
+#jazzy-usermenu .dropdown-divider,
+#jazzy-usermenu .dropdown-item,
+#jazzy-usermenu .dropdown-footer,
+#jazzy-usermenu form#logout-form {
+  width: 100% !important;
+}
+
+#jazzy-usermenu form#logout-form {
+  margin-top: 0.15rem !important;
+}
+
+#jazzy-usermenu form#logout-form .dropdown-item,
+#jazzy-usermenu form#logout-form .dropdown-item:hover,
+#jazzy-usermenu form#logout-form .dropdown-item:focus,
+#jazzy-usermenu form#logout-form .dropdown-item:active {
+  color: #1f2937 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+#jazzy-usermenu form#logout-form .dropdown-item:hover,
+#jazzy-usermenu form#logout-form .dropdown-item:focus {
+  background: #f3f4f6 !important;
+  color: #111827 !important;
+}
+
+#jazzy-usermenu form#logout-form .dropdown-item i {
+  color: #6b7280 !important;
+}
+
+#jazzy-usermenu .dropdown-divider:last-of-type {
+  display: none !important;
+}
+
+@media (max-width: 991px) {
+  .main-header.navbar {
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+  }
+
+  .main-header .navbar-nav {
+    gap: 0.35rem !important;
+  }
+
+  .main-header .navbar-nav > .nav-item > .nav-link,
+  .main-header .navbar-nav .dropdown-toggle,
+  .main-header .navbar-nav .user-menu .nav-link {
+    padding: 0.4rem 0.8rem 0.4rem 0.65rem !important;
+  }
+
+  #jazzy-navbar .navbar-nav.ms-auto > .nav-item.dropdown:last-child > a.nav-link.btn {
+    max-width: min(100%, 280px) !important;
+  }
+
+  #jazzy-navbar .navbar-nav.ms-auto > .nav-item.dropdown:last-child > a.nav-link.btn::after {
+    max-width: 180px !important;
+    font-size: 0.9rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  #jazzy-navbar .navbar-nav.ms-auto > .nav-item.dropdown:last-child > a.nav-link.btn {
+    padding-right: 0.75rem !important;
+    max-width: min(100%, 210px) !important;
+  }
+
+  #jazzy-navbar .navbar-nav.ms-auto > .nav-item.dropdown:last-child > a.nav-link.btn .account-label {
+    max-width: 130px !important;
+    font-size: 0.82rem !important;
+  }
+
+  #jazzy-usermenu.dropdown-menu {
+    min-width: 220px !important;
+  }
+
+  #jazzy-usermenu.dropdown-menu {
+    min-width: 200px !important;
+  }
+
+  .content-wrapper,
+  .content-header,
+  #content-main {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  .content-header h1,
+  .content-title,
+  #content h1 {
+    font-size: 1.45rem !important;
+  }
+}
+
+/* ── Permissions selector (Groups / User permissions in User admin) ── */
+/* Minimal reset — let Django's built-in selector widget styles take over */
+.related-widget-wrapper {
+  display: block !important;
+}
+
+@media (max-width: 768px) {
+  .main-header.navbar {
+    min-height: 64px !important;
+  }
+
+  .main-header .navbar-nav > .nav-item > .nav-link,
+  .main-header .navbar-nav .dropdown-toggle,
+  .main-header .navbar-nav .user-menu .nav-link {
+    border-radius: 16px !important;
+  }
+
+  .content-wrapper {
+    padding-top: 0.5rem !important;
+  }
+
+  .card,
+  .module,
+  #changelist .actions,
+  #changelist-filter,
+  .inline-group,
+  .aligned,
+  .fieldset,
+  .changeform-form .module,
+  .change-list .module {
+    border-radius: 18px !important;
+  }
+
+  .aligned .form-row,
+  .form-row,
+  .fieldBox,
+  .inline-related .form-row,
+  .inline-group .form-row {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 0.35rem !important;
+    width: 100% !important;
+  }
+
+  .aligned label,
+  .form-row label,
+  .inline-related label {
+    margin-bottom: 0.2rem !important;
+    width: 100% !important;
+  }
+
+  .aligned .vTextField,
+  .aligned textarea,
+  .aligned select,
+  .form-row input,
+  .form-row textarea,
+  .form-row select {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .results,
+  .module table,
+  .inline-group table,
+  .change-list .results {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    display: block !important;
+    width: 100% !important;
+  }
+
+  #result_list,
+  .module table,
+  .inline-group table {
+    min-width: 760px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .content-header h1,
+  .content-title,
+  #content h1 {
+    font-size: 1.25rem !important;
+  }
+
+  .object-tools a,
+  .object-tools .btn,
+  .btn-primary,
+  .btn-purple,
+  .btn-success,
+  .btn-info {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+.brand-link {
+  background: #4a2367 !important;
+  font-family: 'Montserrat', sans-serif !important;
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.3px !important;
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+}
+
+/* Shrink the default brand logo so "VAV Admin" sits flush left */
+.brand-link .brand-image {
+  max-height: 28px !important;
+  width: auto !important;
+  margin-right: 8px !important;
+  margin-left: 0 !important;
+  flex-shrink: 0 !important;
+}
+
+.brand-link .brand-text {
+  font-family: 'Montserrat', sans-serif !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+}
+
+/* Remove Bootstrap container-fluid's extra left/right padding from the brand row
+   so "VAV Admin" lines up with the nav-link items (which start at 12px) */
+#jazzy-sidebar .sidebar-brand,
+#jazzy-sidebar .container-fluid.sidebar-brand {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.sidebar-dark-purple {
+  background: #2c2344 !important;
+}
+
+.sidebar-dark-purple .nav-sidebar > .nav-item > .nav-link.active {
+  background: #7c3aed !important;
+  color: #fff !important;
+  border-radius: 4px !important;
+  margin: 0 8px !important;
+  border-left: 3px solid #fff !important;
+  padding-left: 13px !important;
+}
+
+.sidebar-dark-purple .nav-sidebar .nav-link:hover {
+  background: rgba(124, 58, 237, 0.15) !important;
+  color: #fff !important;
+  border-radius: 4px !important;
+}
+
+.sidebar-dark-purple .nav-sidebar .nav-link {
+  font-weight: 500 !important;
+  padding: 8px 12px !important;
+}
+
+.content-wrapper {
+  background: #ffffff !important;
+}
+
+.content-header h1,
+.content-wrapper h1,
+.content-wrapper h2,
+.content-wrapper h3 {
+  color: #1a1a2e;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.card,
+.module,
+#changelist .actions,
+#changelist-filter {
+  border-radius: 2px !important;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid #e5e7eb !important;
+  background: #ffffff !important;
+}
+
+.card:hover {
+  box-shadow: 0 4px 20px rgba(107, 33, 168, 0.08) !important;
+}
+
+.table thead th {
+  background: linear-gradient(135deg, #5A2D7A 0%, #8B4C9F 100%) !important;
+  color: #fff !important;
+  border-color: #6d45a0 !important;
+  font-family: 'Montserrat', sans-serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.5px !important;
+}
+
+/* Ensure changelist/table header text stays visible on purple */
+#result_list thead th,
+#result_list thead th a,
+#result_list thead th .text,
+#result_list thead th .sortoptions,
+#result_list thead th .sortoptions a,
+.table thead th,
+.table thead th a,
+.table thead th span,
+.table thead th i {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+#result_list thead th a:hover,
+.table thead th a:hover {
+  color: #f6e9ff !important;
+}
+
+.table tbody tr:hover {
+  background: #f0e9ff !important;
+}
+
+.btn-primary,
+.btn-purple,
+.btn-success,
+.btn-info {
+  border-radius: 2px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.3px !important;
+  transition: all 0.3s ease !important;
+}
+
+.btn-primary,
+.btn-purple {
+  background: linear-gradient(135deg, #5a2d7a 0%, #7c3aed 100%) !important;
+  border-color: #7c3aed !important;
+}
+
+.btn-primary:hover,
+.btn-purple:hover {
+  background: linear-gradient(135deg, #6d45a0 0%, #8b5cf6 100%) !important;
+  border-color: #8b5cf6 !important;
+  box-shadow: 0 6px 20px rgba(107, 33, 168, 0.25) !important;
+  transform: translateY(-2px) !important;
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important;
+  border-color: #6d28d9 !important;
+}
+
+.btn-success:hover {
+  background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%) !important;
+  border-color: #5b21b6 !important;
+}
+
+.btn-danger {
+  background: #ef4444 !important;
+  border-color: #ef4444 !important;
+  border-radius: 2px !important;
+}
+
+.btn-danger:hover {
+  background: #dc2626 !important;
+  border-color: #dc2626 !important;
+}
+
+.breadcrumb,
+.breadcrumb-item,
+.breadcrumb a {
+  color: #7c3aed !important;
+  font-weight: 500;
+}
+
+.breadcrumb {
+  background: transparent !important;
+  padding: 0.5rem 0 !important;
+  margin-bottom: 1.5rem !important;
+}
+
+.breadcrumb-item.active {
+  color: #6b7280 !important;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  color: #d1d5db !important;
+}
+
+.select2-container--default .select2-selection--single,
+.form-control,
+.custom-select,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+textarea {
+  border-radius: 2px !important;
+  border: 1px solid #e5e7eb !important;
+  font-size: 1rem !important;
+  padding: 0.6rem 0.9rem !important;
+  transition: all 0.2s ease !important;
+}
+
+.form-control:focus,
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+textarea:focus {
+  border-color: #7c3aed !important;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1) !important;
+}
+
+/* Admin table improvements */
+#result_list tbody tr:hover {
+  background: var(--light-purple) !important;
+  transition: background 0.2s ease;
+}
+
+#result_list tbody tr {
+  border-bottom: 1px solid #f3f4f6 !important;
+}
+
+#result_list td {
+  padding: 1rem 0.75rem !important;
+}
+
+/* Changelist header improvements */
+.change-list-header,
+.breadcrumb-container,
+.content-header {
+  margin-bottom: 20px;
+}
+
+.content-header h1,
+.content-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #21263a;
+  margin: 8px 0 12px 0;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+
+#content h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #21263a;
+  margin-bottom: 16px;
+  letter-spacing: -0.5px;
+}
+
+/* Changelist search container styling */
+#change-list-filters {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  margin-bottom: 14px;
+  box-shadow: none;
+}
+
+#change-list-filters #changelist-search {
+  background: linear-gradient(165deg, #ffffff, #faf7ff);
+  border: 1px solid #e5e0ef;
+  border-radius: 14px;
+  padding: 8px 14px;
+  gap: 10px;
+  box-shadow: 0 4px 12px rgba(90, 45, 122, 0.06);
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Force single-line layout only for pages with fewer filters (User profiles, Audit logs) */
+#changelist[data-model="userprofile"] ~ #change-list-filters #changelist-search,
+#changelist[data-model="auditlog"] ~ #change-list-filters #changelist-search {
+  flex-wrap: nowrap !important;
+}
+
+#change-list-filters #changelist-search .form-group {
+  display: flex !important;
+  flex-direction: row;
+  flex-wrap: wrap !important;
+  gap: 8px;
+  align-items: center !important;
+  flex: 1 1 auto;
+  height: auto !important;
+  margin: 0 !important;
+}
+
+#change-list-filters #changelist-search .search-filter {
+  padding: 8px 12px !important;
+  font-size: 0.95rem !important;
+  color: #273049 !important;
+  border: 1px solid #d9d3e8 !important;
+  background-color: #fff !important;
+  border-radius: 12px !important;
+  transition: all 0.2s ease;
+  height: 40px;
+  box-sizing: border-box;
+  flex: 0 0 auto !important;
+  min-width: 160px;
+  margin: 0 !important;
+  vertical-align: middle;
+}
+
+#change-list-filters #changelist-search .search-filter:hover,
+#change-list-filters #changelist-search .search-filter:focus {
+  border-color: #8B4C9F !important;
+  box-shadow: 0 0 0 3px rgba(139, 76, 159, 0.1) !important;
+}
+
+#change-list-filters #changelist-search .select2-container--default .select2-selection--single {
+  border: 1px solid #d9d3e8 !important;
+  background-color: #fff !important;
+  border-radius: 12px !important;
+  transition: all 0.2s ease;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+#change-list-filters #changelist-search .select2-container--default .select2-selection--single .select2-selection__rendered {
+  padding: 8px 12px !important;
+  line-height: 24px !important;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+#change-list-filters #changelist-search .select2-container--default .select2-selection--single .select2-selection__arrow {
+  height: 40px !important;
+  width: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#change-list-filters #changelist-search .select2-container--focus .select2-selection--single {
+  border-color: #8B4C9F !important;
+  box-shadow: 0 0 0 3px rgba(139, 76, 159, 0.1) !important;
+}
+
+#change-list-filters #searchbar {
+  padding: 8px 12px !important;
+  font-size: 0.95rem !important;
+  border: 1px solid #d9d3e8 !important;
+  border-radius: 9px !important;
+  transition: all 0.2s ease;
+  height: 40px;
+  box-sizing: border-box;
+  flex: 1 1 200px;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+#change-list-filters #searchbar:hover {
+  border-color: #8B4C9F !important;
+}
+
+/* ── VAV injected nav links (legacy — kept for backwards compat) ── */
+.vav-injected-link { display: inline-block !important; }
+.vav-injected-link .vav-nav-link { 
+  display: inline-flex !important; 
+  align-items: center !important; 
+  gap: 0.5rem !important; 
+  padding: 0.45rem 0.75rem !important; 
+  color: #fff !important; 
+}
+.vav-injected-link .vav-nav-link i { color: rgba(255,255,255,0.92) !important; }
+
+/* If our helper moved the Voices app tile, make sure it aligns visually to the right/bottom */
+.vav-moved-voices { 
+  /* keep the app tile sizing consistent but visually separated */
+  border-left: 3px solid rgba(124,58,237,0.12) !important;
+  padding-left: 0.6rem !important;
+}
+
+/* Ensure module and fieldset headings and labels are visible (restore if hidden) */
+.module > h2, .module > h3, fieldset > h2, fieldset > h3, .module .module-title {
+  display: block !important;
+  color: inherit !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Ensure form labels in User permissions area are visible */
+#user_form .module h2, #user_form fieldset h2, #user_form label {
+  display: block !important;
+  color: #1f2937 !important;
+  font-weight: 700 !important;
+}
+
+/* Make sure injected links are visible on dark navbar backgrounds */
+.main-header.navbar .vav-injected-link .vav-nav-link { color: #fff !important; }
+.main-header.navbar .vav-injected-link .vav-nav-link:hover { opacity: 0.95 !important; }
+
+#change-list-filters #searchbar:focus {
+  border-color: #8B4C9F !important;
+  box-shadow: 0 0 0 3px rgba(139, 76, 159, 0.1) !important;
+}
+
+#change-list-filters #changelist-search > .btn,
+#change-list-filters #changelist-search > button {
+  padding: 0.5rem 1.2rem !important;
+  font-weight: 700 !important;
+  font-size: 0.9rem !important;
+  height: 40px;
+  border-radius: 9px !important;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 8px !important;
+}
+
+#change-list-filters #changelist-search > .btn:hover,
+#change-list-filters #changelist-search > button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(107, 33, 168, 0.2) !important;
+}
+
+/* Align search inputs and buttons vertically in changelist header */
+#change-list-filters #changelist-search,
+#change-list-filters #changelist-search .form-group {
+  display: flex !important;
+  align-items: center !important;
+}
+
+#change-list-filters #changelist-search input,
+#change-list-filters #changelist-search .form-control,
+#change-list-filters #changelist-search .search-filter,
+#change-list-filters #changelist-search #searchbar,
+#change-list-filters #changelist-search .select2-container--default .select2-selection--single {
+  height: 40px !important;
+  box-sizing: border-box !important;
+  padding: 8px 12px !important;
+  line-height: 24px !important;
+  margin: 0 !important;
+  vertical-align: middle !important;
+}
+
+#change-list-filters #changelist-search > .btn,
+#change-list-filters #changelist-search > button {
+  height: 40px !important;
+  padding: 0 1.2rem !important;
+  font-weight: 700 !important;
+  font-size: 0.9rem !important;
+  border-radius: 9px !important;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  line-height: 1 !important;
+}
+
+/* Further alignment fixes to match admin screenshots */
+/* Ensure action bar selects and buttons are centered */
+.changelist .actions,
+.module .object-tools,
+.module .changelist-filter {
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Normalize line-height and vertical centering for controls */
+.changelist .actions select,
+.changelist .actions input,
+.changelist .actions .btn,
+.module .object-tools a,
+.module .object-tools .btn,
+#changelist .actions select {
+  height: 40px !important;
+  line-height: 40px !important;
+  vertical-align: middle !important;
+}
+
+/* Select2 single selection fix */
+.select2-container--default .select2-selection--single {
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Small gap between filters and button on narrow screens */
+@media (max-width: 900px) {
+  #change-list-filters #changelist-search {
+    flex-direction: column !important;
+    gap: 8px !important;
+    align-items: stretch !important;
+  }
+  #change-list-filters #changelist-search > .btn,
+  #change-list-filters #changelist-search > button {
+    margin-left: 0 !important;
+    align-self: flex-end !important;
+  }
+}
+
+/* Result count styling */
+#change-list-filters #changelist-search > .small {
+  color: #5d6378;
+  font-size: 0.85rem;
+}
+
+#change-list-filters #changelist-search > .small a {
+  color: #8B4C9F;
+  font-weight: 600;
+}
+
+/* Object tools (Add button) styling */
+.object-tools {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 0;
+  justify-content: flex-end;
+}
+
+.object-tools a,
+.object-tools .btn {
+  padding: 0.6rem 1.6rem !important;
+  font-size: 0.92rem !important;
+  font-weight: 700 !important;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px !important;
+  text-decoration: none !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none !important;
+  letter-spacing: 0.4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.object-tools a::before,
+.object-tools .btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+  z-index: 0;
+}
+
+.object-tools a:hover::before,
+.object-tools .btn:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.object-tools a,
+.object-tools .btn {
+  position: relative;
+  z-index: 1;
+}
+
+.object-tools a:hover,
+.object-tools .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+}
+
+.object-tools a:active,
+.object-tools .btn:active {
+  transform: translateY(0px);
+}
+
+/* ── Mobile & Tablet Responsive Improvements ─────────────────────────────── */
+
+/* Make changelist tables horizontally scrollable on small screens */
+@media (max-width: 991px) {
+  .results,
+  #changelist .results {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  #result_list {
+    min-width: 600px;
+  }
+
+  /* Pagination touch-friendly */
+  .paginator a,
+  .paginator span {
+    min-width: 36px !important;
+    min-height: 36px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* Stack object-tools vertically on tablet */
+  .object-tools {
+    flex-wrap: wrap !important;
+  }
+}
+
+@media (max-width: 767px) {
+  /* Sidebar: ensure overlay mode works cleanly */
+  .main-sidebar {
+    z-index: 1050 !important;
+  }
+
+  /* Collapse sidebar nav text wrapping */
+  .sidebar-dark-purple .nav-sidebar .nav-link p {
+    font-size: 0.9rem !important;
+  }
+
+  /* Full-width object-tools on mobile */
+  .object-tools {
+    width: 100% !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 6px !important;
+  }
+
+  .object-tools a,
+  .object-tools .btn {
+    width: 100% !important;
+    max-width: 100% !important;
+    text-align: center !important;
+  }
+
+  /* Content header stack */
+  .content-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+
+  /* Filter sidebar: full width on mobile */
+  #changelist-filter {
+    width: 100% !important;
+    float: none !important;
+    margin-left: 0 !important;
+  }
+
+  /* Changelist: remove float layout */
+  #changelist {
+    margin-right: 0 !important;
+  }
+
+  /* Form fields full width */
+  .form-row,
+  .fieldBox {
+    width: 100% !important;
+  }
+
+  /* Inline tabular: horizontal scroll */
+  .inline-group .tabular {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    display: block !important;
+  }
+
+  /* Table minimum width for readability */
+  #result_list {
+    min-width: 480px !important;
+  }
+}
+
+@media (max-width: 479px) {
+  /* Smaller heading */
+  .content-header h1,
+  .content-title,
+  #content h1 {
+    font-size: 1.2rem !important;
+  }
+
+  /* Paginator compact */
+  .paginator .page-range {
+    display: none !important;
+  }
+
+  /* Actions bar stacked */
+  #changelist .actions {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 6px !important;
+  }
+
+  #changelist .actions select {
+    width: 100% !important;
+  }
+
+  /* Breadcrumb: single line truncation */
+  .breadcrumb {
+    flex-wrap: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+}
+
+/* Add-specific button styling */
+.object-tools a[href*="add"],
+.object-tools .addlink {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+.object-tools a[href*="add"]:hover,
+.object-tools .addlink:hover {
+  background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%) !important;
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.25) !important;
+}
+
+/* Changelist Add buttons (Jazzmin + Django variants) */
+#content-main .object-tools a.addlink,
+#content-main .object-tools a[href*="/add/"],
+#content-main a.btn.btn-success[href*="/add/"],
+#content-main .btn-success.addlink,
+#content-main .module .btn-success[href*="/add/"] {
+  position: relative;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.68rem 1.35rem 0.68rem 1.05rem !important;
+  min-height: 42px;
+  border: none !important;
+  border-radius: 12px !important;
+  text-decoration: none !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.25px;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 58%, #5b21b6 100%) !important;
+  box-shadow: 0 8px 18px rgba(124, 58, 237, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease !important;
+}
+
+#content-main .object-tools a.addlink::before,
+#content-main .object-tools a[href*="/add/"]::before,
+#content-main a.btn.btn-success[href*="/add/"]::before,
+#content-main .btn-success.addlink::before,
+#content-main .module .btn-success[href*="/add/"]::before {
+  content: "+";
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  line-height: 1;
+  font-weight: 800;
+  color: #7c3aed;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+/* Make native selects and form controls rounded to match buttons */
+select,
+select.form-control,
+select.search-filter,
+.form-control,
+input[type="search"],
+input[type="text"],
+input[type="email"] {
+  border-radius: 12px !important;
+}
+
+/* Ensure Select2 rendered area also uses rounded corners */
+.select2-container--default .select2-selection--single,
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+  border-radius: 12px !important;
+}
+
+/* Rounded corners for opened dropdown panels (Select2, Bootstrap, native-like menus) */
+.select2-container--default .select2-dropdown,
+.select2-container--default .select2-results,
+.select2-container--default .select2-dropdown--below {
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  box-shadow: 0 12px 30px rgba(124, 58, 237, 0.12) !important;
+  border: 1px solid rgba(124, 58, 237, 0.08) !important;
+}
+
+/* When Select2 is attached to a rounded select, avoid double-radius at the seam */
+.select2-container--open .select2-selection--single {
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+/* Bootstrap/dropdown menus used by admin */
+.dropdown-menu,
+.dropdown .dropdown-menu,
+.btn-group .dropdown-menu {
+  border-radius: 12px !important;
+  box-shadow: 0 12px 30px rgba(124, 58, 237, 0.12) !important;
+  border: 1px solid rgba(124, 58, 237, 0.08) !important;
+}
+
+/* Ensure small inline dropdowns (datepickers, action menus) also look consistent */
+.ui-datepicker,
+.datepicker,
+.flatpickr-calendar {
+  border-radius: 12px !important;
+  box-shadow: 0 12px 30px rgba(124, 58, 237, 0.08) !important;
+}
+
+#content-main .object-tools a.addlink:hover,
+#content-main .object-tools a[href*="/add/"]:hover,
+#content-main a.btn.btn-success[href*="/add/"]:hover,
+#content-main .btn-success.addlink:hover,
+#content-main .module .btn-success[href*="/add/"]:hover {
+  transform: translateY(-2px);
+  filter: saturate(1.08);
+  background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 62%, #4c1d95 100%) !important;
+  box-shadow: 0 12px 26px rgba(124, 58, 237, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.24) !important;
+}
+
+#content-main .object-tools a.addlink:active,
+#content-main .object-tools a[href*="/add/"]:active,
+#content-main a.btn.btn-success[href*="/add/"]:active,
+#content-main .btn-success.addlink:active,
+#content-main .module .btn-success[href*="/add/"]:active {
+  transform: translateY(0);
+  box-shadow: 0 5px 12px rgba(124, 58, 237, 0.25) !important;
+}
+
+/* JS-applied universal add button style */
+body.admin a.vav-add-btn {
+  position: relative;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 42px;
+  padding: 0.68rem 1.35rem 0.68rem 1.05rem !important;
+  border-radius: 12px !important;
+  border: none !important;
+  text-decoration: none !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.25px;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 58%, #5b21b6 100%) !important;
+  box-shadow: 0 8px 18px rgba(124, 58, 237, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease !important;
+}
+
+body.admin a.vav-add-btn::before {
+  content: "+";
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  line-height: 1;
+  font-weight: 800;
+  color: #7c3aed;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+body.admin a.vav-add-btn:hover {
+  transform: translateY(-2px);
+  filter: saturate(1.08);
+  background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 62%, #4c1d95 100%) !important;
+  box-shadow: 0 12px 26px rgba(124, 58, 237, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.24) !important;
+}
+
+body.admin a.vav-add-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 5px 12px rgba(124, 58, 237, 0.25) !important;
+}
+
+/* Strong override: force all "add" buttons to use purple theme (last in file to ensure precedence) */
+.object-tools a[href*="/add/"],
+.object-tools a.addlink,
+.object-tools .addlink,
+#content-main .object-tools a.addlink,
+#content-main .object-tools a[href*="/add/"],
+#content-main a.btn.btn-success[href*="/add/"],
+.btn-success.addlink,
+.module .btn-success[href*="/add/"],
+a.vav-add-btn {
+  background-image: linear-gradient(135deg, #7c3aed 0%, #6d28d9 58%, #5b21b6 100%) !important;
+  background-color: #6d28d9 !important;
+  color: #fff !important;
+  border: none !important;
+  box-shadow: 0 8px 18px rgba(124, 58, 237, 0.25) !important;
+  border-radius: 12px !important;
+}
+
+.object-tools a[href*="/add/"]:hover,
+.object-tools a.addlink:hover,
+#content-main .object-tools a.addlink:hover,
+#content-main .object-tools a[href*="/add/"]:hover,
+#content-main a.btn.btn-success[href*="/add/"]:hover,
+.btn-success.addlink:hover,
+.module .btn-success[href*="/add/"]:hover,
+a.vav-add-btn:hover {
+  background-image: linear-gradient(135deg, #6d28d9 0%, #5b21b6 62%, #4c1d95 100%) !important;
+  box-shadow: 0 12px 26px rgba(124, 58, 237, 0.32) !important;
+}
+
+/* Ensure the plus badge remains purple */
+.object-tools a.addlink::before,
+#content-main .object-tools a.addlink::before,
+a.vav-add-btn::before {
+  color: #7c3aed !important;
+}
+
+/* Apply consistent rounded corners to common admin buttons */
+body.admin .btn,
+body.admin a.btn,
+.btn,
+a.btn,
+.object-tools .btn,
+#change-list-filters #changelist-search > .btn,
+#change-list-filters #changelist-search > button {
+  border-radius: 12px !important;
+}
+
+/* Strong global overrides to eliminate remaining 'green' success styles */
+/* Force all success/green variants to use the dashboard purple */
+body.admin .btn-success,
+body.admin a.btn-success,
+.btn-success,
+a.btn-success,
+.bg-success,
+.badge.bg-success,
+.alert-success,
+.label-success {
+  background-image: linear-gradient(135deg, #7c3aed 0%, #6d28d9 58%, #5b21b6 100%) !important;
+  background-color: #6d28d9 !important;
+  border-color: #6d28d9 !important;
+  color: #fff !important;
+  box-shadow: 0 8px 18px rgba(124, 58, 237, 0.22) !important;
+}
+
+body.admin .btn-success:hover,
+body.admin a.btn-success:hover,
+.btn-success:hover,
+a.btn-success:hover,
+.bg-success:hover,
+.badge.bg-success:hover,
+.alert-success:hover {
+  background-image: linear-gradient(135deg, #6d28d9 0%, #5b21b6 62%, #4c1d95 100%) !important;
+  box-shadow: 0 12px 26px rgba(124, 58, 237, 0.28) !important;
+}
+
+/* Catch inline style hex usages that may flash green before CSS loads */
+[style*="#10b981"],
+[style*="10b981"],
+[style*="#059669"],
+[style*="059669"],
+[style*="#047857"],
+[style*="047857"],
+[style*="#065f46"],
+[style*="065f46"] {
+  background-image: linear-gradient(135deg, #7c3aed 0%, #6d28d9 58%, #5b21b6 100%) !important;
+  background-color: #6d28d9 !important;
+  border-color: #6d28d9 !important;
+  color: #fff !important;
+}
+
+/* Ensure any bootstrap 'success' utility classes used by admin are overridden */
+.btn.btn-success,
+.btn.btn-success.btn-block {
+  background-image: linear-gradient(135deg, #7c3aed 0%, #6d28d9 58%, #5b21b6 100%) !important;
+  background-color: #6d28d9 !important;
+  color: #fff !important;
+}
+
+/* Delete button styling */
+.object-tools a[href*="delete"],
+.deletelink {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  color: #ffffff !important;
+}
+
+.object-tools a[href*="delete"]:hover,
+.deletelink:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+}
+
+/* History button styling */
+.object-tools a[href*="history"] {
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+  color: #ffffff !important;
+}
+
+.object-tools a[href*="history"]:hover {
+  background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%) !important;
+}
+
+/* Default button styling */
+.object-tools a:not([href*="add"]):not([href*="delete"]):not([href*="history"]),
+.object-tools .btn:not(.btn-success):not(.btn-danger):not(.btn-info) {
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%) !important;
+  color: #ffffff !important;
+}
+
+.object-tools a:not([href*="add"]):not([href*="delete"]):not([href*="history"]):hover,
+.object-tools .btn:not(.btn-success):not(.btn-danger):not(.btn-info):hover {
+  background: linear-gradient(135deg, #4b5563 0%, #374151 100%) !important;
+}
+
+@media (max-width: 991px) {
+  #content h1,
+  .content-header h1 {
+    font-size: 1.6rem;
+  }
+
+  #change-list-filters {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  #content h1,
+  .content-header h1 {
+    font-size: 1.4rem;
+  }
+
+  #change-list-filters {
+    padding: 10px;
+  }
+
+  #change-list-filters #changelist-search {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  #change-list-filters #changelist-search > * {
+    width: 100%;
+  }
+}
+
+/* Select/search improvements */
+.select2-container--default.select2-container--open .select2-selection--single {
+  border-color: #7c3aed !important;
+}
+
+.select2-dropdown {
+  border-color: #e5e7eb !important;
+  border-radius: 2px !important;
+}
+
+.select2-search--dropdown {
+  padding: 8px !important;
+}
+
+.select2-results__option--highlighted {
+  background-color: #7c3aed !important;
+}
+
+/* Login page improvements */
+.login-page,
+.register-page {
+  background: linear-gradient(135deg, #fafaf8 0%, #f3e8ff 100%) !important;
+}
+
+/* Empty state styling */
+#changelist-filter .results,
+.results-info {
+  padding: 2rem !important;
+  text-align: center;
+}
+
+.results-info {
+  font-family: 'Source Serif 4', Georgia, serif !important;
+  font-size: 1.05rem !important;
+  color: #6b7280 !important;
+  background: linear-gradient(135deg, #fafaf8 0%, #f3e8ff 50%, #fafaf8 100%) !important;
+  border-radius: 2px !important;
+  border: 1px solid #e5e7eb !important;
+  margin-bottom: 1.5rem !important;
+}
+
+#changelist table tbody {
+  background: #ffffff !important;
+}
+
+#changelist-filter {
+  border-radius: 2px !important;
+}
+
+/* Changelist toolbar alignment */
+#change-list-filters {
+  padding: 0;
+}
+
+#change-list-filters #changelist-search {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: stretch;
+  margin: 0;
+}
+
+#change-list-filters #changelist-search .form-group {
+  margin: 0;
+  min-width: 260px;
+  flex: 1 1 340px;
+}
+
+#change-list-filters #changelist-search .search-filter {
+  width: 100%;
+}
+
+#change-list-filters #changelist-search .select2-container {
+  width: 100% !important;
+  min-width: 260px;
+  flex: 1 1 340px;
+}
+
+#change-list-filters #changelist-search .select2-container .select2-selection--single,
+#change-list-filters #changelist-search .search-filter,
+#change-list-filters #searchbar {
+  height: 40px !important;
+  min-height: 40px;
+}
+
+#change-list-filters #changelist-search .select2-container .select2-selection--single {
+  border: 1px solid #d7dce5 !important;
+  border-radius: 2px !important;
+  display: flex;
+  align-items: center;
+  padding-left: 0.2rem;
+}
+
+#change-list-filters #changelist-search .select2-selection__rendered {
+  line-height: 1.2 !important;
+  color: #273049 !important;
+  padding-right: 30px !important;
+}
+
+#change-list-filters #changelist-search .select2-container--default .select2-selection--single .select2-selection__placeholder,
+#change-list-filters #changelist-search .search-filter.is-placeholder,
+#changelist .actions select.is-placeholder {
+  color: #7b8398 !important;
+}
+
+#change-list-filters #searchbar {
+  min-width: 260px;
+  flex: 1 1 340px;
+  max-width: none;
+  padding: 0.5rem 0.8rem !important;
+}
+
+#change-list-filters #changelist-search > .btn,
+#change-list-filters #changelist-search > button,
+#change-list-filters #changelist-search > input[type="submit"] {
+  height: 40px;
+  min-height: 40px;
+  padding: 0.5rem 1rem !important;
+}
+
+#changelist .actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  margin-top: 8px;
+}
+
+#changelist .actions label {
+  margin: 0;
+}
+
+#changelist .actions .select2-container,
+#changelist .actions select {
+  min-width: 260px;
+  flex: 1 1 340px;
+}
+
+#changelist .actions .select2-container {
+  width: auto !important;
+}
+
+#changelist .actions .select2-container .select2-selection--single,
+#changelist .actions select {
+  height: 38px !important;
+  min-height: 38px;
+}
+
+#changelist .actions select option {
+  color: #273049;
+}
+
+#changelist .actions .button,
+#changelist .actions button,
+#changelist .actions input[type="submit"] {
+  min-height: 38px;
+  padding: 0.45rem 0.9rem !important;
+}
+
+@media (max-width: 768px) {
+  #change-list-filters #changelist-search .form-group,
+  #change-list-filters #changelist-search .select2-container,
+  #change-list-filters #searchbar,
+  #changelist .actions .select2-container,
+  #changelist .actions select {
+    min-width: 100%;
+    max-width: 100%;
+    flex: 1 1 100%;
+  }
+}
+
+/* Admin dashboard metrics */
+.admin-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.admin-quick-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.quick-action-card {
+  display: block;
+  background: linear-gradient(150deg, #ffffff, #fafaf8);
+  border: 1px solid #e5e7eb;
+  border-radius: 2px;
+  padding: 1.25rem;
+  text-decoration: none !important;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.quick-action-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(124, 58, 237, 0.3);
+  box-shadow: 0 8px 24px rgba(107, 33, 168, 0.15);
+  background: linear-gradient(150deg, #ffffff, #f3e8ff);
+}
+
+.quick-action-title {
+  color: #1a1a2e;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.4rem;
+  font-family: 'Playfair Display', Georgia, serif;
+  letter-spacing: -0.2px;
+}
+
+.quick-action-subtitle {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+  font-weight: 400;
+}
+
+.quick-action-meta {
+  color: #7c3aed;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.quick-action-meta span {
+  font-size: 1.4rem;
+  font-weight: 800;
+  display: block;
+  margin-top: 0.25rem;
+  color: #1a1a2e;
+}
+
+.metric-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 2px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+.metric-card:hover {
+  box-shadow: 0 4px 16px rgba(107, 33, 168, 0.1);
+}
+
+.metric-label {
+  color: #6b7280;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+.metric-value {
+  color: #1a1a2e;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.1;
+  font-family: 'Playfair Display', Georgia, serif;
+  letter-spacing: -0.5px;
+}
+
+.admin-chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.chart-card,
+.app-list-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 2px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.chart-card h3 {
+  color: #1a1a2e;
+  font-size: 1.2rem;
+  margin: 0 0 1rem;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+   Django Admin Form Styling - Fluid & Polished Design
+   Matches the contribute page aesthetic
+   ────────────────────────────────────────────────────────────────────── */
+
+/* Admin form container */
+#content form,
+.form-container,
+.add-form,
+.change-form {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 26px rgba(17, 24, 39, 0.08);
+  padding: 2.5rem;
+}
+
+@media (max-width: 768px) {
+  #content form,
+  .form-container,
+  .add-form,
+  .change-form {
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
+}
+
+/* Form fieldsets styling */
+.fieldset,
+.form-row,
+fieldset {
+  border: 1px solid rgba(124, 58, 237, 0.14) !important;
+  border-radius: 14px !important;
+  padding: 1.8rem !important;
+  margin-bottom: 1.5rem !important;
+  background: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02) !important;
+  transition: all 0.3s ease;
+}
+
+.fieldset:hover,
+.form-row:hover,
+fieldset:hover {
+  border-color: rgba(124, 58, 237, 0.35) !important;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.08) !important;
+}
+
+fieldset > h2 {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: 1.3rem !important;
+  font-weight: 700 !important;
+  color: #1a1a2e !important;
+  margin: -1rem -1.8rem 1.2rem -1.8rem !important;
+  padding: 0 1.8rem 1rem !important;
+  border-bottom: 2px solid rgba(124, 58, 237, 0.15) !important;
+  letter-spacing: -0.3px;
+}
+
+/* Form group styling */
+.form-group,
+.form-group-2col,
+.form-field,
+div.form-group,
+div.controls {
+  margin-bottom: 1.5rem !important;
+}
+
+.form-group:last-child,
+.form-field:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Form labels */
+label,
+.form-group label,
+.field-form label {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  font-size: 0.95rem;
+  letter-spacing: -0.2px;
+  font-family: 'Source Serif 4', Georgia, serif;
+}
+
+label span,
+.form-group label span {
+  color: #ef4444;
+  margin-left: 0.2rem;
+}
+
+label.inline,
+.formset label.inline {
+  display: inline-block;
+  margin-right: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Text input fields */
+input[type="text"],
+input[type="email"],
+input[type="url"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+input[type="search"],
+textarea,
+select,
+.search-filter,
+.form-control {
+  width: 100%;
+  border-radius: 12px !important;
+  border: 1px solid rgba(124, 58, 237, 0.18) !important;
+  padding: 0.75rem 1rem !important;
+  font-size: 0.95rem;
+  color: #273049;
+  background: #ffffff !important;
+  font-family: 'Source Serif 4', Georgia, serif;
+  transition: all 0.3s ease-in-out;
+  box-sizing: border-box;
+}
+
+input[type="text"]:hover,
+input[type="email"]:hover,
+input[type="url"]:hover,
+input[type="password"]:hover,
+input[type="number"]:hover,
+input[type="date"]:hover,
+textarea:hover,
+select:hover,
+.form-control:hover {
+  border-color: rgba(124, 58, 237, 0.35) !important;
+  background: #fafbff !important;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="url"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+textarea:focus,
+select:focus,
+.form-control:focus {
+  border-color: rgba(124, 58, 237, 0.55) !important;
+  box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.12) !important;
+  background: #ffffff !important;
+  outline: none !important;
+}
+
+input[type="text"]::placeholder,
+input[type="email"]::placeholder,
+input[type="password"]::placeholder,
+textarea::placeholder {
+  color: #9ca3af;
+}
+
+/* Textarea styling */
+textarea {
+  resize: vertical;
+  min-height: 120px;
+  font-family: 'Source Serif 4', Georgia, serif !important;
+  line-height: 1.5;
+}
+
+/* Select field styling - Enhanced */
+select {
+  width: 100% !important;
+  height: auto;
+  min-height: 44px;
+  padding: 0.75rem 1rem !important;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 20 20'%3E%3Cpath fill='%235a2d7a' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+  background-size: 16px;
+  padding-right: 2.8rem;
+  border-radius: 12px !important;
+  border: 1px solid rgba(124, 58, 237, 0.18) !important;
+  font-family: 'Source Serif 4', Georgia, serif;
+  transition: all 0.3s ease-in-out;
+  color: #273049;
+  font-size: 0.95rem;
+}
+
+select::-ms-expand {
+  display: none;
+}
+
+.select2-container--default .select2-selection--single {
+  width: 100% !important;
+  height: auto;
+  min-height: 44px;
+  padding: 0.75rem 1rem !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(124, 58, 237, 0.18) !important;
+  background: #ffffff !important;
+  background-image: none !important;
+  font-family: 'Source Serif 4', Georgia, serif;
+  transition: all 0.3s ease-in-out;
+  color: #273049;
+  font-size: 0.95rem;
+}
+
+select:not([multiple]) {
+  background-color: #ffffff !important;
+}
+
+select:hover:not([multiple]),
+.select2-container--default .select2-selection--single:hover {
+  border-color: rgba(124, 58, 237, 0.35) !important;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.06);
+  background-color: #fafbff !important;
+}
+
+select:focus:not([multiple]),
+.select2-container--default.select2-container--focus .select2-selection--single {
+  border-color: rgba(124, 58, 237, 0.55) !important;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1) !important;
+  background-color: #ffffff !important;
+  outline: none !important;
+}
+
+/* Select2 container width fix */
+.select2-container {
+  width: 100% !important;
+  max-width: 100%;
+}
+
+.select2-container--default .select2-selection--single {
+  display: flex;
+  align-items: center;
+  height: auto;
+  min-height: 44px;
+  line-height: 1.5;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+  height: 100% !important;
+  right: 10px !important;
+}
+
+.select2-selection__rendered {
+  padding-right: 1rem;
+  line-height: 1.4;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+  color: #273049;
+  font-size: 0.95rem;
+}
+
+.select2-container--default.select2-container--open .select2-selection--single {
+  border-color: rgba(124, 58, 237, 0.55) !important;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.select2-dropdown {
+  border-radius: 0 0 12px 12px;
+  border: 1px solid rgba(124, 58, 237, 0.35) !important;
+  border-top: none;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.08) !important;
+}
+
+.select2-search--dropdown .select2-search__field {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(124, 58, 237, 0.18);
+  font-size: 0.9rem;
+}
+
+.select2-results__option {
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  color: #273049;
+}
+
+.select2-results__option--highlighted[aria-selected] {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(124, 58, 237, 0.08)) !important;
+  color: #5a2d7a !important;
+}
+
+.select2-results__option[aria-selected=true] {
+  background: linear-gradient(135deg, #5a2d7a 0%, #7c3aed 100%) !important;
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+/* Multiple select styling */
+select[multiple] {
+  height: auto !important;
+  min-height: 120px;
+  padding: 0.5rem !important;
+  background-image: none !important;
+}
+
+select[multiple] option {
+  padding: 0.7rem 0.5rem;
+  background: #f0e9ff;
+  color: #1a1a2e;
+  margin-bottom: 0.2rem;
+}
+
+select[multiple] option:checked {
+  background: linear-gradient(135deg, #5a2d7a 0%, #7c3aed 100%);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Radiobuttons and checkboxes */
+input[type="radio"],
+input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-right: 0.6rem;
+  margin-bottom: 0.3rem;
+  vertical-align: middle;
+  accent-color: #7c3aed;
+  cursor: pointer;
+}
+
+/* Radio/checkbox label styling */
+.form-check,
+.form-group .form-check {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.form-check input,
+.form-check-input {
+  margin-right: 0.8rem;
+  margin-bottom: 0;
+}
+
+.form-check label,
+.form-check-label {
+  margin-bottom: 0;
+  margin-left: 0;
+  font-weight: 400;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+/* Error styling */
+.errorlist,
+.errors,
+.field-error,
+ul.errorlist {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0.8rem;
+  background: #fee2e2;
+  border-left: 4px solid #ef4444;
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+}
+
+ul.errorlist li,
+.errorlist li {
+  color: #991b1b;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+ul.errorlist li:not(:last-child),
+.errorlist li:not(:last-child) {
+  margin-bottom: 0.5rem;
+}
+
+.form-group.errors,
+.form-group.has-error,
+.field-error .form-control,
+.error input,
+.error textarea,
+.error select {
+  border-color: #ef4444 !important;
+  background-color: #fef2f2 !important;
+}
+
+.form-group.has-error .form-control:focus,
+.error input:focus,
+.error textarea:focus {
+  box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.12) !important;
+}
+
+/* Help text styling */
+.helptext,
+.help-text,
+.help_text,
+small.form-text,
+.description,
+.help-block {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: #6b7280;
+  font-style: italic;
+  font-family: 'Source Serif 4', Georgia, serif;
+}
+
+.helptext p,
+.help-text p {
+  margin: 0.4rem 0;
+}
+
+/* Form buttons container */
+.submit-row,
+.form-buttons,
+.button-holder {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .submit-row,
+  .form-buttons,
+  .button-holder {
+    flex-direction: column;
+  }
+}
+
+/* Form submit buttons */
+[type="submit"],
+.btn-submit,
+.button,
+input[type="submit"] {
+  padding: 0.75rem 2rem !important;
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+  font-size: 0.95rem;
+  letter-spacing: 0.4px;
+  transition: all 0.3s ease;
+  border: none !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  text-decoration: none !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+}
+
+[type="submit"]:hover,
+.btn-submit:hover,
+.button:hover,
+input[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(107, 33, 168, 0.2) !important;
+}
+
+[type="submit"]:active,
+.btn-submit:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Primary submit button */
+[type="submit"],
+.btn-submit,
+input[type="submit"] {
+  background: linear-gradient(135deg, #5a2d7a 0%, #7c3aed 100%) !important;
+  color: #ffffff !important;
+}
+
+[type="submit"]:hover,
+.btn-submit:hover,
+input[type="submit"]:hover {
+  background: linear-gradient(135deg, #6d45a0 0%, #8b5cf6 100%) !important;
+}
+
+/* Delete/danger buttons in forms */
+.deletelink-box,
+.delete-confirmation {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.deletelink-box input[type="submit"],
+.delete-confirmation input[type="submit"] {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  color: #ffffff !important;
+}
+
+.deletelink-box input[type="submit"]:hover,
+.delete-confirmation input[type="submit"]:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+}
+
+/* Additional button styling */
+.button.default,
+.button.submit-link {
+  background: linear-gradient(135deg, #5a2d7a 0%, #7c3aed 100%) !important;
+  color: #ffffff !important;
+}
+
+.button.default:hover,
+.button.submit-link:hover {
+  background: linear-gradient(135deg, #6d45a0 0%, #8b5cf6 100%) !important;
+}
+
+/* Reset button */
+input[type="reset"],
+.btn-reset {
+  background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%) !important;
+  color: #ffffff !important;
+}
+
+input[type="reset"]:hover,
+.btn-reset:hover {
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%) !important;
+}
+
+/* Inline form fields (form-row) */
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 0;
+}
+
+.form-row > div {
+  margin-bottom: 0 !important;
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.related-widget-wrapper .btn {
+  padding: 0.5rem 1rem !important;
+  font-size: 0.85rem !important;
+  border-radius: 8px !important;
+}
+
+/* Inline admin formset styling */
+.inline-group,
+.inline-related {
+  margin-top: 2rem;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  background: #ffffff;
+}
+
+.inline-group h2 {
+  background: linear-gradient(135deg, #5a2d7a 0%, #7c3aed 100%);
+  color: #ffffff;
+  padding: 1rem 1.5rem;
+  margin: 0;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.inline-group .tabular,
+.inline-group .stacked {
+  border: none;
+}
+
+.inline-group td,
+.inline-group th {
+  padding: 0.8rem 0.75rem;
+}
+
+.inline-group th {
+  background: #f3f4f6;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.inline-group tr:hover {
+  background: #f9f7ff;
+}
+
+.inline-group .delete input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+/* Add-inline button */
+.add-row,
+a.add-another {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem !important;
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+  text-decoration: none !important;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+  border: none !important;
+  cursor: pointer;
+}
+
+.add-row:hover,
+a.add-another:hover {
+  background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(124, 58, 237, 0.18);
+}
+
+/* Calendar and file input enhancements */
+.vDateTimeField,
+input[type="file"] {
+  border-radius: 12px !important;
+  border: 1px solid rgba(124, 58, 237, 0.18) !important;
+  padding: 0.75rem 1rem !important;
+}
+
+input[type="file"]::file-selector-button {
+  background: linear-gradient(135deg, #5a2d7a 0%, #7c3aed 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  margin-right: 0.75rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background: linear-gradient(135deg, #6d45a0 0%, #8b5cf6 100%);
+  transform: translateY(-1px);
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+   Content Editor Styling (Summernote, TinyMCE, etc.)
+   ────────────────────────────────────────────────────────────────────── */
+
+/* Summernote editor container */
+.note-editor,
+.note-editable,
+.note-editor.note-frame,
+.django-ckeditor-widget,
+.mce-container {
+  border-radius: 12px !important;
+  border: 1px solid rgba(124, 58, 237, 0.18) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  overflow: hidden !important;
+}
+
+/* Summernote toolbar */
+.note-toolbar {
+  background: linear-gradient(90deg, #f8f7ff 0%, #ffffff 100%) !important;
+  border-bottom: 1px solid rgba(124, 58, 237, 0.15) !important;
+  padding: 8px 12px !important;
+  border-radius: 12px 12px 0 0 !important;
+}
+
+.note-toolbar .btn-group,
+.note-toolbar .btn-group-vertical {
+  gap: 2px !important;
+}
+
+.note-toolbar .btn,
+.note-toolbar button {
+  border: 1px solid rgba(124, 58, 237, 0.12) !important;
+  border-radius: 6px !important;
+  padding: 0.4rem 0.6rem !important;
+  font-size: 0.8rem;
+  background: #ffffff !important;
+  color: #5a2d7a !important;
+  transition: all 0.2s ease;
+  margin: 2px;
+}
+
+.note-toolbar .btn:hover,
+.note-toolbar button:hover {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(124, 58, 237, 0.05)) !important;
+  border-color: rgba(124, 58, 237, 0.35) !important;
+  color: #7c3aed !important;
+}
+
+.note-toolbar .btn.active,
+.note-toolbar button.active {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(124, 58, 237, 0.1)) !important;
+  border-color: rgba(124, 58, 237, 0.55) !important;
+  color: #5a2d7a !important;
+}
+
+/* Summernote dropdown menu */
+.note-dropdown-menu,
+.dropdown-menu.note-check {
+  border-radius: 8px !important;
+  border: 1px solid rgba(124, 58, 237, 0.15) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  padding: 4px !important;
+}
+
+.note-dropdown-menu .dropdown-item,
+.dropdown-menu.note-check .dropdown-item {
+  padding: 0.6rem 1rem !important;
+  border-radius: 4px !important;
+  color: #273049;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.note-dropdown-menu .dropdown-item:hover,
+.dropdown-menu.note-check .dropdown-item:hover {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(124, 58, 237, 0.05)) !important;
+  color: #5a2d7a !important;
+}
+
+/* Summernote editing area */
+.note-editable,
+.note-editable.panel-body {
+  background: #ffffff !important;
+  color: #273049;
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  padding: 1.2rem !important;
+  min-height: 200px;
+  border-radius: 0 0 12px 12px !important;
+}
+
+.note-editable:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 1px rgba(124, 58, 237, 0.2);
+}
+
+.note-editable a {
+  color: #7c3aed;
+  text-decoration: underline;
+}
+
+.note-editable code,
+.note-editable pre {
+  background: #f3f4f6;
+  border-radius: 6px;
+  padding: 0.25rem 0.5rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+}
+
+.note-editable table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.note-editable table td,
+.note-editable table th {
+  border: 1px solid rgba(124, 58, 237, 0.15);
+  padding: 0.75rem;
+}
+
+/* Summernote popover */
+.note-popover {
+  border-radius: 12px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+  border: 1px solid rgba(124, 58, 237, 0.2) !important;
+}
+
+.note-popover .popover-content {
+  background: #ffffff;
+  padding: 12px;
+}
+
+.note-popover .btn,
+.note-popover button {
+  border-radius: 6px !important;
+  padding: 0.5rem 1rem !important;
+  font-size: 0.85rem;
+}
+
+/* Summernote help dialog */
+.note-help-dialog .modal-content {
+  border-radius: 12px;
+  border: 1px solid rgba(124, 58, 237, 0.15);
+}
+
+.note-help-dialog .modal-header {
+  background: linear-gradient(135deg, #5a2d7a 0%, #7c3aed 100%);
+  color: #ffffff;
+  border-radius: 12px 12px 0 0;
+}
+
+/* TinyMCE editor */
+.mce-container {
+  border-radius: 12px !important;
+}
+
+.mce-container .mce-toolbar {
+  background: linear-gradient(90deg, #f8f7ff 0%, #ffffff 100%) !important;
+  border-bottom: 1px solid rgba(124, 58, 237, 0.15) !important;
+}
+
+.mce-container .mce-btn {
+  border-radius: 6px !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(124, 58, 237, 0.12) !important;
+  margin: 2px;
+  transition: all 0.2s ease;
+}
+
+.mce-container .mce-btn:hover {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(124, 58, 237, 0.05)) !important;
+  border-color: rgba(124, 58, 237, 0.35) !important;
+}
+
+.mce-container .mce-edit-area {
+  padding: 0 !important;
+}
+
+.mce-container iframe {
+  border-radius: 0 0 12px 12px !important;
+}
+
+/* Django CKEditor styling */
+.django-ckeditor-widget {
+  border-radius: 12px !important;
+}
+
+.cke_editor_id {
+  border-radius: 12px !important;
+}
+
+.cke_chrome {
+  border: 1px solid rgba(124, 58, 237, 0.18) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+.cke_top {
+  background: linear-gradient(90deg, #f8f7ff 0%, #ffffff 100%) !important;
+  border-bottom: 1px solid rgba(124, 58, 237, 0.15) !important;
+  border-radius: 12px 12px 0 0 !important;
+}
+
+.cke_toolbox {
+  padding: 8px !important;
+}
+
+.cke_button {
+  background: #ffffff !important;
+  border: 1px solid rgba(124, 58, 237, 0.12) !important;
+  border-radius: 6px !important;
+  margin: 2px;
+  transition: all 0.2s ease;
+}
+
+.cke_button:hover {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(124, 58, 237, 0.05)) !important;
+  border-color: rgba(124, 58, 237, 0.35) !important;
+}
+
+.cke_button.cke_off:hover span.cke_label {
+  color: #5a2d7a !important;
+}
+
+.cke_editable,
+.cke_editable_inline {
+  background: #ffffff !important;
+  padding: 1.2rem !important;
+  border-radius: 0 0 12px 12px !important;
+  min-height: 200px;
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #273049;
+}
+
+.cke_editable:focus,
+.cke_editable_inline:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 1px rgba(124, 58, 237, 0.2);
+}
+
+/* Markdown editor (if present) */
+.markdown-editor,
+.md-editor,
+.markdown-textarea {
+  border-radius: 12px !important;
+  border: 1px solid rgba(124, 58, 237, 0.18) !important;
+}
+
+.markdown-toolbar {
+  background: linear-gradient(90deg, #f8f7ff 0%, #ffffff 100%) !important;
+  border-bottom: 1px solid rgba(124, 58, 237, 0.15) !important;
+  border-radius: 12px 12px 0 0 !important;
+  padding: 8px !important;
+}
+
+.markdown-toolbar button {
+  border-radius: 6px !important;
+  border: 1px solid rgba(124, 58, 237, 0.12) !important;
+  background: #ffffff !important;
+  margin: 2px;
+  padding: 0.4rem 0.6rem !important;
+  transition: all 0.2s ease;
+}
+
+.markdown-toolbar button:hover {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(124, 58, 237, 0.05)) !important;
+  border-color: rgba(124, 58, 237, 0.35) !important;
+}
+
+/* General editor wrapper */
+.editor-wrapper,
+.editor-container,
+.rich-text-editor {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.editor-wrapper .note-editor,
+.editor-wrapper .mce-container,
+.editor-wrapper .django-ckeditor-widget,
+.editor-container .note-editor,
+.editor-container .mce-container,
+.rich-text-editor .note-editor {
+  width: 100% !important;
+  max-width: 100%;
+}
+
+/* Editor labels */
+.editor-label,
+.form-group .editor-label {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  font-size: 0.95rem;
+}
+
+/* Editor help text */
+.editor-help,
+.editor-instructions {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+/* Responsive form layout */
+@media (max-width: 991px) {
+  #content form,
+  .form-container {
+    padding: 1.5rem;
+  }
+
+  .fieldset,
+  fieldset {
+    padding: 1.2rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  #content form,
+  .form-container {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .fieldset,
+  fieldset {
+    padding: 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .submit-row,
+  .form-buttons {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  [type="submit"],
+  .button {
+    width: 100%;
+  }
+}
+
+/* Strong fit overrides for admin add/edit forms */
+body.change-form #content-main,
+body.change-form #content-main .module,
+body.change-form #content-main .form-row,
+body.change-form #content-main .fieldBox,
+body.change-form #content-main .form-group {
+  max-width: 100% !important;
+  overflow: visible !important;
+}
+
+/* Keep normal form dropdowns fluid */
+body.change-form #content-main select:not(.note-color-select),
+body.change-form #content-main .select2-container,
+body.change-form #content-main .select2-selection--single {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Summernote wrapper and iframe sizing */
+body.change-form #content-main .django-summernote-widget,
+body.change-form #content-main .django-summernote-widget iframe,
+body.change-form #content-main .note-editor,
+body.change-form #content-main .note-editor.note-frame,
+body.change-form #content-main .note-editing-area,
+body.change-form #content-main .note-editable {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+body.change-form #content-main .django-summernote-widget iframe {
+  min-height: 440px !important;
+  border-radius: 12px !important;
+}
+
+/* Summernote toolbar dropdowns should stay compact and aligned */
+body.change-form #content-main .note-editor .note-toolbar select,
+body.change-form #content-main .note-editor .note-toolbar .note-fontname,
+body.change-form #content-main .note-editor .note-toolbar .note-fontsize {
+  width: auto !important;
+  min-width: 88px !important;
+  max-width: 140px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  padding: 0.25rem 1.7rem 0.25rem 0.45rem !important;
+  border-radius: 6px !important;
+  border: 1px solid rgba(124, 58, 237, 0.25) !important;
+  background-color: #ffffff !important;
+  font-size: 0.82rem !important;
+  line-height: 1.1 !important;
+}
+
+body.change-form #content-main .note-editor .note-toolbar .note-btn,
+body.change-form #content-main .note-editor .note-toolbar button {
+  height: 32px !important;
+  min-height: 32px !important;
+  min-width: 32px !important;
+  padding: 0.25rem 0.45rem !important;
+}
+
+body.change-form #content-main .note-editor .note-toolbar {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 4px !important;
+  align-items: center !important;
+}
+
+body.change-form #content-main .note-editor .note-toolbar .note-btn-group {
+  margin: 0 !important;
+}
+
+/* Ensure editable body has comfortable spacing */
+body.change-form #content-main .note-editable {
+  min-height: 260px !important;
+  padding: 1rem !important;
+}
+
+/* Force Content field to stack: label on top, editor below */
+body.change-form #content-main .form-row.field-content,
+body.change-form #content-main .form-group.field-content,
+body.change-form #content-main .field-content {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+body.change-form #content-main .form-row.field-content > label,
+body.change-form #content-main .form-group.field-content > label,
+body.change-form #content-main .field-content > label,
+body.change-form #content-main .field-content .control-label,
+body.change-form #content-main .field-content .form-label {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-bottom: 0.65rem !important;
+  float: none !important;
+}
+
+body.change-form #content-main .form-row.field-content > div,
+body.change-form #content-main .form-group.field-content > div,
+body.change-form #content-main .field-content .controls,
+body.change-form #content-main .field-content .col-sm-9,
+body.change-form #content-main .field-content .col-sm-10,
+body.change-form #content-main .field-content .col-md-9,
+body.change-form #content-main .field-content .col-md-10,
+body.change-form #content-main .field-content .col-lg-9,
+body.change-form #content-main .field-content .col-lg-10 {
+  display: block !important;
+  flex: 0 0 100% !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+  float: none !important;
+}
+
+body.change-form #content-main .field-content .django-summernote-widget,
+body.change-form #content-main .field-content .note-editor,
+body.change-form #content-main .field-content .note-editing-area,
+body.change-form #content-main .field-content .note-editable {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Keep Summernote code textarea hidden unless codeview is enabled */
+body.change-form #content-main .field-content .note-codable {
+  display: none !important;
+}
+
+body.change-form #content-main .field-content .note-editor.codeview .note-codable {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 260px !important;
+}
+
+body.change-form #content-main .field-content .note-editor.codeview .note-editable {
+  display: none !important;
+}
+
+/* Admin responsive hardening */
+@media (max-width: 991px) {
+  .admin-chart-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+
+  .admin-quick-actions {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+
+  #change-list-filters #changelist-search .form-group,
+  #change-list-filters #changelist-search .select2-container,
+  #change-list-filters #searchbar,
+  #changelist .actions .select2-container,
+  #changelist .actions select {
+    min-width: 100% !important;
+    max-width: 100% !important;
+    flex: 1 1 100% !important;
+  }
+}
+
+@media (max-width: 576px) {
+  #content form,
+  .form-container,
+  .add-form,
+  .change-form {
+    padding: 1rem;
+    border-radius: 10px;
+  }
+
+  .object-tools {
+    width: 100%;
+    gap: 6px;
+  }
+
+  .object-tools a,
+  .object-tools .btn,
+  #content-main .object-tools a.addlink,
+  #content-main .object-tools a[href*="/add/"],
+  #content-main a.btn.btn-success[href*="/add/"] {
+    width: 100%;
+  }
+}
+
+@media (max-width: 1199px) {
+  #content h1,
+  .content-header h1,
+  .content-title {
+    font-size: clamp(1.35rem, 3.1vw, 1.9rem) !important;
+  }
+
+  .metric-value {
+    font-size: clamp(1.5rem, 4.2vw, 2rem);
+  }
+
+  .chart-card,
+  .app-list-card,
+  .metric-card,
+  .quick-action-card {
+    padding: clamp(0.9rem, 2.2vw, 1.4rem);
+  }
+}
+
+/* Style submit-row buttons as horizontal navbar */
+.submit-row {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  gap: 0.75rem !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  width: 100% !important;
+  padding: 1rem 1.2rem !important;
+  margin: 0 0 1.5rem 0 !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 245, 255, 0.98)) !important;
+  border: 1px solid rgba(124, 58, 237, 0.14) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 8px 18px rgba(17, 24, 39, 0.06) !important;
+  position: static !important;
+  float: none !important;
+  clear: both !important;
+}
+
+.submit-row input[type="submit"],
+.submit-row button,
+.submit-row a.button {
+  padding: 0.65rem 1.3rem !important;
+  font-size: 0.95rem !important;
+  border-radius: 8px !important;
+  border: 1px solid #d1d5db !important;
+  cursor: pointer !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
+  display: inline-block !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  margin: 0 !important;
+  background: #f3f4f6 !important;
+  color: #374151 !important;
+  float: none !important;
+}
+
+.submit-row input[type="submit"].default {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important;
+  color: #fff !important;
+  border: none !important;
+}
+
+.submit-row input[type="submit"].default:hover {
+  background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%) !important;
+  box-shadow: 0 6px 16px rgba(124, 58, 237, 0.3) !important;
+}
+
+.submit-row input[type="submit"]:not(.default):hover,
+.submit-row button:not(.deletelink):hover,
+.submit-row a.button:hover {
+  background: #e5e7eb !important;
+  color: #111827 !important;
+}
+
+.submit-row a.deletelink {
+  background: #ef4444 !important;
+  color: #fff !important;
+  border: none !important;
+  float: none !important;
+}
+
+.submit-row a.deletelink:hover {
+  background: #dc2626 !important;
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.3) !important;
+}
+
+@media (max-width: 768px) {
+  .submit-row {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+
+  .submit-row input[type="submit"],
+  .submit-row button,
+  .submit-row a.button {
+    width: 100% !important;
+    text-align: center !important;
+  }
+}
+
+/* ── Top navbar: right-side & overall improvements ───────────────────────── */
+
+/* Fix navbar gradient to use brand colors consistently */
+.main-header.navbar {
+  background: linear-gradient(90deg, #5A2D7A 0%, #6e3594 50%, #8B4C9F 100%) !important;
+  box-shadow: 0 2px 16px rgba(90, 45, 122, 0.22) !important;
+  border-bottom: 1px solid rgba(90, 45, 122, 0.3) !important;
+}
+
+/* Remove container padding so "korrie" sits flush to the right edge */
+#jazzy-navbar .container-fluid {
+  padding-right: 6px !important;
+  padding-left: 6px !important;
+}
+
+/* Proper spacing between navbar items on both sides */
+#jazzy-navbar .navbar-nav {
+  gap: 4px !important;
+  align-items: center !important;
+}
+
+#jazzy-navbar .navbar-nav.ms-auto {
+  gap: 6px !important;
+  align-items: center !important;
+}
+
+/* Sidebar toggle (hamburger) button */
+#jazzy-navbar .navbar-nav:first-child .nav-item:first-child > a.nav-link {
+  width: 36px !important;
+  height: 36px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 10px !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  transition: background 0.2s, border-color 0.2s !important;
+  margin-right: 6px !important;
+  padding: 0 !important;
+}
+
+#jazzy-navbar .navbar-nav:first-child .nav-item:first-child > a.nav-link:hover {
+  background: rgba(255, 255, 255, 0.22) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  color: #ffffff !important;
+}
+
+/* Force-show Jazzmin's topmenu links on all screen sizes (overrides d-none) */
+#jazzy-navbar .navbar-nav:not(.ms-auto) .nav-item.d-sm-inline-block {
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+/* Top menu links (View Site, Resources Map) — pill style */
+#jazzy-navbar .navbar-nav:not(.ms-auto) .nav-item.d-sm-inline-block > a.nav-link,
+#jazzy-navbar .vav-nav-link {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
+  padding: 0.36rem 0.88rem !important;
+  border-radius: 999px !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.02em !important;
+  color: rgba(255, 255, 255, 0.88) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+}
+
+#jazzy-navbar .navbar-nav:not(.ms-auto) .nav-item.d-sm-inline-block > a.nav-link:hover,
+#jazzy-navbar .vav-nav-link:hover {
+  background: rgba(255, 255, 255, 0.22) !important;
+  border-color: rgba(255, 255, 255, 0.42) !important;
+  color: #ffffff !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Icon-only nav items in the right (ms-auto) — e.g. theme/docs buttons */
+#jazzy-navbar .navbar-nav.ms-auto > .nav-item:not(:last-child) > a.nav-link {
+  width: 36px !important;
+  height: 36px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 10px !important;
+  color: rgba(255, 255, 255, 0.88) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  transition: background 0.2s, border-color 0.2s !important;
+  padding: 0 !important;
+}
+
+#jazzy-navbar .navbar-nav.ms-auto > .nav-item:not(:last-child) > a.nav-link:hover {
+  background: rgba(255, 255, 255, 0.22) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  color: #ffffff !important;
+}
+
+/* User menu dropdown: consistent open state */
+#jazzy-navbar .navbar-nav.ms-auto > .nav-item.dropdown:last-child > a.nav-link.btn[aria-expanded="true"] {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border-color: rgba(255, 255, 255, 1) !important;
+  box-shadow: 0 6px 20px rgba(17, 24, 39, 0.14) !important;
+}
+
+/* User dropdown items: better styled */
+#jazzy-usermenu .dropdown-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  color: #374151 !important;
+  font-size: 0.88rem !important;
+  font-weight: 500 !important;
+}
+
+#jazzy-usermenu .dropdown-item:hover,
+#jazzy-usermenu .dropdown-item:focus {
+  background: #f3e8ff !important;
+  color: #5A2D7A !important;
+  border-radius: 10px !important;
+}
+
+#jazzy-usermenu .dropdown-item i {
+  width: 16px !important;
+  text-align: center !important;
+  color: #8B4C9F !important;
+}
+
+#jazzy-usermenu .dropdown-header {
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: #9ca3af !important;
+  padding: 0.5rem 0.9rem 0.3rem !important;
+}
+
+#jazzy-usermenu .dropdown-divider {
+  border-color: #f0ebfa !important;
+  margin: 0.25rem 0 !important;
+}
+
+@media (max-width: 767px) {
+  #jazzy-navbar .navbar-nav:not(.ms-auto) .nav-item.d-sm-inline-block > a.nav-link {
+    padding: 0.3rem 0.65rem !important;
+    font-size: 0.75rem !important;
+  }
+}
+
+/* ── Change form: move actions (Save/History) from right sidebar to bottom ── */
+
+/* Stack the two columns vertically on all screen sizes */
+body.change-form #content-main > form > .row {
+  flex-direction: column !important;
+}
+body.change-form #content-main > form > .row > .col-12.col-lg-9,
+body.change-form #content-main > form > .row > .col-12.col-lg-3 {
+  width: 100% !important;
+  flex: 0 0 100% !important;
+  max-width: 100% !important;
+}
+
+/* Actions container: horizontal pill bar at the bottom */
+#jazzy-actions {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  gap: 0.5rem !important;
+  align-items: center !important;
+  border-top: 2px solid rgba(90, 45, 122, 0.1) !important;
+  padding-top: 1rem !important;
+  margin-top: 0.5rem !important;
+}
+
+/* Submit row inside actions: transparent, no card box */
+#jazzy-actions .submit-row {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  gap: 0.5rem !important;
+  width: auto !important;
+}
+
+/* Object tools (History, View on site) sit on the right of the bar */
+#jazzy-actions .object-tools {
+  margin-left: auto !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 0.5rem !important;
+  align-items: center !important;
+}
+#jazzy-actions .object-tools a.btn {
+  width: auto !important;
+}
+
+@media (max-width: 767px) {
+  body.change-form #content-main > form > .row {
+    flex-direction: column !important;
+  }
+  #jazzy-actions {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  #jazzy-actions .object-tools {
+    margin-left: 0 !important;
+  }
+}
+
+/* ── Change-form: reduce surrounding whitespace so form fills the screen ── */
+body.change-form .content-header {
+  margin-bottom: 8px !important;
+  padding-bottom: 0 !important;
+}
+
+body.change-form #content-main {
+  padding-top: 0 !important;
+}
+
+/* Remove top margin from the first module/fieldset card */
+body.change-form #content-main .module:first-of-type,
+body.change-form #content-main .card:first-child {
+  margin-top: 0 !important;
+}
+
+/* Reduce inter-module gap */
+body.change-form #content-main .module + .module,
+body.change-form #content-main .card + .card {
+  margin-top: 0.75rem !important;
+}
+
+/* Tighten the tab bar above the form fields */
+body.change-form .nav-tabs {
+  margin-bottom: 0 !important;
+}
+
+body.change-form .tab-content > .tab-pane.active {
+  padding-top: 0 !important;
+}

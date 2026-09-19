@@ -1,0 +1,105 @@
+{% extends "admin/base.html" %}
+
+{# Critical inline CSS to avoid FOUC on add buttons (apply before external CSS loads) #}
+{% block extrahead %}
+<style>
+/*
+ * CRITICAL CSS — applied before any external stylesheet to eliminate FOUC.
+ * These match the final state so the page never flashes an unstyled version.
+ */
+
+/* Navbar: purple gradient locks in immediately */
+#jazzy-navbar,
+.app-header.navbar,
+.main-header.navbar {
+  background: linear-gradient(90deg, #5A2D7A 0%, #6e3594 50%, #8B4C9F 100%) !important;
+  border-bottom: 1px solid rgba(90,45,122,0.3) !important;
+}
+
+/* Body / page background */
+body { background-color: #f4f6f9 !important; }
+
+/* Sidebar: dark purple locks in */
+.app-sidebar,
+#jazzy-sidebar {
+  background-color: #1a0a2e !important;
+}
+
+/* Primary buttons: purple immediately (prevents green/blue flash) */
+.btn-primary,
+.btn-success,
+.object-tools a[href*="/add/"],
+.object-tools a.addlink,
+.object-tools .addlink,
+a.vav-add-btn,
+.module .btn-success[href*="/add/"] {
+  background: linear-gradient(135deg, #5A2D7A 0%, #8B4C9F 100%) !important;
+  background-color: #5A2D7A !important;
+  border-color: #5A2D7A !important;
+  color: #fff !important;
+}
+
+/* Change-form action column: pre-collapse to full-width so layout doesn't jump */
+body.change-form #content-main > form > .row {
+  flex-direction: column !important;
+}
+body.change-form #content-main > form > .row > .col-12.col-lg-9,
+body.change-form #content-main > form > .row > .col-12.col-lg-3 {
+  width: 100% !important;
+  max-width: 100% !important;
+  flex: 0 0 100% !important;
+}
+</style>
+{{ block.super }}
+{% endblock %}
+
+{% block extrajs %}
+{{ block.super }}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    /* ── Username pill: inject display name into user dropdown button ── */
+    var userToggle = document.querySelector('#jazzy-navbar .navbar-nav.ms-auto > .nav-item.dropdown:last-child > a.nav-link.btn');
+    if (userToggle && !userToggle.querySelector('.account-label')) {
+      var accountLabel = document.createElement('span');
+      accountLabel.className = 'account-label';
+      accountLabel.textContent = userToggle.getAttribute('title') || '';
+      userToggle.appendChild(accountLabel);
+    }
+
+    /* ── Move logout form to bottom of user menu ── */
+    var userMenu = document.getElementById('jazzy-usermenu');
+    var logoutForm = userMenu ? userMenu.querySelector('#logout-form') : null;
+    if (userMenu && logoutForm) userMenu.appendChild(logoutForm);
+
+    /* ── Force-show topmenu links (View Site, Resources Map) ── */
+    /* Bootstrap's d-none uses !important; we override via inline style attribute */
+    var LINK_STYLE = [
+      'display:inline-flex',
+      'align-items:center',
+      'gap:0.35rem',
+      'padding:0.36rem 0.88rem',
+      'border-radius:999px',
+      'font-size:0.8rem',
+      'font-weight:600',
+      'letter-spacing:0.02em',
+      'color:rgba(255,255,255,0.9)',
+      'border:1px solid rgba(255,255,255,0.25)',
+      'background:rgba(255,255,255,0.13)',
+      'text-decoration:none',
+      'white-space:nowrap',
+      'transition:background .2s,border-color .2s',
+    ].join(';');
+
+    var leftNav = document.querySelector('#jazzy-navbar .navbar-nav:not(.ms-auto)');
+    if (leftNav) {
+      leftNav.querySelectorAll('.nav-item').forEach(function (item, idx) {
+        /* Skip the first item — that's the hamburger/sidebar toggle */
+        if (idx === 0) return;
+        item.setAttribute('style', 'display:inline-flex!important;align-items:center!important;');
+        var a = item.querySelector('a.nav-link');
+        if (a) a.setAttribute('style', LINK_STYLE);
+      });
+    }
+  });
+</script>
+{% endblock %}
